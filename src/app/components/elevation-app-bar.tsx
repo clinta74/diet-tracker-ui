@@ -1,6 +1,10 @@
-import { AppState, LogoutOptions, useAuth0 } from '@auth0/auth0-react';
-import { AppBar, Box, Button, createStyles, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
 import React from 'react';
+import { AppState, LogoutOptions, useAuth0 } from '@auth0/auth0-react';
+import { AppBar, Box, Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
+import clsx from 'clsx';
+import MenuIcon from '@material-ui/icons/Menu';
+
+// Local imports
 import { Authenticated } from '../../auth/authenticated';
 
 const ElevationScroll: React.FC = ({ children }) => {
@@ -15,15 +19,43 @@ const ElevationScroll: React.FC = ({ children }) => {
     });
 }
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        appBar: {
+            zIndex: theme.zIndex.drawer + 1,
+            transition: theme.transitions.create(['width', 'margin'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+            }),
+        },
+        appBarShift: {
+            marginLeft: drawerWidth,
+            width: `calc(100% - ${drawerWidth}px)`,
+            transition: theme.transitions.create(['width', 'margin'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+        },
         toolbar: {
             marginBottom: theme.spacing(2),
-        }
+        },
+        menuButton: {
+            marginRight: 36,
+        },
+        hide: {
+            display: 'none',
+        },
     })
 );
 
-export const ElevateAppBar: React.FC = () => {
+interface ElevateAppBarProps {
+    open: boolean;
+    handleDrawerOpen: () => void;
+}
+
+export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
     const { logout, loginWithRedirect } = useAuth0();
     const classes = useStyles();
 
@@ -41,8 +73,21 @@ export const ElevateAppBar: React.FC = () => {
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar>
+                <AppBar className={clsx(classes.appBar, {
+                    [classes.appBarShift]: open,
+                })}>
                     <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton, {
+                                [classes.hide]: open,
+                            })}
+                        >
+                            <MenuIcon />
+                        </IconButton>
                         <Box flexGrow={1}>
                             <Typography variant="h6">Diet Tracker</Typography>
                         </Box>
