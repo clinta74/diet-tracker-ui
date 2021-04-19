@@ -1,5 +1,5 @@
 import path from "path";
-import webpack from "webpack";
+import webpack, { EnvironmentPlugin } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import ESLintPlugin from "eslint-webpack-plugin";
@@ -40,6 +40,13 @@ const config: Configuration = {
     extensions: [".tsx", ".ts", ".js"],
   },
   plugins: [
+    new EnvironmentPlugin({
+      NODE_ENV: 'development',
+      API_URL: 'https://localhost:5001',
+      REACT_APP_AUTH0_DOMAIN: 'dev-clinta74.us.auth0.com',
+      REACT_APP_AUTH0_CLIENT_ID: 'I1EPbV0JzhQ4sMebkA5XSg0RhYhJBa1k',
+      REACT_APP_AUTH0_AUDIENCE: 'https://diet-tracker.pollyspeople.net',
+    }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
     }),

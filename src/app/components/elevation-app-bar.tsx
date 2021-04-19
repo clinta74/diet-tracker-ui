@@ -1,6 +1,7 @@
-import { LogoutOptions, useAuth0 } from '@auth0/auth0-react';
+import { AppState, LogoutOptions, useAuth0 } from '@auth0/auth0-react';
 import { AppBar, Box, Button, createStyles, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
 import React from 'react';
+import { Authenticated } from '../../auth/authenticated';
 
 const ElevationScroll: React.FC = ({ children }) => {
     const trigger = useScrollTrigger({
@@ -23,11 +24,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const ElevateAppBar: React.FC = () => {
-    const { isAuthenticated, isLoading, logout } = useAuth0();
+    const { logout, loginWithRedirect } = useAuth0();
     const classes = useStyles();
 
     const logoutOptions: LogoutOptions = {
         returnTo: window.location.origin,
+    }
+
+    const login = () => {
+        const appState: AppState = {
+            returnTo: window.location.pathname,
+        }
+        loginWithRedirect({ appState });
     }
 
     return (
@@ -38,16 +46,18 @@ export const ElevateAppBar: React.FC = () => {
                         <Box flexGrow={1}>
                             <Typography variant="h6">Diet Tracker</Typography>
                         </Box>
-                        {
-                            isAuthenticated && !isLoading &&
-                            <Box ml={2}>
+                        <Box ml={2}>
+                            <Authenticated>
                                 <Button onClick={() => logout(logoutOptions)} color="inherit">Logout</Button>
-                            </Box>
-                        }
+                            </Authenticated>
+                            <Authenticated invert>
+                                <Button onClick={login} color="inherit">Login</Button>
+                            </Authenticated>
+                        </Box>
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>
-            <Toolbar className={classes.toolbar}/>
+            <Toolbar className={classes.toolbar} />
         </React.Fragment>
     );
 }
