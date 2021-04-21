@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { Box, CircularProgress, Container, createStyles, CssBaseline, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { Box, CircularProgress, Container, createStyles, CssBaseline, makeStyles, Theme, Typography } from '@material-ui/core';
 import { ElevateAppBar } from './components/elevation-app-bar';
 import { Fuelings } from './components/fuelings';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { apiBase } from '../api/api-base';
 import { Welcome } from './components/welcome';
 import { SideNav } from './components/side-nav';
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,16 +20,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const App: React.FC = () => {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
-    const handleDrawerOpen = () => {
+    const handleDrawerOpen: React.MouseEventHandler = event => {
+        event.stopPropagation();
         setOpen(true);
     };
 
-    const handleDrawerClose = () => {
+    const handleDrawerClose: React.MouseEventHandler = () => {
         setOpen(false);
     };
+
+    const handleClickAway: React.MouseEventHandler<Document> = () => {
+        setOpen(false);
+    }
 
     return (
         <React.Fragment>
@@ -38,12 +41,10 @@ export const App: React.FC = () => {
             <Router>
                 <Auth0ProviderWithHistory>
                     <ElevateAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
-                    <SideNav open={open} handleDrawerClose={handleDrawerClose} />
-                    <Box className={classes.root}>
-                        <Container maxWidth="lg" >
-                            <AppRoutes />
-                        </Container>
-                    </Box>
+                    <SideNav open={open} handleDrawerClose={handleDrawerClose} handleClickAway={handleClickAway} />
+                    <Container maxWidth="lg" >
+                        <AppRoutes />
+                    </Container>
                 </Auth0ProviderWithHistory>
             </Router>
         </React.Fragment >
@@ -51,6 +52,7 @@ export const App: React.FC = () => {
 }
 
 export const AppRoutes: React.FunctionComponent = () => {
+    const classes = useStyles();
     const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
     const [hasToken, setHasToken] = useState<boolean>(false);
 
@@ -76,10 +78,12 @@ export const AppRoutes: React.FunctionComponent = () => {
     }
     else if (isAuthenticated && hasToken) {
         return (
-            <Switch>
-                <Route path="/" component={Fuelings} />
-                <Redirect to="/" />
-            </Switch>
+            <Box className={classes.root}>
+                <Switch>
+                    <Route path="/" component={Fuelings} />
+                    <Redirect to="/" />
+                </Switch>
+            </Box>
         );
     }
 

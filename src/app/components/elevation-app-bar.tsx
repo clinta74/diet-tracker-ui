@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ElevateAppBarProps {
     open: boolean;
-    handleDrawerOpen: () => void;
+    handleDrawerOpen: React.MouseEventHandler;
 }
 
 export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
