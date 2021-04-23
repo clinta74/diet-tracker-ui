@@ -8,6 +8,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { apiBase } from '../api/api-base';
 import { Welcome } from './components/welcome';
 import { SideNav } from './components/side-nav';
+import { Api } from '../api';
+import { UserProvider } from './components/user-provider';
+import { DayView } from './components/day-view';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -80,7 +83,11 @@ export const AppRoutes: React.FunctionComponent = () => {
         return (
             <Box className={classes.root}>
                 <Switch>
-                    <Route path="/" component={Fuelings} />
+                    <Route exact path="/newUser"><div>New User</div></Route>
+                    <Route exact path="/fuelings" component={Fuelings} />
+                    <UserProvider>
+                        <Route exact path="/today" component={DayView} />
+                    </UserProvider>
                     <Redirect to="/" />
                 </Switch>
             </Box>
