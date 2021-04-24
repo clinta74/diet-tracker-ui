@@ -7,7 +7,7 @@ interface Plan {
     name: string;
     fuelingCount: number;
     mealCount: number;
-    userPlans: UserPlan[];
+    userPlans?: UserPlan[];
 }
 interface User {
     userId: string;
@@ -16,10 +16,10 @@ interface User {
     emailAddress: string;
     planId: number;
     lastLogin: string;
-    userDays: UserDay[];
-    userFuelings: UserFueling[];
-    userMeals: UserMeal[];
-    userPlans: UserPlan[];
+    userDays?: UserDay[];
+    userFuelings?: UserFueling[];
+    userMeals?: UserMeal[];
+    userPlans?: UserPlan[];
 }
 interface UserDay {
     userId: string;
@@ -47,6 +47,6 @@ interface UserPlan {
     userId: string;
     planId: number;
     start: string;
-    plan: Plan;
+    plan?: Plan;
     user: User;
 }

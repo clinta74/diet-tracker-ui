@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { Box, CircularProgress, Container, createStyles, CssBaseline, makeStyles, Theme, Typography } from '@material-ui/core';
+import React from 'react';
+import { Box, Container, createStyles, CssBaseline, makeStyles, Theme } from '@material-ui/core';
 import { ElevateAppBar } from './components/elevation-app-bar';
-import { Fuelings } from './components/fuelings';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';
-import { useAuth0 } from '@auth0/auth0-react';
-import { apiBase } from '../api/api-base';
-import { Welcome } from './components/welcome';
 import { SideNav } from './components/side-nav';
-import { Api } from '../api';
-import { UserProvider } from './components/user-provider';
-import { DayView } from './components/day-view';
+import { AppRoutes } from './app-routes';
+import { AlertMessage, AlertProvider } from './components/alert-provider';
+import backgroundImage from '../img/wheat-background.jpeg';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            [theme.breakpoints.up('sm')]: {
-                marginLeft: theme.spacing(7),
-            }
-        }
+        background: {
+            position: 'absolute',
+            backgroundImage: `url('${backgroundImage}')`,
+            backgroundSize: 'cover',
+            opacity: 0.1,
+            height: '100%',
+            width: '100%',
+            zIndex: 1,
+        },
     })
 );
 
 export const App: React.FC = () => {
+    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen: React.MouseEventHandler = event => {
@@ -41,58 +42,23 @@ export const App: React.FC = () => {
     return (
         <React.Fragment>
             <CssBaseline />
-            <Router>
-                <Auth0ProviderWithHistory>
-                    <ElevateAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
-                    <SideNav open={open} handleDrawerClose={handleDrawerClose} handleClickAway={handleClickAway} />
-                    <Container maxWidth="lg" >
-                        <AppRoutes />
-                    </Container>
-                </Auth0ProviderWithHistory>
-            </Router>
-        </React.Fragment >
-    );
-}
-
-export const AppRoutes: React.FunctionComponent = () => {
-    const classes = useStyles();
-    const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
-    const [hasToken, setHasToken] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            getAccessTokenSilently()
-                .then((token) => {
-                    apiBase.setAuthToken(token);
-                    setHasToken(true);
-                });
-        }
-    }, [isAuthenticated, getAccessTokenSilently]);
-
-    if (isLoading || !hasToken && isAuthenticated) {
-        return (
-            <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="50vh">
-                <CircularProgress size='5rem' />
-                <Box mt={4}>
-                    <Typography variant="h5">Loading your road to success...</Typography>
+            <Box position="relative" minHeight="100vh" zIndex={1}>
+                <Box className={classes.background} />
+                <Box position="relative" zIndex={2}>
+                    <AlertProvider>
+                        <AlertMessage />
+                        <Router>
+                            <Auth0ProviderWithHistory>
+                                <ElevateAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
+                                <SideNav open={open} handleDrawerClose={handleDrawerClose} handleClickAway={handleClickAway} />
+                                <Container maxWidth="lg">
+                                    <AppRoutes />
+                                </Container>
+                            </Auth0ProviderWithHistory>
+                        </Router>
+                    </AlertProvider>
                 </Box>
             </Box>
-        );
-    }
-    else if (isAuthenticated && hasToken) {
-        return (
-            <Box className={classes.root}>
-                <Switch>
-                    <Route exact path="/newUser"><div>New User</div></Route>
-                    <Route exact path="/fuelings" component={Fuelings} />
-                    <UserProvider>
-                        <Route exact path="/today" component={DayView} />
-                    </UserProvider>
-                    <Redirect to="/" />
-                </Switch>
-            </Box>
-        );
-    }
-
-    return <Welcome />
+        </React.Fragment >
+    );
 }

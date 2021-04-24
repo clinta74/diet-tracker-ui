@@ -112,6 +112,12 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                                 <ListItemText primary="Fuelings" />
                             </ListItem>
                         </NavLink>
+                        <NavLink to="/plans" className={classes.link}>
+                            <ListItem button>
+                                <ListItemIcon><SettingsIcon /></ListItemIcon>
+                                <ListItemText primary="Plans" />
+                            </ListItem>
+                        </NavLink>
                     </List>
                 </Drawer>
             </ClickAwayListener>
