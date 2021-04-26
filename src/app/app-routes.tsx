@@ -5,8 +5,9 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { apiBase } from '../api/api-base';
 import { DayView } from './components/day-view';
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
+import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
-import { UserProvider } from './components/user-provider';
+import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,11 +49,12 @@ export const AppRoutes: React.FunctionComponent = () => {
         return (
             <Box className={classes.root}>
                 <Switch>
-                    <Route path="/newUser"><div>New User</div></Route>
+                    <Route path="/new-user" component={NewUserRoutes} />
                     <Route path="/fuelings" component={FuelingRoutes} />
                     <Route path="/plans" component={PlanRoutes} />
                     <UserProvider>
                         <Route exact path="/today" component={DayView} />
+                        <Redirect to="/today" />
                     </UserProvider>
                     <Redirect to="/" />
                 </Switch>

@@ -18,5 +18,11 @@ export const useCommonStyles = makeStyles((theme: Theme) => createStyles({
         link: {
             textDecoration: 'none',
         },
+        buttonProgress: {
+            position: 'absolute',
+            left: '-100%',
+            marginTop: -12,
+            marginLeft: -12,
+        },
     })
 );

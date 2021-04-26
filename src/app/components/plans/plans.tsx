@@ -3,7 +3,7 @@ import { Paper } from '@material-ui/core';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Api } from '../../../api';
-import { useAlertMessage } from '../alert-provider';
+import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add';
@@ -25,7 +25,7 @@ export const Plans: React.FC = () => {
                 alert.addMessage(err.message);
             })
             .finally(() => setLoading(false));
-    }, [Api]);
+    }, []);
 
     const onClickAddPlan: React.MouseEventHandler = () => {
         history.push('/plans/add')

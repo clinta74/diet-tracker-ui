@@ -1,11 +1,12 @@
-import { Box, Button, CircularProgress, createStyles, FormControl, FormHelperText, Grid, makeStyles, Paper, TextField, Theme, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, createStyles, FormControl, Grid, makeStyles, Paper, TextField, Theme, Typography } from '@material-ui/core';
 import { AxiosError } from 'axios';
-import React, { HtmlHTMLAttributes, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Api } from '../../../api';
 import { validateAll, ValidationTest } from '../../../utils/validate';
-import { useAlertMessage } from '../alert-provider';
+import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
+import { ErrorMessage } from '../ErrorMessage';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,9 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-
-
-type ValidationResult = [message: string, name: string];
 
 export const AddPlan: React.FC = () => {
     const classes = useStyles();
@@ -37,7 +35,7 @@ export const AddPlan: React.FC = () => {
     });
 
     const onChangeStringField: React.ChangeEventHandler<HTMLInputElement> = event => {
-        const { name, value, type } = event.target;
+        const { name, value } = event.target;
 
         setPlan(plan => ({
             ...plan,
@@ -46,7 +44,7 @@ export const AddPlan: React.FC = () => {
         ));
     }
 
-    const limits: { [key: string] : { min: number, max: number }} = {
+    const limits: { [key: string]: { min: number, max: number } } = {
         mealCount: {
             max: 2,
             min: 1,
@@ -69,25 +67,28 @@ export const AddPlan: React.FC = () => {
         ));
     }
 
-    const createJob = () => {
+    const createPlan = () => {
         const [valid] = validateAll(validationTests, plan);
         setIsSubmitted(true);
         if (!postingJob && valid) {
             setPostingJob(true);
             Api.Plan.addPlan(plan)
                 .then(({ data: planId }) => {
-                    history.push(`/plans/`);
+                    history.push(`/plans`);
                 })
                 .catch((error: AxiosError) => alert.addMessage(error.message))
                 .finally(() => setPostingJob(false));
         }
     }
 
-    const validationTests: ValidationTest<ValidationResult, Plan>[] =
+    const validationTests: ValidationTest<Plan>[] =
         [
             {
                 passCondition: ({ name }) => name.trim().length > 0,
-                result: ['There must be a name.', 'name']
+                result: {
+                    message: 'There must be a name.',
+                    name: 'name',
+                }
             }
         ];
 
@@ -95,7 +96,7 @@ export const AddPlan: React.FC = () => {
     const showErrors = isSubmitted && !isValid;
 
     const hasErrors = (inputName: keyof Plan) => results
-        .filter(([message, name]) => inputName === name)
+        .filter(({ name }) => inputName === name)
         .length > 0;
 
     return (
@@ -109,19 +110,19 @@ export const AddPlan: React.FC = () => {
                         <Grid container justify="center" alignItems="stretch" spacing={2}>
                             <Grid item xs={12}>
                                 <FormControl fullWidth>
-                                    <TextField error={showErrors && hasErrors('name')} variant="filled" label="Name" id="name" name="name" value={plan.name} onChange={onChangeStringField} disabled={postingJob} required />
+                                    <TextField variant="standard" error={showErrors && hasErrors('name')} label="Name" id="name" name="name" value={plan.name} onChange={onChangeStringField} disabled={postingJob} required />
                                     <ErrorMessage isSubmitted={isSubmitted} inputName="name" results={results} />
                                 </FormControl>
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControl fullWidth>
-                                    <TextField error={showErrors && hasErrors('fuelingCount')} type="number" variant="filled" label="Fuelings" id="fuelingCount" name="fuelingCount" value={plan.fuelingCount} onChange={onChangeNumberField} disabled={postingJob} required />
+                                    <TextField variant="standard" error={showErrors && hasErrors('fuelingCount')} type="number" label="Fuelings" id="fuelingCount" name="fuelingCount" value={plan.fuelingCount} onChange={onChangeNumberField} disabled={postingJob} required />
                                     <ErrorMessage isSubmitted={isSubmitted} inputName="fuelingCount" results={results} />
                                 </FormControl>
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControl fullWidth>
-                                    <TextField error={showErrors && hasErrors('mealCount')} type="number" variant="filled" label="Meals" id="mealCount" name="mealCount" value={plan.mealCount} onChange={onChangeNumberField} disabled={postingJob} required />
+                                    <TextField variant="standard" error={showErrors && hasErrors('mealCount')} type="number" label="Meals" id="mealCount" name="mealCount" value={plan.mealCount} onChange={onChangeNumberField} disabled={postingJob} required />
                                     <ErrorMessage isSubmitted={isSubmitted} inputName="mealCount" results={results} />
                                 </FormControl>
                             </Grid>
@@ -131,7 +132,7 @@ export const AddPlan: React.FC = () => {
                     <Box display="flex" justifyContent="flex-end" mt={2}>
                         <Box display="flex" alignItems="center">
                             <Box mr={1}>
-                                <Button color="primary" onClick={createJob} disabled={postingJob}>Create</Button>
+                                <Button color="primary" onClick={createPlan} disabled={postingJob}>Create</Button>
                                 {postingJob && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
                             </Box>
                             <Link to="/plans" className={commonClasses.link}>
@@ -144,24 +145,4 @@ export const AddPlan: React.FC = () => {
         </Grid>
 
     );
-}
-
-const ErrorMessage: React.FunctionComponent<{ isSubmitted: boolean, inputName: string, results: ValidationResult[] }> = ({ isSubmitted, inputName, results }) => {
-
-    const errors = results
-        .filter(([message, name]) => inputName === name)
-        .map(([message]) => message);
-
-    if (errors.length > 0 && isSubmitted) {
-        return (
-            <FormHelperText error component="div">
-                {
-                    errors.map((error, idx) => <div key={`error_${idx}`}>{error}</div>)
-                }
-            </FormHelperText>
-        );
-    }
-    else {
-        return null;
-    }
 }

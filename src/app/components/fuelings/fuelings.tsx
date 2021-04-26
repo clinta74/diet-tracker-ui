@@ -12,7 +12,7 @@ export const Fuelings: React.FC = () => {
             .then(({ data }) => {
                 setFuelings(data);
             });
-    }, [Api]);
+    }, []);
 
     return (
         <React.Fragment><Paper className={commonClasses.paper}>Fuelings</Paper></React.Fragment>

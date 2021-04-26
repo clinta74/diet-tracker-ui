@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';
 import { SideNav } from './components/side-nav';
 import { AppRoutes } from './app-routes';
-import { AlertMessage, AlertProvider } from './components/alert-provider';
+import { AlertMessage, AlertProvider } from './providers/alert-provider';
 import backgroundImage from '../img/wheat-background.jpeg';
 
 const useStyles = makeStyles((theme: Theme) =>

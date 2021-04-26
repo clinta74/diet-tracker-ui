@@ -93,7 +93,7 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                     </div>
                     <Divider />
                     <List>
-                        <NavLink to="/today" className={classes.link}>
+                        <NavLink to="/" className={classes.link}>
                             <ListItem button>
                                 <ListItemIcon><CalendarViewDayIcon /></ListItemIcon>
                                 <ListItemText primary="Todays" />

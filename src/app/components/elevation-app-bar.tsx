@@ -56,7 +56,7 @@ interface ElevateAppBarProps {
 }
 
 export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
-    const { logout, loginWithRedirect } = useAuth0();
+    const { logout, loginWithRedirect, isAuthenticated } = useAuth0();
     const classes = useStyles();
 
     const logoutOptions: LogoutOptions = {
@@ -77,17 +77,20 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                     [classes.appBarShift]: open,
                 })}>
                     <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            className={clsx(classes.menuButton, {
-                                [classes.hide]: open,
-                            })}
-                        >
-                            <MenuIcon />
-                        </IconButton>
+                        {
+                            isAuthenticated &&
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerOpen}
+                                edge="start"
+                                className={clsx(classes.menuButton, {
+                                    [classes.hide]: open,
+                                })}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        }
                         <Box flexGrow={1}>
                             <Typography variant="h6">Diet Tracker</Typography>
                         </Box>

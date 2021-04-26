@@ -1,8 +1,12 @@
-export interface ValidationTest<M, P> { 
+export interface StandardValidationResult {
+    message: string;
+    name: string;
+}
+export interface ValidationTest<P, M = StandardValidationResult> { 
     passCondition: (params: P) => boolean, result: M 
 }
 
-export interface ValidationResult<M = unknown> {
+export interface ValidationResult<M> {
     valid: boolean,
     results: M[] | [],
 }
@@ -17,7 +21,7 @@ const sumValidationResult = <M>(result1: ValidationResult<M>, result2: Validatio
     });
 };
 
-const validate = <M, P>(test: ValidationTest<M, P>, params: P): ValidationResult<M>  => {
+const validate = <P, M>(test: ValidationTest<P, M>, params: P): ValidationResult<M>  => {
     return ({
         valid: test.passCondition(params),
         results: [test.result],
@@ -31,9 +35,9 @@ const getValidResult = <M>() => {
     });
 };
 
-const validateAll = <M, P>(tests: ValidationTest<M, P>[], params: P):[ valid: boolean, results: M[]] => {
+const validateAll = <M, P>(tests: ValidationTest<P, M>[], params: P):[ valid: boolean, results: M[]] => {
     const testResults = tests.reduce((prev, next) => {
-        return sumValidationResult<M>(prev as ValidationResult<M>, validate<M, P>(next, params))
+        return sumValidationResult<M>(prev as ValidationResult<M>, validate<P, M>(next, params))
     }, getValidResult<M>());
 
     return [ testResults.valid, testResults.results ];
