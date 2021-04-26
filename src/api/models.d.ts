@@ -17,9 +17,16 @@ interface User {
     planId: number;
     lastLogin: string;
     userDays?: UserDay[];
-    userFuelings?: UserFueling[];
-    userMeals?: UserMeal[];
     userPlans?: UserPlan[];
+}
+
+interface CurrentUser {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    lastLogin: string;
+    currentPlan: Plan;
 }
 interface UserDay {
     userId: string;
@@ -28,20 +35,24 @@ interface UserDay {
     weight: number;
     condiments: number;
     user: User;
+    fuelings: UserFueling[];
+    meals: UserMeal[];
 }
 interface UserFueling {
     userFuelingId: number;
     userId: string;
+    day: string;
     name: string;
     when: string;
-    user: User;
+    userDay: UserDay;
 }
 interface UserMeal {
     userMealId: number;
     userId: string;
+    day: string;
     name: string;
     calories: number;
-    user: User;
+    userDay: UserDay;
 }
 interface UserPlan {
     userId: string;
@@ -49,4 +60,12 @@ interface UserPlan {
     start: string;
     plan?: Plan;
     user: User;
+}
+
+interface NewUser {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    planId: number;
 }
