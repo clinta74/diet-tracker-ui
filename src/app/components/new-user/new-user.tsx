@@ -6,7 +6,7 @@ import { Api } from '../../../api';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
-import { ErrorMessage } from '../ErrorMessage';
+import { ErrorMessage } from '../error-message';
 
 const validationTests: ValidationTest<NewUser>[] =
     [

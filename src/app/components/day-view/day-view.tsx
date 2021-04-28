@@ -14,7 +14,8 @@ import {
     Input,
     Button,
     CircularProgress,
-    IconButton
+    IconButton,
+    Divider
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { format, startOfToday, addDays, parseISO, getDay } from 'date-fns';
@@ -58,7 +59,6 @@ export const DayView: React.FC = () => {
     const alert = useAlertMessage();
 
     const day = params.day ? parseISO(params.day) : startOfToday();
-    // const [day, setDay] = useState<Date>(startOfToday());
     const [userDay, setUserDay] = useState<CurrentUserDay>();
     const [postingDay, setPostingDay] = useState(false);
 
@@ -66,7 +66,6 @@ export const DayView: React.FC = () => {
 
 
     useEffect(() => {
-
         Api.Day.getDay(dateToString(day))
             .then(({ data }) => setUserDay(data))
             .catch(error => alert.addMessage(error));
@@ -150,29 +149,32 @@ export const DayView: React.FC = () => {
         }
     }
 
+    const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
+        Api.Day.getDay(dateToString(day))
+            .then(({ data }) => setUserDay(data))
+            .catch(error => alert.addMessage(error));
+    }
+
     return (
         <Paper className={clsx([commonClasses.paper, classes.paperBackground])}>
-            <Box mb={2}>
-                <Typography variant="h4">{format(day, 'EEEE, MMM dd, yyyy')}</Typography>
-                <Grid container spacing={0}>
-                    <Grid item xs={6}>
-                        <Link to={`/day/${dateToString(addDays(day, -1))}`} className={commonClasses.link}>
-                            <IconButton>
-                                <ArrowBackIcon />
-                            </IconButton>
-                        </Link>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="flex" justifyContent="flex-end">
-                            <Link to={`/day/${dateToString(addDays(day, 1))}`} className={commonClasses.link}>
-                                <IconButton>
-                                    <ArrowForwardIcon />
-                                </IconButton>
-                            </Link>
-                        </Box>
-                    </Grid>
-                </Grid>
+            <Box display="flex" alignItems="center">
+                <Link to={`/day/${dateToString(addDays(day, -1))}`} className={commonClasses.link}>
+                    <IconButton>
+                        <ArrowBackIcon />
+                    </IconButton>
+                </Link>
+
+                <Box flexGrow={1} textAlign="center">
+                    <Typography variant="h4">{format(day, 'EEEE, MMM dd, yyyy')}</Typography>
+                </Box>
+
+                <Link to={`/day/${dateToString(addDays(day, 1))}`} className={commonClasses.link}>
+                    <IconButton>
+                        <ArrowForwardIcon />
+                    </IconButton>
+                </Link>
             </Box>
+            <Divider className={commonClasses.divider}/>
             {
                 userDay &&
                 <React.Fragment>
@@ -254,6 +256,7 @@ export const DayView: React.FC = () => {
                                 )
                             }
                         </Grid>
+
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
                                 <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} />
@@ -274,7 +277,7 @@ export const DayView: React.FC = () => {
                                 {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
                             </Box>
                             <Box>
-                                <Button color="secondary" disabled={postingDay}>Cancel</Button>
+                                <Button color="secondary" onClick={onClickReset} disabled={postingDay}>Reset</Button>
                             </Box>
                         </Box>
                     </Box>

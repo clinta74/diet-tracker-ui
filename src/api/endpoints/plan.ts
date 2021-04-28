@@ -3,6 +3,9 @@ import { apiBase } from '../api-base';
 export const getPlans = () =>
     apiBase.client.get<Plan[]>(`plans`);
 
+export const getPlan = (planId: number) =>
+    apiBase.client.get<Plan>(`plan/${planId}`);
+
 export const addPlan = (plan: Plan) =>
     apiBase.client.post<number>(`plan`, plan);
 

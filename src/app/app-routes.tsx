@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { apiBase } from '../api/api-base';
 import { DayView } from './components/day-view/day-view';
+import { Plan } from './components/day-view/plan';
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
 import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
@@ -58,6 +59,7 @@ export const AppRoutes: React.FunctionComponent = () => {
                     <UserProvider>
                         <Switch>
                             <Route path="/day/:day" component={DayView} />
+                            <Route path="/plan" component={Plan} />
                             <Redirect to={`/day/${dateToString(startOfToday())}`} />
                         </Switch>
                     </UserProvider>

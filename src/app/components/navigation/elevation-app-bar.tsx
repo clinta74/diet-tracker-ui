@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 
 // Local imports
-import { Authenticated } from '../../auth/authenticated';
+import { Authenticated } from '../../../auth/authenticated';
 
 const ElevationScroll: React.FC = ({ children }) => {
     const trigger = useScrollTrigger({

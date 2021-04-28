@@ -1,12 +1,11 @@
 import React from 'react';
-import { Box, Container, createStyles, CssBaseline, makeStyles, Theme } from '@material-ui/core';
-import { ElevateAppBar } from './components/elevation-app-bar';
+import { Box, Container, createStyles, CssBaseline, makeStyles } from '@material-ui/core';
 import { BrowserRouter as Router } from "react-router-dom";
 import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';
-import { SideNav } from './components/side-nav';
 import { AppRoutes } from './app-routes';
 import { AlertMessage, AlertProvider } from './providers/alert-provider';
 import backgroundImage from '../img/wheat-background.jpeg';
+import { Navigation } from './components/navigation/navigation';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -49,9 +48,8 @@ export const App: React.FC = () => {
                         <AlertMessage />
                         <Router>
                             <Auth0ProviderWithHistory>
-                                <ElevateAppBar open={open} handleDrawerOpen={handleDrawerOpen} />
-                                <SideNav open={open} handleDrawerClose={handleDrawerClose} handleClickAway={handleClickAway} />
-                                <Container maxWidth="lg">
+                                <Navigation />
+                                <Container maxWidth="md">
                                     <AppRoutes />
                                 </Container>
                             </Auth0ProviderWithHistory>

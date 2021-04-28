@@ -1,4 +1,4 @@
-import { Box, Fab, IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@material-ui/core';
+import { Box, Fab, IconButton, LinearProgress, Menu, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { useCommonStyles } from '../common-styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from 'react-router-dom';
+import { MenuItem } from '@material-ui/core';
 
 export const Plans: React.FC = () => {
     const [plans, setPlans] = useState<Plan[]>();
@@ -30,6 +31,28 @@ export const Plans: React.FC = () => {
     const onClickAddPlan: React.MouseEventHandler = () => {
         history.push('/plans/add')
     }
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const onClickEdit = () => {
+        if (anchorEl) {
+            const id = anchorEl.dataset.id;
+            if(id) {
+                history.push(`/plans/edit/${id}`);
+            }
+        }
+        setAnchorEl(null);
+    }
+
 
     return (
         <Box position="relative">
@@ -59,7 +82,9 @@ export const Plans: React.FC = () => {
                                     <TableCell align="right">{fuelingCount}</TableCell>
                                     <TableCell align="right">{mealCount}</TableCell>
                                     <TableCell width={1}>
-                                        <IconButton><MoreVertIcon /></IconButton>
+                                        <IconButton aria-haspopup="true" onClick={handleClick} data-id={planId}>
+                                            <MoreVertIcon />
+                                        </IconButton>
                                     </TableCell>
                                 </TableRow>))
                             ||
@@ -70,9 +95,18 @@ export const Plans: React.FC = () => {
                     </TableBody>
                 </Table>
                 {
-                    loading && <Box><LinearProgress/></Box>
+                    loading && <Box><LinearProgress /></Box>
                 }
             </TableContainer>
+            <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={onClickEdit}>Edit</MenuItem>
+            </Menu>
         </Box>
     );
 }

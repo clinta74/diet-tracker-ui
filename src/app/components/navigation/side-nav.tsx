@@ -1,24 +1,25 @@
 import React, { createContext } from 'react';
-import { 
-    Drawer, 
-    IconButton, 
-    makeStyles, 
-    Theme, 
-    createStyles, 
-    useTheme, 
-    List, 
-    Divider, 
-    ClickAwayListener, 
-    ListItemIcon, 
-    ListItemText 
+import {
+    Drawer,
+    IconButton,
+    makeStyles,
+    Theme,
+    createStyles,
+    useTheme,
+    List,
+    Divider,
+    ClickAwayListener,
+    ListItemIcon,
+    ListItemText
 } from '@material-ui/core';
 import clsx from 'clsx';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ViewWeekIcon from '@material-ui/icons/ViewWeek';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TodayIcon from '@material-ui/icons/Today';
-import { Authenticated } from '../../auth/authenticated';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 
@@ -107,26 +108,28 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                     <List>
                         <NavLink to="/day" className={classes.link}>
                             <ListItem button>
-                                <ListItemIcon><TodayIcon /></ListItemIcon>
-                                <ListItemText primary="Todays" />
+                                <ListItemIcon title="Today"><TodayIcon /></ListItemIcon>
+                                <ListItemText primary="Today" />
                             </ListItem>
                         </NavLink>
-                        <ListItem button>
-                            <ListItemIcon><ViewWeekIcon /></ListItemIcon>
-                            <ListItemText primary="Your Plan" />
-                        </ListItem>
+                        <NavLink to="/plan" className={classes.link}>
+                            <ListItem button>
+                                <ListItemIcon title="Your Plan"><AssignmentOutlinedIcon /></ListItemIcon>
+                                <ListItemText primary="Your Plan" />
+                            </ListItem>
+                        </NavLink>
                     </List>
                     <Divider />
                     <List>
                         <NavLink to="/fuelings" className={classes.link}>
                             <ListItem button>
-                                <ListItemIcon><SettingsIcon /></ListItemIcon>
+                                <ListItemIcon title="Fuelings"><SettingsIcon /></ListItemIcon>
                                 <ListItemText primary="Fuelings" />
                             </ListItem>
                         </NavLink>
                         <NavLink to="/plans" className={classes.link}>
                             <ListItem button>
-                                <ListItemIcon><SettingsIcon /></ListItemIcon>
+                                <ListItemIcon title="Plans"><SettingsIcon /></ListItemIcon>
                                 <ListItemText primary="Plans" />
                             </ListItem>
                         </NavLink>
