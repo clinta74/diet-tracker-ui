@@ -8,7 +8,7 @@ import { AppRoutes } from './app-routes';
 import { AlertMessage, AlertProvider } from './providers/alert-provider';
 import backgroundImage from '../img/wheat-background.jpeg';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         background: {
             position: 'absolute',

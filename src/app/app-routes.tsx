@@ -3,12 +3,13 @@ import { Box, CircularProgress, createStyles, makeStyles, Theme, Typography } fr
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { apiBase } from '../api/api-base';
-import { DayView } from './components/day-view';
+import { DayView } from './components/day-view/day-view';
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
 import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
 import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
+import { format, startOfToday } from 'date-fns';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,6 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     })
 );
+
+const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
 export const AppRoutes: React.FunctionComponent = () => {
     const classes = useStyles();
@@ -53,10 +56,12 @@ export const AppRoutes: React.FunctionComponent = () => {
                     <Route path="/fuelings" component={FuelingRoutes} />
                     <Route path="/plans" component={PlanRoutes} />
                     <UserProvider>
-                        <Route exact path="/today" component={DayView} />
-                        <Redirect to="/today" />
+                        <Switch>
+                            <Route path="/day/:day" component={DayView} />
+                            <Redirect to={`/day/${dateToString(startOfToday())}`} />
+                        </Switch>
                     </UserProvider>
-                    <Redirect to="/" />
+                    <Redirect to={`/day/${dateToString(startOfToday())}`} />
                 </Switch>
             </Box>
         );

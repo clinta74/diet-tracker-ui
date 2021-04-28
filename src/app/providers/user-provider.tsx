@@ -16,16 +16,16 @@ export const UserProvider: React.FC = ({ children }) => {
                 if (data) {
                     Api.User.getUser()
                         .then(({ data }) => {
-                            if (data) {
-
-                            }
                             setUser(data);
                         })
                         .catch((error: any) => alert.addMessage(error.message));
                 }
+                else {
+                    history.push('/new-user');
+                }
             })
             .catch((error: any) => alert.addMessage(error.message));
-    }, [history]);
+    }, []);
 
     return (
         <UserContext.Provider value={user}>{user && children}</UserContext.Provider>

@@ -1,11 +1,23 @@
 import React, { createContext } from 'react';
-import { Drawer, IconButton, makeStyles, Theme, createStyles, useTheme, List, Divider, ClickAwayListener, ListItemIcon, ListItemText } from '@material-ui/core';
+import { 
+    Drawer, 
+    IconButton, 
+    makeStyles, 
+    Theme, 
+    createStyles, 
+    useTheme, 
+    List, 
+    Divider, 
+    ClickAwayListener, 
+    ListItemIcon, 
+    ListItemText 
+} from '@material-ui/core';
 import clsx from 'clsx';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ViewWeekIcon from '@material-ui/icons/ViewWeek';
 import SettingsIcon from '@material-ui/icons/Settings';
-import CalendarViewDayIcon from '@material-ui/icons/CalendarViewDay';
+import TodayIcon from '@material-ui/icons/Today';
 import { Authenticated } from '../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
@@ -93,9 +105,9 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                     </div>
                     <Divider />
                     <List>
-                        <NavLink to="/" className={classes.link}>
+                        <NavLink to="/day" className={classes.link}>
                             <ListItem button>
-                                <ListItemIcon><CalendarViewDayIcon /></ListItemIcon>
+                                <ListItemIcon><TodayIcon /></ListItemIcon>
                                 <ListItemText primary="Todays" />
                             </ListItem>
                         </NavLink>

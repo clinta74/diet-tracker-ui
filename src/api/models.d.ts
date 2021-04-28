@@ -51,7 +51,7 @@ interface UserMeal {
     userId: string;
     day: string;
     name: string;
-    calories: number;
+    when: string;
     userDay: UserDay;
 }
 interface UserPlan {
@@ -61,11 +61,14 @@ interface UserPlan {
     plan?: Plan;
     user: User;
 }
-
 interface NewUser {
     userId: string;
     firstName: string;
     lastName: string;
     emailAddress: string;
     planId: number;
+}
+interface CurrentUserDay extends UserDay {
+    cumulativeWeightChange: number;
+    weightChange: number;
 }

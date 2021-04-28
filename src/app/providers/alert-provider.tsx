@@ -1,4 +1,4 @@
-import { Box, Button, createStyles, Divider, makeStyles, Portal, Theme, Toolbar } from '@material-ui/core';
+import { Box, Button, createStyles, Divider, makeStyles, Portal, Theme } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { createContext, useState } from 'react';
 
@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
             right: 0,
             bottom: 0,
             backgroundColor: theme.palette.background.paper,
+            zIndex: theme.zIndex.appBar + 1,
         },
     })
 );
