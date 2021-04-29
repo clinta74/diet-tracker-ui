@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, createStyles, FormControl, Grid, makeStyles, Paper, TextField, Theme, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, createStyles, FormControl, Grid, makeStyles, Paper, TextField, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Api } from '../../../api';
@@ -7,7 +7,7 @@ import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { ErrorMessage } from '../error-message';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         buttonProgress: {
             position: 'absolute',

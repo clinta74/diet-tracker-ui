@@ -61,14 +61,14 @@ export const NewUser: React.FC = () => {
             .then(({ data }) => {
                 setNewUser(data);
             })
-            .catch((error: AxiosError) => alert.addMessage(error.message));
+            .catch(error=> alert.addMessage(error));
 
         Api.Plan.getPlans()
             .then(({ data }) => {
                 setPlans(data);
             })
-            .catch((error: AxiosError) => alert.addMessage(error.message));
-    }, [])
+            .catch(error => alert.addMessage(error));
+    }, []);
 
     const onChangeStringField: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { name, value } = event.target;

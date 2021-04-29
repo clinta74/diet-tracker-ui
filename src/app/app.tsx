@@ -23,20 +23,6 @@ const useStyles = makeStyles(() =>
 
 export const App: React.FC = () => {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-
-    const handleDrawerOpen: React.MouseEventHandler = event => {
-        event.stopPropagation();
-        setOpen(true);
-    };
-
-    const handleDrawerClose: React.MouseEventHandler = () => {
-        setOpen(false);
-    };
-
-    const handleClickAway: React.MouseEventHandler<Document> = () => {
-        setOpen(false);
-    }
 
     return (
         <React.Fragment>

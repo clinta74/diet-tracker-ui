@@ -241,7 +241,7 @@ export const DayView: React.FC = () => {
                             <FormLabel>Lean and Green</FormLabel>
                             {
                                 userDay.meals.map((meal, idx) =>
-                                    <Grid container spacing={2} key={meal.userMealId}>
+                                    <Grid container spacing={2} key={`meal_${idx}`}>
                                         <Grid item xs={7} md={8}>
                                             <FormControl fullWidth>
                                                 <TextField value={meal.name} name="name" onChange={e => onChangeMeal(e, idx)} />

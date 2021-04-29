@@ -10,7 +10,7 @@ interface AlertHandlers {
 }
 
 const defaultAlertHandlers = {
-    addMessage: (message: string) => null,
+    addMessage: () => null,
     clearMessages: () => null,
 }
 

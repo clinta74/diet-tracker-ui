@@ -3,7 +3,12 @@ import { useHistory } from 'react-router';
 import { Api } from '../../api';
 import { useAlertMessage } from './alert-provider';
 
-export const UserContext = createContext<CurrentUser | undefined>(undefined);
+interface UserContext {
+    user: CurrentUser,
+    updateUser: () => void;
+}
+
+export const UserContext = createContext<UserContext | null>(null);
 
 export const UserProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<CurrentUser>();
@@ -18,22 +23,44 @@ export const UserProvider: React.FC = ({ children }) => {
                         .then(({ data }) => {
                             setUser(data);
                         })
-                        .catch((error: any) => alert.addMessage(error.message));
+                        .catch(error => alert.addMessage(error));
                 }
                 else {
                     history.push('/new-user');
                 }
             })
-            .catch((error: any) => alert.addMessage(error.message));
+            .catch(error => alert.addMessage(error));
     }, []);
 
+    const updateUser = () => {
+        Api.User.getUserExists()
+            .then(({ data }) => {
+                if (data) {
+                    Api.User.getUser()
+                        .then(({ data }) => {
+                            setUser(data);
+                        })
+                        .catch(error => alert.addMessage(error));
+                }
+                else {
+                    history.push('/new-user');
+                }
+            })
+            .catch(error => alert.addMessage(error));
+    }
+
     return (
-        <UserContext.Provider value={user}>{user && children}</UserContext.Provider>
+        <React.Fragment>
+            {
+                user && <UserContext.Provider value={{ user, updateUser }}>{user && children}</UserContext.Provider>
+
+            }
+        </React.Fragment>
     );
 }
 
 export const useUser = () => {
     const context = React.useContext(UserContext)
-    if (context === undefined) throw new Error('useUser must be used within a UserProvider');
+    if (context === null) throw new Error('useUser must be used within a UserProvider');
     return context;
 }

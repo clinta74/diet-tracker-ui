@@ -8,7 +8,6 @@ import {
     makeStyles, 
     Paper, 
     TextField, 
-    Theme, 
     Typography 
 } from '@material-ui/core';
 import { AxiosError } from 'axios';
@@ -20,7 +19,7 @@ import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { ErrorMessage } from '../error-message';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         buttonProgress: {
             position: 'absolute',
@@ -85,7 +84,7 @@ export const AddPlan: React.FC = () => {
         if (!postingJob && valid) {
             setPostingJob(true);
             Api.Plan.addPlan(plan)
-                .then(({ data: planId }) => {
+                .then(() => {
                     history.push(`/plans`);
                 })
                 .catch((error: AxiosError) => alert.addMessage(error.message))

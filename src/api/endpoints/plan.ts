@@ -14,3 +14,6 @@ export const updatePlan = (planId: number, plan: Plan) =>
 
 export const deletePlan = (planId: number) =>
     apiBase.client.delete<never>(`plan/${planId}`);
+
+export const changePlan = (planId: number) =>
+    apiBase.client.put<number>(`plan/change`, planId);

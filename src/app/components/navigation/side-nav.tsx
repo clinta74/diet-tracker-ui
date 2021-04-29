@@ -17,8 +17,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import SettingsIcon from '@material-ui/icons/Settings';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import TodayIcon from '@material-ui/icons/Today';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
@@ -123,7 +123,7 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                     <List>
                         <NavLink to="/fuelings" className={classes.link}>
                             <ListItem button>
-                                <ListItemIcon title="Fuelings"><SettingsIcon /></ListItemIcon>
+                                <ListItemIcon title="Fuelings"><ShoppingBasketIcon /></ListItemIcon>
                                 <ListItemText primary="Fuelings" />
                             </ListItem>
                         </NavLink>
