@@ -13,6 +13,9 @@ const config: webpack.Configuration = {
     filename: "[name].[contenthash].js",
     publicPath: "",
   },
+  optimization: {
+    minimize: false,
+  },
   module: {
     rules: [
       {
