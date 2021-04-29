@@ -59,7 +59,12 @@ export const NewUser: React.FC = () => {
     useEffect(() => {
         Api.NewUser.getNewUser()
             .then(({ data }) => {
-                setNewUser(data);
+                setNewUser({
+                    ...data,
+                    firstName: data.firstName || '',
+                    lastName: data.lastName || '',
+                    emailAddress: data.emailAddress || '',
+                });
             })
             .catch(error=> alert.addMessage(error));
 
@@ -112,7 +117,7 @@ export const NewUser: React.FC = () => {
 
     return (
         <Grid container justify="center">
-            <Grid item md={10} lg={7} xl={5}>
+            <Grid item xs={12} md={10} xl={8}>
                 <Paper className={commonClasses.paper}>
                     <Box mb={2}>
                         <Typography variant="h4">Create User</Typography>

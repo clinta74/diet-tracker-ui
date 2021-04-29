@@ -1,5 +1,5 @@
 import path from "path";
-import webpack from "webpack";
+import webpack, { EnvironmentPlugin } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import ESLintPlugin from "eslint-webpack-plugin";
@@ -39,6 +39,12 @@ const config: webpack.Configuration = {
     extensions: [".tsx", ".ts", ".js"],
   },
   plugins: [
+    new EnvironmentPlugin([
+      'API_URL',
+      'REACT_APP_AUTH0_DOMAIN',
+      'REACT_APP_AUTH0_CLIENT_ID',
+      'REACT_APP_AUTH0_AUDIENCE',
+    ]),
     new HtmlWebpackPlugin({
       template: "src/index.html",
     }),
