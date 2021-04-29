@@ -3,7 +3,6 @@ import { AppState, LogoutOptions, useAuth0 } from '@auth0/auth0-react';
 import { AppBar, Box, Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
-import { UserContext } from '../../providers/user-provider';
 
 // Local imports
 import { Authenticated } from '../../../auth/authenticated';
