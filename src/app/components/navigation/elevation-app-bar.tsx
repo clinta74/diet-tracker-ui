@@ -1,6 +1,18 @@
 import React from 'react';
-import { AppState, LogoutOptions, useAuth0 } from '@auth0/auth0-react';
-import { AppBar, Box, Button, createStyles, Hidden, IconButton, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
+import { AppState, useAuth0 } from '@auth0/auth0-react';
+import { 
+    AppBar, 
+    Box, 
+    Button, 
+    createStyles, 
+    Hidden, 
+    IconButton, 
+    makeStyles, 
+    Theme, 
+    Toolbar, 
+    Typography, 
+    useScrollTrigger 
+} from '@material-ui/core';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -58,10 +70,6 @@ interface ElevateAppBarProps {
 export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
     const { loginWithRedirect, isAuthenticated, user } = useAuth0();
     const classes = useStyles();
-
-    const logoutOptions: LogoutOptions = {
-        returnTo: window.location.origin,
-    }
 
     const login = () => {
         const appState: AppState = {

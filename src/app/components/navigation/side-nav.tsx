@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handleClickAway }) => {
     const classes = useStyles();
     const theme = useTheme();
-    const { logout, isAuthenticated } = useAuth0();
+    const { logout } = useAuth0();
 
     const logoutOptions: LogoutOptions = {
         returnTo: window.location.origin,
