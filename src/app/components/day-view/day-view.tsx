@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
     return createStyles({
         activeLossGain: {
-            color: theme.palette.error.main,
+            color: theme.palette.text.disabled,
         },
         buttonProgress: {
             position: 'absolute',
@@ -193,12 +193,12 @@ export const DayView: React.FC = () => {
                                         <Box mr={1} mt={2} mb={-1}>
                                             <Box mb={-2}>
                                                 <AddIcon fontSize="small" className={clsx({
-                                                    [classes.activeLossGain]: userDay.weightChange < 0
+                                                    [classes.activeLossGain]: userDay.weightChange > 0
                                                 })} />
                                             </Box>
                                             <Box>
                                                 <RemoveIcon fontSize="small" className={clsx({
-                                                    [classes.activeLossGain]: userDay.weightChange > 0
+                                                    [classes.activeLossGain]: userDay.weightChange < 0
                                                 })} />
                                             </Box>
                                         </Box>

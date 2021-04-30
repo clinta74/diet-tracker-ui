@@ -24,6 +24,7 @@ import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 import { LogoutOptions, useAuth0 } from '@auth0/auth0-react';
+import { Authorized } from '../../providers/user-permission-provider';
 
 interface SideNavProps {
     open: boolean;
@@ -90,7 +91,6 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
         returnTo: window.location.origin,
     }
 
-
     return (
         <Authenticated>
             <ClickAwayListener onClickAway={handleClickAway}>
@@ -131,21 +131,27 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                             <ListItemText primary="Sign Out" />
                         </ListItem>
                     </List>
-                    <Divider />
-                    <List>
-                        <NavLink to="/fuelings" className={classes.link}>
-                            <ListItem button>
-                                <ListItemIcon title="Fuelings"><ShoppingBasketIcon /></ListItemIcon>
-                                <ListItemText primary="Fuelings" />
-                            </ListItem>
-                        </NavLink>
-                        <NavLink to="/plans" className={classes.link}>
-                            <ListItem button>
-                                <ListItemIcon title="Plans"><SettingsIcon /></ListItemIcon>
-                                <ListItemText primary="Plans" />
-                            </ListItem>
-                        </NavLink>
-                    </List>
+                    <Authorized permissions={['write:fuelings', 'write:plans']}>
+                        <Divider />
+                        <List>
+                            <Authorized permissions={['write:fuelings']}>
+                                <NavLink to="/fuelings" className={classes.link}>
+                                    <ListItem button>
+                                        <ListItemIcon title="Fuelings"><ShoppingBasketIcon /></ListItemIcon>
+                                        <ListItemText primary="Fuelings" />
+                                    </ListItem>
+                                </NavLink>
+                            </Authorized>
+                            <Authorized permissions={['write:plans']}>
+                                <NavLink to="/plans" className={classes.link}>
+                                    <ListItem button>
+                                        <ListItemIcon title="Plans"><SettingsIcon /></ListItemIcon>
+                                        <ListItemText primary="Plans" />
+                                    </ListItem>
+                                </NavLink>
+                            </Authorized>
+                        </List>
+                    </Authorized>
                 </Drawer>
             </ClickAwayListener>
         </Authenticated>

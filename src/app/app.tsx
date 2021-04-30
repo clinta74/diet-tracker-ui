@@ -6,6 +6,7 @@ import { AppRoutes } from './app-routes';
 import { AlertMessage, AlertProvider } from './providers/alert-provider';
 import backgroundImage from '../img/wheat-background.jpeg';
 import { Navigation } from './components/navigation/navigation';
+import { UserPermissionProvider } from './providers/user-permission-provider';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -34,10 +35,12 @@ export const App: React.FC = () => {
                         <AlertMessage />
                         <Router>
                             <Auth0ProviderWithHistory>
-                                <Navigation />
-                                <Container maxWidth="md">
-                                    <AppRoutes />
-                                </Container>
+                                <UserPermissionProvider>
+                                    <Navigation />
+                                    <Container maxWidth="md">
+                                        <AppRoutes />
+                                    </Container>
+                                </UserPermissionProvider>
                             </Auth0ProviderWithHistory>
                         </Router>
                     </AlertProvider>

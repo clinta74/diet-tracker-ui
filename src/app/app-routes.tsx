@@ -11,6 +11,7 @@ import { PlanRoutes } from './components/plans/plan-routes';
 import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
 import { format, startOfToday } from 'date-fns';
+import { Authorized } from './providers/user-permission-provider';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
