@@ -70,8 +70,6 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
         loginWithRedirect({ appState });
     }
 
-    console.log('User', user);
-
     const { name } = user ?? { name: ''};
     return (
         <React.Fragment>

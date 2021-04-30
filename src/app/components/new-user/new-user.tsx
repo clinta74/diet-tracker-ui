@@ -31,7 +31,6 @@ const validationTests: ValidationTest<NewUser>[] =
                 name: 'emailAddress',
             }
         },
-
         {
             passCondition: ({ planId }) => planId > 0,
             result: {

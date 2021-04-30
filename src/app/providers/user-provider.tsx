@@ -53,7 +53,6 @@ export const UserProvider: React.FC = ({ children }) => {
         <React.Fragment>
             {
                 user && <UserContext.Provider value={{ user, updateUser }}>{user && children}</UserContext.Provider>
-
             }
         </React.Fragment>
     );
