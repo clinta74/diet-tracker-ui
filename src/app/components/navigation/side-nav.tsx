@@ -19,9 +19,11 @@ import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import TodayIcon from '@material-ui/icons/Today';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
+import { LogoutOptions, useAuth0 } from '@auth0/auth0-react';
 
 interface SideNavProps {
     open: boolean;
@@ -82,6 +84,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handleClickAway }) => {
     const classes = useStyles();
     const theme = useTheme();
+    const { logout, isAuthenticated } = useAuth0();
+
+    const logoutOptions: LogoutOptions = {
+        returnTo: window.location.origin,
+    }
+
 
     return (
         <Authenticated>
@@ -118,6 +126,10 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                                 <ListItemText primary="Your Plan" />
                             </ListItem>
                         </NavLink>
+                        <ListItem button onClick={() => logout(logoutOptions)}>
+                            <ListItemIcon title="Sign Out"><ExitToAppIcon /></ListItemIcon>
+                            <ListItemText primary="Sign Out" />
+                        </ListItem>
                     </List>
                     <Divider />
                     <List>

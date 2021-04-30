@@ -1,15 +1,27 @@
-import { Box, Typography } from '@material-ui/core';
+import { AppState, useAuth0 } from '@auth0/auth0-react';
+import { Box, Button, Typography } from '@material-ui/core';
 import React from 'react';
 
 export const Welcome: React.FC = () => {
+    const { loginWithRedirect } = useAuth0();
+
+    const login = () => {
+        const appState: AppState = {
+            returnTo: window.location.pathname,
+        }
+        loginWithRedirect({ appState });
+    }
     return (
         <Box display="flex" justifyContent="center" p={4}>
             <Box textAlign="center">
-                <Typography variant="h3">Welcome to Diet Tracker</Typography>
+                <Typography variant="h3">Welcome to Food Journal</Typography>
                 <Typography variant="h5">
-                    Your digital tracking software to help you meet you goals.
+                    Your digital journal to help you meet you goals.
                 </Typography>
-                <Typography variant="body1">Please login to take full advantage of the features that are offered here.</Typography>
+                <Typography variant="body1">Please sign in to take full advantage of the features that are offered here.</Typography>
+                <Box mt={4}>
+                    <Button variant="contained" size="large" color="primary" onClick={login}>Sign In</Button>
+                </Box>
             </Box>
         </Box>
     );

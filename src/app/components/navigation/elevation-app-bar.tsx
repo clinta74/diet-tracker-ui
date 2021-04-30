@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppState, LogoutOptions, useAuth0 } from '@auth0/auth0-react';
-import { AppBar, Box, Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
+import { AppBar, Box, Button, createStyles, Hidden, IconButton, makeStyles, Theme, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -56,7 +56,7 @@ interface ElevateAppBarProps {
 }
 
 export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
-    const { logout, loginWithRedirect, isAuthenticated, user } = useAuth0();
+    const { loginWithRedirect, isAuthenticated, user } = useAuth0();
     const classes = useStyles();
 
     const logoutOptions: LogoutOptions = {
@@ -70,7 +70,7 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
         loginWithRedirect({ appState });
     }
 
-    const { name } = user ?? { name: ''};
+    const { name } = user ?? { name: '' };
     return (
         <React.Fragment>
             <ElevationScroll>
@@ -92,18 +92,19 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                                 <MenuIcon />
                             </IconButton>
                         }
-                        <Box flexGrow={1}>
-                            <Typography variant="h6">Diet Tracker</Typography>
-                        </Box>
+                        <Hidden smDown>
+                            <Box flexGrow={1}>
+                                <Typography variant="h6">Food Journal</Typography>
+                            </Box>
+                        </Hidden>
                         <Box ml={2}>
                             <Authenticated>
                                 <Box display="flex" alignItems="center">
                                     <Box mr={1}>Hello, {name}</Box>
-                                    <Button onClick={() => logout(logoutOptions)} color="inherit">Logout</Button>
                                 </Box>
                             </Authenticated>
                             <Authenticated invert>
-                                <Button onClick={login} color="inherit">Login</Button>
+                                <Button onClick={login} color="inherit">Sign In</Button>
                             </Authenticated>
                         </Box>
                     </Toolbar>

@@ -182,13 +182,13 @@ export const DayView: React.FC = () => {
 
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-                                <Grid item xs={5}>
+                                <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
                                         <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} />
                                     </FormControl>
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid item xs={4} sm={3}>
                                     <Box display="flex" alignItems="flex-end">
                                         <Box mr={1} mt={2} mb={-1}>
                                             <Box mb={-2}>
@@ -204,14 +204,15 @@ export const DayView: React.FC = () => {
                                         </Box>
                                         <FormControl>
                                             <InputLabel>Loss/Gain</InputLabel>
-                                            <Input value={userDay.weightChange ? Math.abs(userDay.weightChange) : ''} />
+                                            <Input readOnly value={userDay.weightChange ? Math.abs(userDay.weightChange) : ''} />
                                         </FormControl>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={4}>
+
+                                <Grid item xs={4} sm={3}>
                                     <FormControl>
-                                        <InputLabel>Cumulative Weight</InputLabel>
-                                        <Input value={userDay.cumulativeWeightChange ? userDay.cumulativeWeightChange : ''} />
+                                        <InputLabel>Cumulative</InputLabel>
+                                        <Input readOnly value={userDay.cumulativeWeightChange ? userDay.cumulativeWeightChange : ''} />
                                     </FormControl>
                                 </Grid>
                             </Grid>
