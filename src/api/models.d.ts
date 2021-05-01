@@ -37,6 +37,7 @@ interface UserDay {
     user: User;
     fuelings: UserFueling[];
     meals: UserMeal[];
+    notes?: string;
 }
 interface UserFueling {
     userFuelingId: number;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Box,
     FormControl,
@@ -15,7 +15,8 @@ import {
     Button,
     CircularProgress,
     IconButton,
-    Divider
+    Divider,
+    debounce
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { format, startOfToday, addDays, parseISO, getDay } from 'date-fns';
@@ -27,6 +28,7 @@ import { useCommonStyles } from '../common-styles';
 import { Api } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { Link, useParams } from 'react-router-dom';
+import { AxiosPromise } from 'axios';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -39,9 +41,8 @@ const useStyles = makeStyles((theme: Theme) => {
         },
         buttonProgress: {
             position: 'absolute',
-            left: '-100%',
-            marginTop: -12,
-            marginLeft: -12,
+            left: '1.5em',
+            top: '5px',
         },
         paperBackground: {
             backgroundColor: (data: { dayOfWeek: number }) => backgroundColors[data.dayOfWeek],
@@ -63,7 +64,6 @@ export const DayView: React.FC = () => {
     const [postingDay, setPostingDay] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
-
 
     useEffect(() => {
         Api.Day.getDay(dateToString(day))
@@ -140,10 +140,26 @@ export const DayView: React.FC = () => {
         });
     }
 
+    const onChangeNotes: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = event => {
+        const { value } = event.target;
+
+        setUserDay(_userDay => {
+            if (_userDay) {
+                return {
+                    ..._userDay as CurrentUserDay,
+                    notes: value || '',
+                }
+            }
+        });
+    }
+
     const onClickSave: React.MouseEventHandler<HTMLButtonElement> = () => {
         if (userDay) {
             setPostingDay(true);
             Api.Day.updateDay(dateToString(day), userDay)
+                .then(({ data }) => {
+                    setUserDay(data);
+                })
                 .catch(error => alert.addMessage(error))
                 .finally(() => setPostingDay(false));
         }
@@ -174,7 +190,7 @@ export const DayView: React.FC = () => {
                     </IconButton>
                 </Link>
             </Box>
-            <Divider className={commonClasses.divider}/>
+            <Divider className={commonClasses.divider} />
             {
                 userDay &&
                 <React.Fragment>
@@ -184,7 +200,7 @@ export const DayView: React.FC = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
-                                        <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} />
+                                        <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} disabled={postingDay} />
                                     </FormControl>
                                 </Grid>
 
@@ -225,12 +241,12 @@ export const DayView: React.FC = () => {
                                     <Grid container spacing={2} key={`fueling_${idx}`}>
                                         <Grid item xs={7} md={8}>
                                             <FormControl fullWidth>
-                                                <TextField value={fueling.name} name="name" onChange={e => onChangeFueling(e, idx)} />
+                                                <TextField value={fueling.name} name="name" onChange={e => onChangeFueling(e, idx)} disabled={postingDay} />
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={5} md={4}>
                                             <FormControl fullWidth>
-                                                <TextField type="time" name="when" value={fueling.when === '0001-01-01T00:00:00' ? '' : fueling.when.split('T')[1]} onChange={e => onChangeFueling(e, idx)} />
+                                                <TextField type="time" name="when" value={fueling.when === '0001-01-01T00:00:00' ? '' : fueling.when.split('T')[1]} onChange={e => onChangeFueling(e, idx)} disabled={postingDay} />
                                             </FormControl>
                                         </Grid>
                                     </Grid>
@@ -245,12 +261,12 @@ export const DayView: React.FC = () => {
                                     <Grid container spacing={2} key={`meal_${idx}`}>
                                         <Grid item xs={7} md={8}>
                                             <FormControl fullWidth>
-                                                <TextField value={meal.name} name="name" onChange={e => onChangeMeal(e, idx)} />
+                                                <TextField value={meal.name} name="name" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={5} md={4}>
                                             <FormControl fullWidth>
-                                                <TextField type="time" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} />
+                                                <TextField type="time" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
                                             </FormControl>
                                         </Grid>
                                     </Grid>
@@ -260,20 +276,25 @@ export const DayView: React.FC = () => {
 
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
-                                <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} />
+                                <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
                             </FormControl>
                         </Grid>
 
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
-                                <TextField variant="standard" type="number" label="Condiments" id="condiments" name="condiments" value={userDay.condiments ? userDay.condiments : ''} onChange={onChangeCondiments} />
+                                <TextField variant="standard" type="number" label="Condiments" id="condiments" name="condiments" value={userDay.condiments ? userDay.condiments : ''} onChange={onChangeCondiments} disabled={postingDay} />
                             </FormControl>
                         </Grid>
 
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
+                            </FormControl>
+                        </Grid>
                     </Grid>
                     <Box display="flex" justifyContent="flex-end" mt={2}>
                         <Box display="flex" alignItems="center">
-                            <Box mr={1}>
+                            <Box mr={1} position="relative">
                                 <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
                                 {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
                             </Box>

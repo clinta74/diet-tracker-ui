@@ -4,4 +4,4 @@ export const getDay = (day: string) =>
     apiBase.client.get<CurrentUserDay>(`day/${day}`);
 
 export const updateDay = (day: string, userDay: UserDay | CurrentUserDay) =>
-    apiBase.client.put<never>(`day/${day}`, userDay);
+    apiBase.client.put<CurrentUserDay>(`day/${day}`, userDay);

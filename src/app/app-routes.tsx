@@ -2,6 +2,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Box, CircularProgress, createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { format, startOfToday } from 'date-fns';
+
 import { apiBase } from '../api/api-base';
 import { DayView } from './components/day-view/day-view';
 import { Plan } from './components/day-view/plan';
@@ -10,8 +12,6 @@ import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
 import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
-import { format, startOfToday } from 'date-fns';
-import { Authorized } from './providers/user-permission-provider';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

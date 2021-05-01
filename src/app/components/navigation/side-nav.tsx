@@ -126,6 +126,12 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                                 <ListItemText primary="Your Plan" />
                             </ListItem>
                         </NavLink>
+
+                    </List>
+
+                    <Divider />
+
+                    <List>
                         <ListItem button onClick={() => logout(logoutOptions)}>
                             <ListItemIcon title="Sign Out"><ExitToAppIcon /></ListItemIcon>
                             <ListItemText primary="Sign Out" />
