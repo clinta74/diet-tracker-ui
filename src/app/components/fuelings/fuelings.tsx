@@ -40,11 +40,11 @@ export const Fuelings: React.FC = () => {
 
     const handleAddFueling = () => {
         Api.Fueling.addFueling(newFueling)
-            .then(() => {
+            .then(({ data }) => {
                 setFuelings(fuelings => {
                     return [
                         ...fuelings,
-                        newFueling as Fueling,
+                        data,
                     ]
                 });
             })
@@ -57,7 +57,7 @@ export const Fuelings: React.FC = () => {
             .then(() => {
                 const idx = fuelings.findIndex(f => f.fuelingId === fuelingId);
                 setFuelings(fuelings => {
-                    return [...fuelings.splice(idx, 1)]
+                    return [...fuelings.slice(0, idx), ...fuelings.slice(idx + 1)];
                 });
             })
             .catch(error => alert.addMessage(error))
@@ -73,7 +73,7 @@ export const Fuelings: React.FC = () => {
         }));
     }
 
-    const sortedFuelings = fuelings.sort((a, b) => a.name < b.name ? 1 : -1)
+    const sortedFuelings = fuelings.sort((a, b) => a.name > b.name ? 1 : -1)
 
     return (
         <React.Fragment>
