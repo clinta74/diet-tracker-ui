@@ -24,8 +24,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import LocalDrinkIcon from '@material-ui/icons/LocalDrink';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import LocalDrinkIcon from '@material-ui/icons/LocalDrinkOutlined';
 import { useCommonStyles } from '../common-styles';
 import { Api } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
@@ -65,6 +64,8 @@ interface Params {
     day: string;
 }
 
+interface TrackedCurrentUserDay extends CurrentUserDay { hasChanged: boolean }
+
 export const DayView: React.FC = () => {
     const params = useParams<Params>();
     const commonClasses = useCommonStyles();
@@ -72,8 +73,8 @@ export const DayView: React.FC = () => {
     const history = useHistory();
 
     const day = params.day ? parseISO(params.day) : startOfToday();
-    const [userDay, setUserDay] = useState<CurrentUserDay>();
-    const [fuelings, setFuelings ] = useState<Fueling[]>([]);
+    const [userDay, setUserDay] = useState<TrackedCurrentUserDay>();
+    const [fuelings, setFuelings] = useState<Fueling[]>([]);
     const [postingDay, setPostingDay] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
@@ -82,11 +83,11 @@ export const DayView: React.FC = () => {
         Api.Fueling.getFuelings()
             .then(({ data }) => setFuelings(data.sort((a, b) => a.name > b.name ? 1 : -1)))
             .catch(error => alert.addMessage(error));
-    },[]);
+    }, []);
 
     useEffect(() => {
         Api.Day.getDay(dateToString(day))
-            .then(({ data }) => setUserDay(data))
+            .then(({ data }) => setUserDay({ ...data, hasChanged: false }))
             .catch(error => alert.addMessage(error));
     }, [params]);
 
@@ -98,7 +99,8 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             return {
                 ..._userDay as CurrentUserDay,
-                water
+                water,
+                hasChanged: true,
             }
         });
     }
@@ -111,7 +113,8 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             return {
                 ..._userDay as CurrentUserDay,
-                condiments
+                condiments,
+                hasChanged: true,
             }
         });
     }
@@ -124,7 +127,8 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             return {
                 ..._userDay as CurrentUserDay,
-                weight
+                weight,
+                hasChanged: true,
             }
         });
     }
@@ -134,9 +138,10 @@ export const DayView: React.FC = () => {
             if (_userDay) {
                 return {
                     ..._userDay as CurrentUserDay,
+                    hasChanged: true,
                     fuelings: [..._userDay.fuelings.slice(0, idx),
-                    { 
-                        ..._userDay.fuelings[idx], 
+                    {
+                        ..._userDay.fuelings[idx],
                         name: value || '',
                     },
                     ..._userDay.fuelings.slice(idx + 1)],
@@ -152,6 +157,7 @@ export const DayView: React.FC = () => {
             if (_userDay) {
                 return {
                     ..._userDay as CurrentUserDay,
+                    hasChanged: true,
                     fuelings: [..._userDay.fuelings.slice(0, idx),
                     { ..._userDay.fuelings[idx], when: value ? `0001-01-01T${value}` : `0001-01-01T00:00:00` },
                     ..._userDay.fuelings.slice(idx + 1)],
@@ -167,6 +173,7 @@ export const DayView: React.FC = () => {
             if (_userDay) {
                 return {
                     ..._userDay as CurrentUserDay,
+                    hasChanged: true,
                     meals: [..._userDay.meals.slice(0, idx),
                     { ..._userDay.meals[idx], [name]: (name === 'when' ? `0001-01-01T${value}` : value) },
                     ..._userDay.meals.slice(idx + 1)],
@@ -182,6 +189,7 @@ export const DayView: React.FC = () => {
             if (_userDay) {
                 return {
                     ..._userDay as CurrentUserDay,
+                    hasChanged: true,
                     notes: value || '',
                 }
             }
@@ -189,11 +197,11 @@ export const DayView: React.FC = () => {
     }
 
     const onClickSave = async () => {
-        if (userDay) {
+        if (userDay && userDay.hasChanged) {
             setPostingDay(true);
             try {
                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-                setUserDay(data);
+                setUserDay({ ...data, hasChanged: false });
             }
             catch (error) {
                 alert.addMessage(error);
@@ -206,7 +214,7 @@ export const DayView: React.FC = () => {
 
     const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
         Api.Day.getDay(dateToString(day))
-            .then(({ data }) => setUserDay(data))
+            .then(({ data }) => setUserDay({ ...data, hasChanged: false }))
             .catch(error => alert.addMessage(error));
     }
 
@@ -225,6 +233,7 @@ export const DayView: React.FC = () => {
                 const water = _userDay.water + waterSize - _userDay.water % waterSize;
                 return {
                     ..._userDay as CurrentUserDay,
+                    hasChanged: true,
                     water,
                 }
             }

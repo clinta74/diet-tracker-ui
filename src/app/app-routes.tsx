@@ -6,12 +6,13 @@ import { format, startOfToday } from 'date-fns';
 
 import { apiBase } from '../api/api-base';
 import { DayView } from './components/day-view/day-view';
-import { Plan } from './components/day-view/plan';
+import { Plan } from './components/user-plan/plan';
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
 import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
 import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
+import { Goals } from './components/goals/goals';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -61,6 +62,7 @@ export const AppRoutes: React.FunctionComponent = () => {
                         <Switch>
                             <Route path="/day/:day" component={DayView} />
                             <Route path="/plan" component={Plan} />
+                            <Route path="/goals" component={Goals} />
                             <Redirect to={`/day/${dateToString(startOfToday())}`} />
                         </Switch>
                     </UserProvider>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Container, createStyles, CssBaseline, makeStyles } from '@material-ui/core';
 import { BrowserRouter as Router } from "react-router-dom";
+import { ConfirmProvider } from 'material-ui-confirm';
 import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';
 import { AppRoutes } from './app-routes';
 import { AlertMessage, AlertProvider } from './providers/alert-provider';
@@ -28,24 +29,26 @@ export const App: React.FC = () => {
     return (
         <React.Fragment>
             <CssBaseline />
-            <Box position="relative" minHeight="100vh" zIndex={1}>
-                <Box className={classes.background} />
-                <Box position="relative" zIndex={2}>
-                    <AlertProvider>
-                        <AlertMessage />
-                        <Router>
-                            <Auth0ProviderWithHistory>
-                                <UserPermissionProvider>
-                                    <Navigation />
-                                    <Container maxWidth="md">
-                                        <AppRoutes />
-                                    </Container>
-                                </UserPermissionProvider>
-                            </Auth0ProviderWithHistory>
-                        </Router>
-                    </AlertProvider>
+            <ConfirmProvider>
+                <Box position="relative" minHeight="100vh" zIndex={1}>
+                    <Box className={classes.background} />
+                    <Box position="relative" zIndex={2}>
+                        <AlertProvider>
+                            <AlertMessage />
+                            <Router>
+                                <Auth0ProviderWithHistory>
+                                    <UserPermissionProvider>
+                                        <Navigation />
+                                        <Container maxWidth="md">
+                                            <AppRoutes />
+                                        </Container>
+                                    </UserPermissionProvider>
+                                </Auth0ProviderWithHistory>
+                            </Router>
+                        </AlertProvider>
+                    </Box>
                 </Box>
-            </Box>
+            </ConfirmProvider>
         </React.Fragment >
     );
 }

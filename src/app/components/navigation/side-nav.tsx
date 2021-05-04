@@ -15,11 +15,12 @@ import {
 import clsx from 'clsx';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import SettingsIcon from '@material-ui/icons/Settings';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import TodayIcon from '@material-ui/icons/Today';
+import FlagOutlinedIcon from '@material-ui/icons/FlagOutlined';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
+import SettingsIcon from '@material-ui/icons/SettingsOutlined';
 import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
@@ -120,23 +121,22 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                                 <ListItemText primary="Today" />
                             </ListItem>
                         </NavLink>
+
+                        <NavLink to="/goals" className={classes.link}>
+                            <ListItem button>
+                                <ListItemIcon title="Your Goals"><FlagOutlinedIcon /></ListItemIcon>
+                                <ListItemText primary="Your Goals" />
+                            </ListItem>
+                        </NavLink>
+
                         <NavLink to="/plan" className={classes.link}>
                             <ListItem button>
                                 <ListItemIcon title="Your Plan"><AssignmentOutlinedIcon /></ListItemIcon>
                                 <ListItemText primary="Your Plan" />
                             </ListItem>
                         </NavLink>
-
                     </List>
 
-                    <Divider />
-
-                    <List>
-                        <ListItem button onClick={() => logout(logoutOptions)}>
-                            <ListItemIcon title="Sign Out"><ExitToAppIcon /></ListItemIcon>
-                            <ListItemText primary="Sign Out" />
-                        </ListItem>
-                    </List>
                     <Authorized permissions={['write:fuelings', 'write:plans']}>
                         <Divider />
                         <List>
@@ -148,6 +148,7 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                                     </ListItem>
                                 </NavLink>
                             </Authorized>
+
                             <Authorized permissions={['write:plans']}>
                                 <NavLink to="/plans" className={classes.link}>
                                     <ListItem button>
@@ -158,6 +159,15 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                             </Authorized>
                         </List>
                     </Authorized>
+                    
+                    <Divider />
+
+                    <List>
+                        <ListItem button onClick={() => logout(logoutOptions)}>
+                            <ListItemIcon title="Sign Out"><ExitToAppIcon /></ListItemIcon>
+                            <ListItemText primary="Sign Out" />
+                        </ListItem>
+                    </List>
                 </Drawer>
             </ClickAwayListener>
         </Authenticated>
