@@ -6,6 +6,8 @@ import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { ErrorMessage } from '../error-message';
+import { limits } from './limits';
+import { validationTests } from './validation-tests';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -59,17 +61,6 @@ export const EditPlan: React.FC = () => {
         ));
     }
 
-    const limits: { [key: string]: { min: number, max: number } } = {
-        mealCount: {
-            max: 2,
-            min: 1,
-        },
-        fuelingCount: {
-            max: 10,
-            min: 1,
-        }
-    }
-
     const onChangeNumberField: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { name, value } = event.target;
 
@@ -95,17 +86,6 @@ export const EditPlan: React.FC = () => {
                 .finally(() => setPostingPlan(false));
         }
     }
-
-    const validationTests: ValidationTest<Plan>[] =
-        [
-            {
-                passCondition: ({ name }) => name.trim().length > 0,
-                result: {
-                    message: 'There must be a name.',
-                    name: 'name',
-                }
-            }
-        ];
 
     const [isValid, results] = validateAll(validationTests, plan);
     const showErrors = isSubmitted && !isValid;

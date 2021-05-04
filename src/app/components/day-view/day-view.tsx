@@ -50,13 +50,6 @@ const useStyles = makeStyles((theme: Theme) => {
         waterFill: {
             fill: 'blue'
         },
-        expandIcon: {
-            position: "absolute",
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'rgba(128, 128, 128, 0.20)'
-        },
     });
 });
 
