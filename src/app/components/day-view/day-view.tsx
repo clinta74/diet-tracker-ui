@@ -270,136 +270,137 @@ export const DayView: React.FC = () => {
             {
                 userDay &&
                 <React.Fragment>
-                    <Grid container spacing={4}>
-
-                        <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <FormControl fullWidth>
-                                        <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} disabled={postingDay} />
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid item xs={4} sm={3}>
-                                    <Box display="flex" alignItems="flex-end">
-                                        <Box mr={1} mt={2} mb={-1}>
-                                            <Box mb={-2}>
-                                                <AddIcon fontSize="small" className={clsx({
-                                                    [classes.activeLossGain]: userDay.weightChange > 0
-                                                })} />
-                                            </Box>
-                                            <Box>
-                                                <RemoveIcon fontSize="small" className={clsx({
-                                                    [classes.activeLossGain]: userDay.weightChange < 0
-                                                })} />
-                                            </Box>
-                                        </Box>
-                                        <FormControl>
-                                            <InputLabel>Loss/Gain</InputLabel>
-                                            <Input readOnly value={userDay.weightChange ? Math.abs(userDay.weightChange) : ''} />
+                    <form noValidate autoComplete="off">
+                        <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth>
+                                            <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} disabled={postingDay} />
                                         </FormControl>
-                                    </Box>
-                                </Grid>
+                                    </Grid>
 
-                                <Grid item xs={4} sm={3}>
-                                    <FormControl>
-                                        <InputLabel>Cumulative</InputLabel>
-                                        <Input readOnly value={userDay.cumulativeWeightChange ? userDay.cumulativeWeightChange : ''} />
-                                    </FormControl>
+                                    <Grid item xs={4} sm={3}>
+                                        <Box display="flex" alignItems="flex-end">
+                                            <Box mr={1} mt={2} mb={-1}>
+                                                <Box mb={-2}>
+                                                    <AddIcon fontSize="small" className={clsx({
+                                                        [classes.activeLossGain]: userDay.weightChange > 0
+                                                    })} />
+                                                </Box>
+                                                <Box>
+                                                    <RemoveIcon fontSize="small" className={clsx({
+                                                        [classes.activeLossGain]: userDay.weightChange < 0
+                                                    })} />
+                                                </Box>
+                                            </Box>
+                                            <FormControl>
+                                                <InputLabel>Loss/Gain</InputLabel>
+                                                <Input readOnly value={userDay.weightChange ? Math.abs(userDay.weightChange) : ''} />
+                                            </FormControl>
+                                        </Box>
+                                    </Grid>
+
+                                    <Grid item xs={4} sm={3}>
+                                        <FormControl>
+                                            <InputLabel>Cumulative</InputLabel>
+                                            <Input readOnly value={userDay.cumulativeWeightChange ? userDay.cumulativeWeightChange : ''} />
+                                        </FormControl>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Grid item xs={12} sm={6}>
-                            <FormLabel>Fuelings</FormLabel>
-                            {
-                                userDay.fuelings.map((fueling, idx) =>
-                                    <Grid container spacing={2} key={`fueling_${idx}`}>
-                                        <Grid item xs={7} md={8}>
-                                            <FormControl fullWidth>
-                                                <Autocomplete
-                                                    freeSolo
-                                                    options={fuelings.map(fueling => fueling.name)}
-                                                    value={fueling.name}
-                                                    onChange={(e, v) => onChangeFuelingName(e, v, idx)}
-                                                    disabled={postingDay}
-                                                    renderInput={(params) => (
-                                                        <TextField {...params} name="name" />
-                                                    )}
-                                                />
-                                            </FormControl>
+                            <Grid item xs={12} sm={6}>
+                                <FormLabel>Fuelings</FormLabel>
+                                {
+                                    userDay.fuelings.map((fueling, idx) =>
+                                        <Grid container spacing={2} key={`fueling_${idx}`}>
+                                            <Grid item xs={7} md={8}>
+                                                <FormControl fullWidth>
+                                                    <Autocomplete
+                                                        freeSolo
+                                                        options={fuelings.map(fueling => fueling.name)}
+                                                        value={fueling.name}
+                                                        onChange={(e, v) => onChangeFuelingName(e, v, idx)}
+                                                        disabled={postingDay}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} name="name" />
+                                                        )}
+                                                    />
+                                                </FormControl>
+                                            </Grid>
+                                            <Grid item xs={5} md={4}>
+                                                <FormControl fullWidth>
+                                                    <TextField type="time" name="when" value={fueling.when === '0001-01-01T00:00:00' ? '' : fueling.when.split('T')[1]} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
+                                                </FormControl>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={5} md={4}>
-                                            <FormControl fullWidth>
-                                                <TextField type="time" name="when" value={fueling.when === '0001-01-01T00:00:00' ? '' : fueling.when.split('T')[1]} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
-                                            </FormControl>
-                                        </Grid>
-                                    </Grid>
-                                )
-                            }
-                        </Grid>
+                                    )
+                                }
+                            </Grid>
 
-                        <Grid item xs={12} sm={6}>
-                            <FormLabel>Lean and Green</FormLabel>
-                            {
-                                userDay.meals.map((meal, idx) =>
-                                    <Grid container spacing={2} key={`meal_${idx}`}>
-                                        <Grid item xs={7} md={8}>
-                                            <FormControl fullWidth>
-                                                <TextField value={meal.name} name="name" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
-                                            </FormControl>
+                            <Grid item xs={12} sm={6}>
+                                <FormLabel>Lean and Green</FormLabel>
+                                {
+                                    userDay.meals.map((meal, idx) =>
+                                        <Grid container spacing={2} key={`meal_${idx}`}>
+                                            <Grid item xs={7} md={8}>
+                                                <FormControl fullWidth>
+                                                    <TextField value={meal.name} name="name" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
+                                                </FormControl>
+                                            </Grid>
+                                            <Grid item xs={5} md={4}>
+                                                <FormControl fullWidth>
+                                                    <TextField type="time" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
+                                                </FormControl>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={5} md={4}>
-                                            <FormControl fullWidth>
-                                                <TextField type="time" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
-                                            </FormControl>
-                                        </Grid>
-                                    </Grid>
-                                )
-                            }
-                        </Grid>
+                                    )
+                                }
+                            </Grid>
 
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth>
-                                <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
-                                <Box>
-                                    {
-                                        waterMarks.map((mark, idx) =>
-                                            <React.Fragment key={idx}>
-                                                {
-                                                    mark && <LocalDrinkIcon className={classes.waterFill} />
-                                                    || <LocalDrinkIcon onClick={onClickWaterMark} />
-                                                }
-                                            </React.Fragment>
-                                        )
-                                    }
+                            <Grid item xs={12} sm={4}>
+                                <FormControl fullWidth>
+                                    <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
+                                    <Box>
+                                        {
+                                            waterMarks.map((mark, idx) =>
+                                                <React.Fragment key={idx}>
+                                                    {
+                                                        mark && <LocalDrinkIcon className={classes.waterFill} />
+                                                        || <LocalDrinkIcon onClick={onClickWaterMark} />
+                                                    }
+                                                </React.Fragment>
+                                            )
+                                        }
+                                    </Box>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} sm={4}>
+                                <FormControl fullWidth>
+                                    <TextField variant="standard" type="number" label="Condiments" id="condiments" name="condiments" value={userDay.condiments ? userDay.condiments : ''} onChange={onChangeCondiments} disabled={postingDay} />
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                        <Box display="flex" justifyContent="flex-end" mt={2}>
+                            <Box display="flex" alignItems="center">
+                                <Box mr={1} position="relative">
+                                    <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
+                                    {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
                                 </Box>
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth>
-                                <TextField variant="standard" type="number" label="Condiments" id="condiments" name="condiments" value={userDay.condiments ? userDay.condiments : ''} onChange={onChangeCondiments} disabled={postingDay} />
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Box display="flex" alignItems="center">
-                            <Box mr={1} position="relative">
-                                <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
-                                {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
-                            </Box>
-                            <Box>
-                                <Button color="secondary" onClick={onClickReset} disabled={postingDay}>Reset</Button>
+                                <Box>
+                                    <Button color="secondary" onClick={onClickReset} disabled={postingDay}>Reset</Button>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
+                    </form>
                 </React.Fragment>
             }
         </Paper>
