@@ -73,17 +73,16 @@ interface CurrentUserDay extends UserDay {
     cumulativeWeightChange: number;
     weightChange: number;
 }
-
 interface Victory {
     victoryId: number;
     userId: string;
     name: string;
     when: string | null;
     type: VictoryType;
-    user: User;
+    user?: User;
 }
 
 enum VictoryType {
-    NonScale,
-    Goal
+    NonScale = 'NonScale',
+    Goal = 'Goal'
 }
