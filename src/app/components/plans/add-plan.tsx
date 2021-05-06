@@ -14,7 +14,7 @@ import { AxiosError } from 'axios';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Api } from '../../../api';
-import { validateAll, ValidationTest } from '../../../utils/validate';
+import { validateAll } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { ErrorMessage } from '../error-message';

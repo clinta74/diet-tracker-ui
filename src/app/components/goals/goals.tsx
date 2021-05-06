@@ -1,15 +1,34 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography, useTheme } from '@material-ui/core';
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Fab,
+    FormControl,
+    Grid,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    TextField,
+    Typography,
+    useTheme
+} from '@material-ui/core';
 import { useConfirm } from 'material-ui-confirm';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
 import { Api } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { VictoryType } from '../../../api/endpoints/victory';
 import { Divider } from '@material-ui/core';
-import { useEffect } from 'react';
 
 export const Goals: React.FC = () => {
     const commonClasses = useCommonStyles();
@@ -17,9 +36,9 @@ export const Goals: React.FC = () => {
     const alert = useAlertMessage();
     const confirm = useConfirm();
 
-    const [goals, setGoals] = useState<Victory[]>([]);
+    const [victory, setVictory] = useState<Victory[]>([]);
     const [open, setOpen] = React.useState(false);
-    const [newGoal, setNewGoal] = useState<Victory>({
+    const [newVictory, setNewVictory] = useState<Victory>({
         userId: '',
         victoryId: 0,
         name: '',
@@ -30,12 +49,12 @@ export const Goals: React.FC = () => {
     useEffect(() => {
         Api.Victory.getVictories(VictoryType.Goal)
             .then(({ data }) => {
-                setGoals(data);
+                setVictory(data);
             });
     }, []);
 
     const onClickAddGoal = () => {
-        setNewGoal({
+        setNewVictory({
             userId: '',
             victoryId: 0,
             name: '',
@@ -43,26 +62,35 @@ export const Goals: React.FC = () => {
             type: VictoryType.Goal,
         });
         setOpen(true);
-    }
+    };
 
     const handleClose = () => {
         setOpen(false);
     };
 
-    const onChangeNewGoalName: React.ChangeEventHandler<HTMLInputElement> = event => {
+    const onChangeNewVictoryName: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
 
-        setNewGoal(goal => ({
+        setNewVictory(goal => ({
             ...goal,
             name: value,
         }));
-    }
+    };
 
-    const handleAddFueling = () => {
-        if (newGoal.victoryId === 0) {
-            Api.Victory.addVictory(newGoal)
+    const onChangeNewVictoryWhen: React.ChangeEventHandler<HTMLInputElement> = event => {
+        const { value } = event.target;
+
+        setNewVictory(goal => ({
+            ...goal,
+            when: formatISO(parseISO(value)),
+        }));
+    };
+
+    const onClickAddVictory = () => {
+        if (newVictory.victoryId === 0) {
+            Api.Victory.addVictory(newVictory)
                 .then(({ data }) => {
-                    setGoals(goals => {
+                    setVictory(goals => {
                         return [
                             ...goals,
                             data,
@@ -73,36 +101,36 @@ export const Goals: React.FC = () => {
                 .finally(() => setOpen(false));
         }
         else {
-            Api.Victory.updateVictory(newGoal.victoryId, newGoal)
+            Api.Victory.updateVictory(newVictory.victoryId, newVictory)
                 .then(() => {
-                    setGoals(goals => {
+                    setVictory(goals => {
                         return [
-                            ...goals.filter(goal => goal.victoryId !== newGoal.victoryId),
-                            { ...newGoal },
+                            ...goals.filter(goal => goal.victoryId !== newVictory.victoryId),
+                            { ...newVictory },
                         ]
                     });
                 })
                 .catch(error => alert.addMessage(error))
                 .finally(() => setOpen(false));
         }
-    }
+    };
 
-    const onClickEditGoal = (victoryId: number) => {
-        const data = goals.find(goal => goal.victoryId === victoryId);
+    const onClickEditVictory = (victoryId: number) => {
+        const data = victory.find(goal => goal.victoryId === victoryId);
         if (data) {
-            setNewGoal({ ...data })
+            setNewVictory({ ...data })
             setOpen(true);
         }
-    }
+    };
 
-    const handleDeleteFueling = (victoryId: number) => {
-        const goal = goals.find(f => f.victoryId === victoryId);
+    const onClickDeleteVictory = (victoryId: number) => {
+        const goal = victory.find(f => f.victoryId === victoryId);
         confirm({ description: `Are you sure you want to delete ${goal?.name}?` })
             .then(() => {
-                Api.Fueling.deleteFueling(victoryId)
+                Api.Victory.deleteVictory(victoryId)
                     .then(() => {
-                        const idx = goals.findIndex(f => f.victoryId === victoryId);
-                        setGoals(goals => {
+                        const idx = victory.findIndex(f => f.victoryId === victoryId);
+                        setVictory(goals => {
                             return [...goals.slice(0, idx), ...goals.slice(idx + 1)];
                         });
                     })
@@ -110,9 +138,9 @@ export const Goals: React.FC = () => {
                     .finally(() => setOpen(false));
             })
             .catch(() => null);
-    }
+    };
 
-    const sortedGoals = goals.sort((a, b) => a.name > b.name ? 1 : -1)
+    const sortedVictories = victory.sort((a, b) => a.name > b.name ? 1 : -1);
 
     return (
         <React.Fragment>
@@ -129,17 +157,19 @@ export const Goals: React.FC = () => {
                     </Box>
                     <List>
                         {
-                            sortedGoals &&
-                            sortedGoals.map(goal =>
+                            sortedVictories.map(goal =>
                                 <React.Fragment key={goal.victoryId}>
                                     <ListItem>
                                         <Box flexGrow={1} display="flex" alignItems="center">
                                             <Box flexGrow={1}><ListItemText primary={goal.name} /></Box>
-                                            <Box>
-                                                <IconButton size="small" onClick={() => onClickEditGoal(goal.victoryId)}>
+                                            <Box mx={2}>
+                                                {goal.when && formatDistanceToNow(parseISO(goal.when), {addSuffix: true})}
+                                            </Box>
+                                            <Box whiteSpace="nowrap">
+                                                <IconButton size="small" onClick={() => onClickEditVictory(goal.victoryId)}>
                                                     <EditOutlinedIcon />
                                                 </IconButton>
-                                                <IconButton size="small" color="secondary" onClick={() => handleDeleteFueling(goal.victoryId)}>
+                                                <IconButton size="small" color="secondary" onClick={() => onClickDeleteVictory(goal.victoryId)}>
                                                     <RemoveCircleIcon />
                                                 </IconButton>
                                             </Box>
@@ -153,28 +183,38 @@ export const Goals: React.FC = () => {
                 </Paper>
             </Box>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Fueling</DialogTitle>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
+                <DialogTitle id="form-dialog-title">Goals</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Please enter your goal here.
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="goal"
-                        label="Goal"
-                        type="text"
-                        fullWidth
-                        value={newGoal.name}
-                        onChange={onChangeNewGoalName}
-                    />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={8}>
+                            <FormControl fullWidth>
+                                <TextField
+                                    autoComplete="false"
+                                    autoFocus
+                                    id="goal"
+                                    type="text"
+                                    value={newVictory.name}
+                                    onChange={onChangeNewVictoryName}
+                                />
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={12} sm={4}>
+                            <FormControl fullWidth>
+                                <TextField name="when" type="date" value={newVictory.when ? format(parseISO(newVictory.when), 'yyyy-MM-dd') : ''} onChange={onChangeNewVictoryWhen}/>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={handleAddFueling} color="primary">
+                    <Button onClick={onClickAddVictory} color="primary">
                         Save
                     </Button>
                 </DialogActions>

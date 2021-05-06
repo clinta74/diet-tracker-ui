@@ -312,6 +312,7 @@ export const DayView: React.FC = () => {
                                                 <FormControl fullWidth>
                                                     <Autocomplete
                                                         freeSolo
+                                                        autoComplete={false}
                                                         options={fuelings.map(fueling => fueling.name)}
                                                         value={fueling.name}
                                                         onChange={(e, v) => onChangeFuelingName(e, v, idx)}
@@ -344,7 +345,7 @@ export const DayView: React.FC = () => {
                                             </Grid>
                                             <Grid item xs={5} md={4}>
                                                 <FormControl fullWidth>
-                                                    <TextField type="time" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
+                                                    <TextField type="time" autoComplete="false" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
                                                 </FormControl>
                                             </Grid>
                                         </Grid>
