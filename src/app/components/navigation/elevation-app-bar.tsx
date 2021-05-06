@@ -2,6 +2,7 @@ import React from 'react';
 import { AppState, useAuth0 } from '@auth0/auth0-react';
 import { 
     AppBar, 
+    Avatar, 
     Box, 
     Button, 
     createStyles, 
@@ -78,7 +79,7 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
         loginWithRedirect({ appState });
     }
 
-    const { name } = user ?? { name: '' };
+    const { name, picture } = user ?? { name: '' };
     return (
         <React.Fragment>
             <ElevationScroll>
@@ -109,6 +110,7 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                             <Authenticated>
                                 <Box display="flex" alignItems="center">
                                     <Box mr={1}>Hello, {name}</Box>
+                                    <Avatar src={picture}>{!!!picture && name[0] }</Avatar>
                                 </Box>
                             </Authenticated>
                             <Authenticated invert>
