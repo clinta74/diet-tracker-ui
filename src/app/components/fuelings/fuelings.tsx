@@ -125,7 +125,7 @@ export const Fuelings: React.FC = () => {
                                     <ListItem>
                                         <Box flexGrow={1} display="flex" alignItems="center">
                                             <Box flexGrow={1}><ListItemText primary={fueling.name} /></Box>
-                                            <Box>
+                                            <Box whiteSpace="nowrap">
                                                 <IconButton size="small" onClick={() => onClickEditFueling(fueling.fuelingId)}>
                                                     <EditOutlinedIcon />
                                                 </IconButton>
