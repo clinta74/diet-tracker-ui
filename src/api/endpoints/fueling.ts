@@ -1,13 +1,22 @@
-import { apiBase } from '../api-base';
+import { AxiosInstance } from 'axios';
+import { Endpoint } from '../api-provider';
 
-export const getFuelings = () =>
-    apiBase.client.get<Fueling[]>(`fuelings`);
+export interface FuelingEndpoints {
+    getFuelings: Endpoint<Fueling[]>;
+    addFueling: Endpoint<Fueling>;
+    updateFueling: Endpoint<never>;
+    deleteFueling: Endpoint<never>
+}
+export const getFuelingEndpoints = (client: AxiosInstance): FuelingEndpoints => ({
+    getFuelings: () =>
+        client.get<Fueling[]>(`fuelings`),
 
-export const addFueling = (fueling: Fueling) =>
-    apiBase.client.post<Fueling>(`fueling`, fueling);
+    addFueling: (fueling: Fueling) =>
+        client.post<Fueling>(`fueling`, fueling),
 
-export const updateFueling = (fuelingId: number, fueling: Fueling) =>
-    apiBase.client.put<never>(`fueling/${fuelingId}`, fueling);
+    updateFueling: (fuelingId: number, fueling: Fueling) =>
+        client.put<never>(`fueling/${fuelingId}`, fueling),
 
-export const deleteFueling = (fuelingId: number) =>
-    apiBase.client.delete<never>(`fueling/${fuelingId}`);
+    deleteFueling: (fuelingId: number) =>
+        client.delete<never>(`fueling/${fuelingId}`),
+});

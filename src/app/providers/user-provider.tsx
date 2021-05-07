@@ -1,6 +1,7 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import React, { createContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { Api } from '../../api';
+import { useApi } from '../../api';
 import { useAlertMessage } from './alert-provider';
 
 interface UserContext {
@@ -14,23 +15,27 @@ export const UserProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<CurrentUser>();
     const alert = useAlertMessage();
     const history = useHistory();
+    const { isAuthenticated } = useAuth0();
+    const { Api, token } = useApi();
 
     useEffect(() => {
-        Api.User.getUserExists()
-            .then(({ data }) => {
-                if (data) {
-                    Api.User.getUser()
-                        .then(({ data }) => {
-                            setUser(data);
-                        })
-                        .catch(error => alert.addMessage(error));
-                }
-                else {
-                    history.push('/new-user');
-                }
-            })
-            .catch(error => alert.addMessage(error));
-    }, []);
+        if (isAuthenticated && token) {
+            Api.User.getUserExists()
+                .then(({ data }) => {
+                    if (data) {
+                        Api.User.getUser()
+                            .then(({ data }) => {
+                                setUser(data);
+                            })
+                            .catch(error => alert.addMessage(error));
+                    }
+                    else {
+                        history.push('/new-user');
+                    }
+                })
+                .catch(error => alert.addMessage(error));
+        }
+    }, [isAuthenticated, token]);
 
     const updateUser = () => {
         Api.User.getUserExists()

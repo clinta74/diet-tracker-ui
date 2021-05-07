@@ -24,7 +24,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
-import { Api } from '../../../api';
+import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { VictoryType } from '../../../api/endpoints/victory';
@@ -35,6 +35,7 @@ export const Goals: React.FC = () => {
     const theme = useTheme();
     const alert = useAlertMessage();
     const confirm = useConfirm();
+    const { Api } = useApi();
 
     const [victory, setVictory] = useState<Victory[]>([]);
     const [open, setOpen] = React.useState(false);

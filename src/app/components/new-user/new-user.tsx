@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem,
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Api } from '../../../api';
+import { useApi } from '../../../api';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
@@ -44,6 +44,8 @@ export const NewUser: React.FC = () => {
     const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const history = useHistory();
+    const { Api } = useApi();
+
     const [newUser, setNewUser] = useState<NewUser>({
         userId: '',
         firstName: '',

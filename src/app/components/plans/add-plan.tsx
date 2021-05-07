@@ -13,7 +13,7 @@ import {
 import { AxiosError } from 'axios';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Api } from '../../../api';
+import { useApi } from '../../../api/api-provider';
 import { validateAll } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
@@ -34,6 +34,7 @@ const useStyles = makeStyles(() =>
 
 export const AddPlan: React.FC = () => {
     const classes = useStyles();
+    const { Api } = useApi();
     const commonClasses = useCommonStyles();
     const history = useHistory();
     const alert = useAlertMessage();

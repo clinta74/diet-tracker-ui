@@ -3,7 +3,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import AddIcon from '@material-ui/icons/Add';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { Api } from '../../../api';
+import { useApi } from '../../../api';
 import { useCommonStyles } from '../common-styles';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useConfirm } from 'material-ui-confirm';
@@ -13,6 +13,7 @@ export const Fuelings: React.FC = () => {
     const theme = useTheme();
     const alert = useAlertMessage();
     const confirm = useConfirm();
+    const { Api } = useApi();
 
     const [open, setOpen] = React.useState(false);
     const [fuelings, setFuelings] = useState<Fueling[]>([]);

@@ -1,14 +1,13 @@
 import { Box, Fab, IconButton, LinearProgress, Menu, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
-import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Api } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from 'react-router-dom';
 import { MenuItem } from '@material-ui/core';
+import { useApi } from '../../../api/api-provider';
 
 export const Plans: React.FC = () => {
     const [plans, setPlans] = useState<Plan[]>();
@@ -17,14 +16,13 @@ export const Plans: React.FC = () => {
     const commonClasses = useCommonStyles();
     const history = useHistory();
     const theme = useTheme();
+    const { Api } = useApi();
 
     useEffect(() => {
         setLoading(true);
         Api.Plan.getPlans()
             .then(({ data }) => setPlans(data))
-            .catch((err: AxiosError) => {
-                alert.addMessage(err.message);
-            })
+            .catch(error  => alert.addMessage(error))
             .finally(() => setLoading(false));
     }, []);
 

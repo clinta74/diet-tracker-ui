@@ -26,7 +26,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import LocalDrinkIcon from '@material-ui/icons/LocalDrinkOutlined';
 import { useCommonStyles } from '../common-styles';
-import { Api } from '../../../api';
+import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { Autocomplete } from '@material-ui/lab';
 
@@ -64,6 +64,7 @@ export const DayView: React.FC = () => {
     const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const history = useHistory();
+    const { Api } = useApi();
 
     const day = params.day ? parseISO(params.day) : startOfToday();
     const [userDay, setUserDay] = useState<TrackedCurrentUserDay>();

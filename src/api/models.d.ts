@@ -86,3 +86,5 @@ enum VictoryType {
     NonScale = 'NonScale',
     Goal = 'Goal'
 }
+
+type UserId = string;

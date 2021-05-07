@@ -1,10 +1,15 @@
-import { apiBase } from '../api-base';
+import { AxiosInstance } from 'axios';
+import { Endpoint } from '../api-provider';
 
-export const getUser = () =>
-    apiBase.client.get<CurrentUser>(`user`);
+export interface UserEndpoints {
+    getUser: Endpoint<CurrentUser>;
+    getUserExists: Endpoint<boolean>;
+}
 
-export const getUserExists = () =>
-    apiBase.client.get<boolean>(`user/exists`);
+export const getUserEndpoints = (client: AxiosInstance): UserEndpoints => ({
+    getUser: () =>
+        client.get<CurrentUser>(`user`),
 
-export const getNewUser = () =>
-    apiBase.client.get<User>(`newuser`);
+    getUserExists: () =>
+        client.get<boolean>(`user/exists`),
+});

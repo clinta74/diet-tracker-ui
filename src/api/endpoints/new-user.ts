@@ -1,10 +1,19 @@
-import { apiBase } from '../api-base';
+import { AxiosInstance } from 'axios';
+import { Endpoint } from '../api-provider';
 
-export const createUser = (user: User) =>
-    apiBase.client.post<string>(`new-user/create`, user);
+export interface NewUserEndpoints {
+    createUser: Endpoint<UserId>;
+    addNewUser: Endpoint<UserId>;
+    getNewUser: Endpoint<NewUser>;
+}
 
-export const addNewUser = (newUser: NewUser) =>
-    apiBase.client.post<string>(`new-user`, newUser);
+export const getNewUserEndpoints = (client: AxiosInstance): NewUserEndpoints => ({
+    createUser: (user: User) =>
+        client.post<UserId>(`new-user/create`, user),
 
-export const getNewUser = () =>
-    apiBase.client.get<NewUser>(`new-user`);
+    addNewUser: (newUser: NewUser) =>
+        client.post<UserId>(`new-user`, newUser),
+
+    getNewUser: () =>
+        client.get<NewUser>(`new-user`),
+});

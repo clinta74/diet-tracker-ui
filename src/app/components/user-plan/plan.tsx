@@ -1,7 +1,7 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { Api } from '../../../api';
+import { useApi } from '../../../api/api-provider';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useUser } from '../../providers/user-provider';
@@ -23,6 +23,7 @@ export const Plan: React.FC = () => {
     const commonClasses = useCommonStyles();
     const { user, updateUser }= useUser();
     const alert = useAlertMessage();
+    const { Api } = useApi();
 
     const [plans, setPlans] = useState<Plan[]>([]);
     const [planId, setPlanId] = useState<number>(0);

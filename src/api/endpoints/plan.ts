@@ -1,19 +1,31 @@
-import { apiBase } from '../api-base';
+import { AxiosInstance } from 'axios';
+import { Endpoint } from '../api-provider';
 
-export const getPlans = () =>
-    apiBase.client.get<Plan[]>(`plans`);
+export interface PlanEndpoints {
+    getPlans: Endpoint<Plan[]>;
+    getPlan: Endpoint<Plan>;
+    addPlan: Endpoint<number>;
+    updatePlan: Endpoint<never>;
+    deletePlan: Endpoint<never>;
+    changePlan: Endpoint<number>;
+}
 
-export const getPlan = (planId: number) =>
-    apiBase.client.get<Plan>(`plan/${planId}`);
+export const getPlanEndpoints = (client: AxiosInstance): PlanEndpoints => ({
+    getPlans: () =>
+        client.get<Plan[]>(`plans`),
 
-export const addPlan = (plan: Plan) =>
-    apiBase.client.post<number>(`plan`, plan);
+    getPlan: (planId: number) =>
+        client.get<Plan>(`plan/${planId}`),
 
-export const updatePlan = (planId: number, plan: Plan) =>
-    apiBase.client.put<never>(`plan/${planId}`, plan);
+    addPlan: (plan: Plan) =>
+        client.post<number>(`plan`, plan),
 
-export const deletePlan = (planId: number) =>
-    apiBase.client.delete<never>(`plan/${planId}`);
+    updatePlan: (planId: number, plan: Plan) =>
+        client.put<never>(`plan/${planId}`, plan),
 
-export const changePlan = (planId: number) =>
-    apiBase.client.put<number>(`plan/change`, planId);
+    deletePlan: (planId: number) =>
+        client.delete<never>(`plan/${planId}`),
+
+    changePlan: (planId: number) =>
+        client.put<number>(`plan/change`, planId),
+});

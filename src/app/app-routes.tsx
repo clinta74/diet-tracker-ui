@@ -1,10 +1,9 @@
+import React from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, CircularProgress, createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
 import { format, startOfToday } from 'date-fns';
 
-import { apiBase } from '../api/api-base';
 import { DayView } from './components/day-view/day-view';
 import { Plan } from './components/user-plan/plan';
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
@@ -13,6 +12,7 @@ import { PlanRoutes } from './components/plans/plan-routes';
 import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
 import { Goals } from './components/goals/goals';
+import { ApiProvider } from '../api';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,20 +28,10 @@ const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
 export const AppRoutes: React.FunctionComponent = () => {
     const classes = useStyles();
-    const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
-    const [hasToken, setHasToken] = useState<boolean>(false);
+    const { isAuthenticated, isLoading } = useAuth0();
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            getAccessTokenSilently()
-                .then((token) => {
-                    apiBase.setAuthToken(token);
-                    setHasToken(true);
-                });
-        }
-    }, [isAuthenticated, getAccessTokenSilently]);
 
-    if (isLoading || !hasToken && isAuthenticated) {
+    if (isLoading) {
         return (
             <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="50vh">
                 <CircularProgress size='5rem' />
@@ -51,23 +41,25 @@ export const AppRoutes: React.FunctionComponent = () => {
             </Box>
         );
     }
-    else if (isAuthenticated && hasToken) {
+    else if (isAuthenticated) {
         return (
             <Box className={classes.root}>
-                <Switch>
-                    <Route path="/new-user" component={NewUserRoutes} />
-                    <Route path="/fuelings" component={FuelingRoutes} />
-                    <Route path="/plans" component={PlanRoutes} />
-                    <UserProvider>
-                        <Switch>
-                            <Route path="/day/:day" component={DayView} />
-                            <Route path="/plan" component={Plan} />
-                            <Route path="/goals" component={Goals} />
-                            <Redirect to={`/day/${dateToString(startOfToday())}`} />
-                        </Switch>
-                    </UserProvider>
-                    <Redirect to={`/day/${dateToString(startOfToday())}`} />
-                </Switch>
+                <ApiProvider>
+                    <Switch>
+                        <Route path="/new-user" component={NewUserRoutes} />
+                        <Route path="/fuelings" component={FuelingRoutes} />
+                        <Route path="/plans" component={PlanRoutes} />
+                        <UserProvider>
+                            <Switch>
+                                <Route path="/day/:day" component={DayView} />
+                                <Route path="/plan" component={Plan} />
+                                <Route path="/goals" component={Goals} />
+                                <Redirect to={`/day/${dateToString(startOfToday())}`} />
+                            </Switch>
+                        </UserProvider>
+                        <Redirect to={`/day/${dateToString(startOfToday())}`} />
+                    </Switch>
+                </ApiProvider>
             </Box>
         );
     }
