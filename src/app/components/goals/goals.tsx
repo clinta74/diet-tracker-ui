@@ -23,7 +23,7 @@ import React, { useState, useEffect } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
+import { format, formatDistanceToNow, formatISO, parse, parseISO } from 'date-fns';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
@@ -83,13 +83,17 @@ export const Goals: React.FC = () => {
 
         setNewVictory(goal => ({
             ...goal,
-            when: formatISO(parseISO(value)),
+            when: value,
         }));
     };
 
     const onClickAddVictory = () => {
+        const victory = {
+            ...newVictory,
+            when: newVictory.when && formatISO(parseISO(newVictory.when)) || null,
+        };
         if (newVictory.victoryId === 0) {
-            Api.Victory.addVictory(newVictory)
+            Api.Victory.addVictory(victory)
                 .then(({ data }) => {
                     setVictory(goals => {
                         return [
@@ -102,12 +106,12 @@ export const Goals: React.FC = () => {
                 .finally(() => setOpen(false));
         }
         else {
-            Api.Victory.updateVictory(newVictory.victoryId, newVictory)
+            Api.Victory.updateVictory(newVictory.victoryId, victory)
                 .then(() => {
                     setVictory(goals => {
                         return [
                             ...goals.filter(goal => goal.victoryId !== newVictory.victoryId),
-                            { ...newVictory },
+                            { ...victory },
                         ]
                     });
                 })
@@ -119,7 +123,10 @@ export const Goals: React.FC = () => {
     const onClickEditVictory = (victoryId: number) => {
         const data = victory.find(goal => goal.victoryId === victoryId);
         if (data) {
-            setNewVictory({ ...data })
+            setNewVictory({ 
+                ...data,
+                when: data.when && format(parseISO(data.when), 'yyyy-MM-dd')
+             })
             setOpen(true);
         }
     };
@@ -184,7 +191,7 @@ export const Goals: React.FC = () => {
                 </Paper>
             </Box>
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
+            <Dialog open={open} onClose={handleClose} disableBackdropClick aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
                 <DialogTitle id="form-dialog-title">Goals</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -206,7 +213,7 @@ export const Goals: React.FC = () => {
 
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
-                                <TextField name="when" type="date" value={newVictory.when ? format(parseISO(newVictory.when), 'yyyy-MM-dd') : ''} onChange={onChangeNewVictoryWhen}/>
+                                <TextField name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen}/>
                             </FormControl>
                         </Grid>
                     </Grid>
