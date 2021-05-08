@@ -1,12 +1,8 @@
 import { AxiosInstance } from 'axios';
-import { Endpoint } from '../api-provider';
 
-export interface DayEndpoints {
-    getDay: Endpoint<CurrentUserDay>;
-    updateDay: Endpoint<CurrentUserDay>;
-}
+export type DayEndpoints = ReturnType<typeof getDayEndpoints>;
 
-export const getDayEndpoints = (client: AxiosInstance): DayEndpoints => ({
+export const getDayEndpoints = (client: AxiosInstance) => ({
     getDay: (day: string) => 
         client.get<CurrentUserDay>(`day/${day}`),
 

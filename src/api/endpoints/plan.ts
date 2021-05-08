@@ -1,16 +1,8 @@
 import { AxiosInstance } from 'axios';
-import { Endpoint } from '../api-provider';
 
-export interface PlanEndpoints {
-    getPlans: Endpoint<Plan[]>;
-    getPlan: Endpoint<Plan>;
-    addPlan: Endpoint<number>;
-    updatePlan: Endpoint<never>;
-    deletePlan: Endpoint<never>;
-    changePlan: Endpoint<number>;
-}
+export type PlanEndpoints = ReturnType<typeof getPlanEndpoints>;
 
-export const getPlanEndpoints = (client: AxiosInstance): PlanEndpoints => ({
+export const getPlanEndpoints = (client: AxiosInstance) => ({
     getPlans: () =>
         client.get<Plan[]>(`plans`),
 

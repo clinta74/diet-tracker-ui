@@ -1,5 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import axios, { AxiosError, AxiosInstance, AxiosPromise } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import React from 'react';
 import { CONFIG } from '../config';
 import { DayEndpoints, getDayEndpoints } from './endpoints/day';
@@ -21,8 +21,6 @@ const createAxiosInstance = (token: string): AxiosInstance => {
         }
     });
 };
-
-export type Endpoint<T> = (...args: any[]) => AxiosPromise<T>;
 
 interface IApiContext {
     Day: DayEndpoints;

@@ -1,13 +1,8 @@
 import { AxiosInstance } from 'axios';
-import { Endpoint } from '../api-provider';
 
-export interface NewUserEndpoints {
-    createUser: Endpoint<UserId>;
-    addNewUser: Endpoint<UserId>;
-    getNewUser: Endpoint<NewUser>;
-}
+export type NewUserEndpoints = ReturnType<typeof getNewUserEndpoints>;
 
-export const getNewUserEndpoints = (client: AxiosInstance): NewUserEndpoints => ({
+export const getNewUserEndpoints = (client: AxiosInstance) => ({
     createUser: (user: User) =>
         client.post<UserId>(`new-user/create`, user),
 

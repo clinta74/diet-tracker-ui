@@ -1,14 +1,7 @@
 import { AxiosInstance } from 'axios';
-import { Endpoint } from '../api-provider';
 
-export interface VictoryEndpoints {
-    getVictories: Endpoint<Victory[]>;
-    addVictory: Endpoint<Victory>;
-    updateVictory: Endpoint<never>;
-    deleteVictory: Endpoint<never>;
-}
-
-export const getVictoryEndpoints = (client: AxiosInstance): VictoryEndpoints => ({
+export type VictoryEndpoints = ReturnType<typeof getVictoryEndpoints>;
+export const getVictoryEndpoints = (client: AxiosInstance) => ({
 
     getVictories: (type: VictoryType) =>
         client.get<Victory[]>(`victories`, {

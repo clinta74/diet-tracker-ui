@@ -1,13 +1,7 @@
 import { AxiosInstance } from 'axios';
-import { Endpoint } from '../api-provider';
 
-export interface FuelingEndpoints {
-    getFuelings: Endpoint<Fueling[]>;
-    addFueling: Endpoint<Fueling>;
-    updateFueling: Endpoint<never>;
-    deleteFueling: Endpoint<never>
-}
-export const getFuelingEndpoints = (client: AxiosInstance): FuelingEndpoints => ({
+export type FuelingEndpoints = ReturnType<typeof getFuelingEndpoints>;
+export const getFuelingEndpoints = (client: AxiosInstance) => ({
     getFuelings: () =>
         client.get<Fueling[]>(`fuelings`),
 

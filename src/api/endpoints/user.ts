@@ -1,12 +1,8 @@
 import { AxiosInstance } from 'axios';
-import { Endpoint } from '../api-provider';
 
-export interface UserEndpoints {
-    getUser: Endpoint<CurrentUser>;
-    getUserExists: Endpoint<boolean>;
-}
+export type UserEndpoints = ReturnType<typeof getUserEndpoints>;
 
-export const getUserEndpoints = (client: AxiosInstance): UserEndpoints => ({
+export const getUserEndpoints = (client: AxiosInstance) => ({
     getUser: () =>
         client.get<CurrentUser>(`user`),
 
