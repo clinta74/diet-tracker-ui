@@ -23,7 +23,7 @@ import React, { useState, useEffect } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { format, formatDistanceToNow, formatISO, parse, parseISO } from 'date-fns';
+import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';

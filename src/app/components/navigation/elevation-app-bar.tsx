@@ -1,18 +1,18 @@
 import React from 'react';
 import { AppState, useAuth0 } from '@auth0/auth0-react';
-import { 
-    AppBar, 
-    Avatar, 
-    Box, 
-    Button, 
-    createStyles, 
-    Hidden, 
-    IconButton, 
-    makeStyles, 
-    Theme, 
-    Toolbar, 
-    Typography, 
-    useScrollTrigger 
+import {
+    AppBar,
+    Avatar,
+    Box,
+    Button,
+    createStyles,
+    Hidden,
+    IconButton,
+    makeStyles,
+    Theme,
+    Toolbar,
+    Typography,
+    useScrollTrigger
 } from '@material-ui/core';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -101,16 +101,16 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                                 <MenuIcon />
                             </IconButton>
                         }
-                        <Hidden smDown>
-                            <Box flexGrow={1}>
+                        <Box flexGrow={1}>
+                            <Hidden smDown>
                                 <Typography variant="h6">Food Journal</Typography>
-                            </Box>
-                        </Hidden>
+                            </Hidden>
+                        </Box>
                         <Box ml={2}>
                             <Authenticated>
                                 <Box display="flex" alignItems="center">
                                     <Box mr={1}>Hello, {name}</Box>
-                                    <Avatar src={picture}>{!!!picture && name[0] }</Avatar>
+                                    <Avatar src={picture}>{!!!picture && name[0]}</Avatar>
                                 </Box>
                             </Authenticated>
                             <Authenticated invert>

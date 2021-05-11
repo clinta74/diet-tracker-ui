@@ -39,7 +39,7 @@ export const App: React.FC = () => {
                                 <Auth0ProviderWithHistory>
                                     <UserPermissionProvider>
                                         <Navigation />
-                                        <Container maxWidth="md">
+                                        <Container maxWidth="lg">
                                             <AppRoutes />
                                         </Container>
                                     </UserPermissionProvider>
