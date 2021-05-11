@@ -16,6 +16,7 @@ import {
     CircularProgress,
     IconButton,
     Divider,
+    Hidden,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { format, startOfToday, addDays, parseISO, getDay } from 'date-fns';
@@ -66,7 +67,7 @@ export const DayView: React.FC = () => {
     const history = useHistory();
     const { Api } = useApi();
 
-    const day = params.day ? parseISO(params.day) : startOfToday();
+    const [day, setDay] = useState<Date>(startOfToday());
     const [userDay, setUserDay] = useState<TrackedCurrentUserDay>();
     const [fuelings, setFuelings] = useState<Fueling[]>([]);
     const [postingDay, setPostingDay] = useState(false);
@@ -80,6 +81,8 @@ export const DayView: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        const day = params.day ? parseISO(params.day) : startOfToday();
+        setDay(day);
         Api.Day.getDay(dateToString(day))
             .then(({ data }) => setUserDay({ ...data, hasChanged: false }))
             .catch(error => alert.addMessage(error));
@@ -252,7 +255,11 @@ export const DayView: React.FC = () => {
                 </IconButton>
 
                 <Box flexGrow={1} textAlign="center">
-                    <Typography variant="h4">{format(day, 'EEEE, MMM dd, yyyy')}</Typography>
+                    <Typography variant="h4">
+                        {format(day, 'EEEE')}
+                        <Hidden smDown>{format(day, ', MMM dd')}</Hidden>
+                        <Hidden mdDown>{format(day, ', yyyy')}</Hidden>
+                    </Typography>
                 </Box>
 
                 <IconButton onClick={onClickNextDay}>
