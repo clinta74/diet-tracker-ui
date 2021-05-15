@@ -155,6 +155,23 @@ export const DayView: React.FC = () => {
         });
     }
 
+    const onChangeFuelingName2 = (event: React.ChangeEvent<unknown>, value: string | null, idx: number) => {
+        setUserDay(_userDay => {
+            if (_userDay) {
+                return {
+                    ..._userDay as CurrentUserDay,
+                    hasChanged: true,
+                    fuelings: [..._userDay.fuelings.slice(0, idx),
+                    {
+                        ..._userDay.fuelings[idx],
+                        name: value || '',
+                    },
+                    ..._userDay.fuelings.slice(idx + 1)],
+                }
+            }
+        });
+    }
+
     const onChangeFuelingWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
         const { value } = event.target;
 
@@ -296,6 +313,7 @@ export const DayView: React.FC = () => {
                                                                 options={fuelings.map(fueling => fueling.name)}
                                                                 value={fueling.name}
                                                                 onChange={(e, v) => onChangeFuelingName(e, v, idx)}
+                                                                onInputChange={(e, v) => onChangeFuelingName2(e, v, idx) }
                                                                 disabled={postingDay}
                                                                 renderInput={(params) => (
                                                                     <TextField autoComplete="off" {...params} name="name" />
