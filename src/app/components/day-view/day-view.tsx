@@ -30,7 +30,7 @@ import LocalDrinkIcon from '@material-ui/icons/LocalDrinkOutlined';
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete, createFilterOptions } from '@material-ui/lab';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -155,23 +155,6 @@ export const DayView: React.FC = () => {
         });
     }
 
-    const onChangeFuelingName2 = (event: React.ChangeEvent<unknown>, value: string | null, idx: number) => {
-        setUserDay(_userDay => {
-            if (_userDay) {
-                return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
-                    fuelings: [..._userDay.fuelings.slice(0, idx),
-                    {
-                        ..._userDay.fuelings[idx],
-                        name: value || '',
-                    },
-                    ..._userDay.fuelings.slice(idx + 1)],
-                }
-            }
-        });
-    }
-
     const onChangeFuelingWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
         const { value } = event.target;
 
@@ -271,6 +254,8 @@ export const DayView: React.FC = () => {
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, -1))}`);
     }
+    
+    const filter = createFilterOptions<string>()
 
     return (
         <React.Fragment>
@@ -312,8 +297,12 @@ export const DayView: React.FC = () => {
                                                                 freeSolo
                                                                 options={fuelings.map(fueling => fueling.name)}
                                                                 value={fueling.name}
-                                                                onChange={(e, v) => onChangeFuelingName(e, v, idx)}
-                                                                onInputChange={(e, v) => onChangeFuelingName2(e, v, idx) }
+                                                                //onChange={(e, v) => onChangeFuelingName(e, v, idx)}
+                                                                onInputChange={(e, v) => onChangeFuelingName(e, v, idx) }
+                                                                filterOptions={(options, params) => {
+                                                                    params.inputValue = fueling.name;
+                                                                    return filter(options, params);
+                                                                }}
                                                                 disabled={postingDay}
                                                                 renderInput={(params) => (
                                                                     <TextField autoComplete="off" {...params} name="name" />
