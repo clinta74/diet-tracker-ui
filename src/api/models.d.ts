@@ -15,7 +15,7 @@ interface User {
     lastName: string;
     emailAddress: string;
     planId: number;
-    lastLogin: string;
+    created: string;
     userDays?: UserDay[];
     userPlans?: UserPlan[];
 }
@@ -27,6 +27,8 @@ interface CurrentUser {
     emailAddress: string;
     lastLogin: string;
     currentPlan: Plan;
+    waterTarget: number;
+    waterSize: number;
 }
 interface UserDay {
     userId: string;
@@ -84,7 +86,36 @@ interface Victory {
 
 enum VictoryType {
     NonScale = 'NonScale',
-    Goal = 'Goal'
+    Goal = 'Goal',
+}
+
+interface UserTracking {
+    userTrackingId: number;
+    userId: UserId;
+    removed: boolean;
+    name: string;
+    description: string;
+    occurrences: number;
+    type: UserTrackingType;
+    user: User;
+    trackings: UserDailyTracking[];
+}
+
+interface UserDailyTracking {
+    userId: UserId;
+    day: string;
+    userTrackingId: number;
+    value: number;
+    when: string;
+    occurrence: number;
+    userDay: UserDay;
+    tracking: UserTracking;
+}
+
+enum UserTrackingType
+{
+    Number = 'Number',
+    Boolean = 'Boolean',
 }
 
 type UserId = string;
