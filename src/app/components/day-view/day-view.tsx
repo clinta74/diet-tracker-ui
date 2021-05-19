@@ -31,6 +31,7 @@ import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { Autocomplete, createFilterOptions } from '@material-ui/lab';
+import { useUser } from '../../providers/user-provider';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -74,6 +75,7 @@ export const DayView: React.FC = () => {
     const alert = useAlertMessage();
     const history = useHistory();
     const { Api } = useApi();
+    const { user } = useUser();
 
     const [day, setDay] = useState<Date>(startOfToday());
     const [userDay, setUserDay] = useState<TrackedCurrentUserDay>();
@@ -223,8 +225,8 @@ export const DayView: React.FC = () => {
             .catch(error => alert.addMessage(error));
     }
 
-    const waterTarget = 64;
-    const waterSize = 8;
+    const waterTarget = user.waterTarget || 64;
+    const waterSize = user.waterSize || 8;
     const waterMarks: boolean[] = new Array(Math.ceil(waterTarget / waterSize));
     if (userDay) {
         const end = Math.floor(userDay.water / waterSize);
