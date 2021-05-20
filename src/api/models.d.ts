@@ -10,7 +10,7 @@ interface Plan {
     userPlans?: UserPlan[];
 }
 interface User {
-    userId: string;
+    userId: UserId;
     fristName: string;
     lastName: string;
     emailAddress: string;
@@ -21,7 +21,7 @@ interface User {
 }
 
 interface CurrentUser {
-    userId: string;
+    userId: UserId;
     firstName: string;
     lastName: string;
     emailAddress: string;
@@ -31,7 +31,7 @@ interface CurrentUser {
     waterSize: number;
 }
 interface UserDay {
-    userId: string;
+    userId: UserId;
     day: string;
     water: number;
     weight: number;
@@ -43,7 +43,7 @@ interface UserDay {
 }
 interface UserFueling {
     userFuelingId: number;
-    userId: string;
+    userId: UserId;
     day: string;
     name: string;
     when: string;
@@ -51,21 +51,21 @@ interface UserFueling {
 }
 interface UserMeal {
     userMealId: number;
-    userId: string;
+    userId: UserId;
     day: string;
     name: string;
     when: string;
     userDay: UserDay;
 }
 interface UserPlan {
-    userId: string;
+    userId: UserId;
     planId: number;
     start: string;
     plan?: Plan;
     user: User;
 }
 interface NewUser {
-    userId: string;
+    userId: UserId;
     firstName: string;
     lastName: string;
     emailAddress: string;
@@ -77,7 +77,7 @@ interface CurrentUserDay extends UserDay {
 }
 interface Victory {
     victoryId: number;
-    userId: string;
+    userId: UserId;
     name: string;
     when: string | null;
     type: VictoryType;
@@ -101,6 +101,13 @@ interface UserTracking {
     trackings: UserDailyTracking[];
 }
 
+interface UserTrackingRequest {
+    name: string;
+    description: string;
+    occurrences: number;
+    type: UserTrackingType;
+}
+
 interface UserDailyTracking {
     userId: UserId;
     day: string;
@@ -110,6 +117,17 @@ interface UserDailyTracking {
     occurrence: number;
     userDay: UserDay;
     tracking: UserTracking;
+}
+
+interface CurrentUserDailyTracking {
+    userId: UserId;
+    day: string;
+    value: number;
+    when: string;
+    occurance: number;
+    userTrackingId: number;
+    name: string;
+    description: string;
 }
 
 enum UserTrackingType
