@@ -13,6 +13,7 @@ import {
     ListItemText
 } from '@material-ui/core';
 import clsx from 'clsx';
+
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TodayIcon from '@material-ui/icons/Today';
@@ -21,6 +22,8 @@ import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import SettingsIcon from '@material-ui/icons/SettingsOutlined';
+import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+
 import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
@@ -133,6 +136,13 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                             <ListItem button>
                                 <ListItemIcon title="Your Plan"><AssignmentOutlinedIcon /></ListItemIcon>
                                 <ListItemText primary="Your Plan" />
+                            </ListItem>
+                        </NavLink>
+                        
+                        <NavLink to="/trackings" className={classes.link}>
+                            <ListItem button>
+                                <ListItemIcon title="Tracking"><ExploreOutlinedIcon /></ListItemIcon>
+                                <ListItemText primary="Tracking" />
                             </ListItem>
                         </NavLink>
                     </List>

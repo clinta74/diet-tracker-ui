@@ -1,5 +1,7 @@
 import { AxiosInstance } from "axios";
 
+export type UserTrackingEndpoints = ReturnType<typeof getUserTrackingEndpoints>;
+
 export const getUserTrackingEndpoints = (client: AxiosInstance) => ({
     getActiveUserTrackings: () => 
         client.get<UserTracking[]>(`user-trackings`),
@@ -9,6 +11,9 @@ export const getUserTrackingEndpoints = (client: AxiosInstance) => ({
     
     updateUserTracking: (userTrackingId: number, userTracking: UserTrackingRequest) =>
         client.put(`user-tracking/${userTrackingId}`, userTracking),
+
+    deleteUserTracking: (userTrackingId: number) =>
+        client.delete(`user-tracking/${userTrackingId}`),
 });
 
 export enum UserTrackingType

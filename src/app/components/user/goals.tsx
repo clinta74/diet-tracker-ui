@@ -13,6 +13,8 @@ import {
     List,
     ListItem,
     ListItemText,
+    Menu,
+    MenuItem,
     Paper,
     TextField,
     Typography,
@@ -21,14 +23,21 @@ import {
 import { useConfirm } from 'material-ui-confirm';
 import React, { useState, useEffect } from 'react';
 import AddIcon from '@material-ui/icons/Add';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { VictoryType } from '../../../api/endpoints/victory';
 import { Divider } from '@material-ui/core';
+
+const defaultGoal: Victory = {
+    userId: '',
+    victoryId: 0,
+    name: '',
+    when: null,
+    type: VictoryType.Goal,
+};
 
 export const Goals: React.FC = () => {
     const commonClasses = useCommonStyles();
@@ -37,15 +46,11 @@ export const Goals: React.FC = () => {
     const confirm = useConfirm();
     const { Api } = useApi();
 
-    const [victory, setVictory] = useState<Victory[]>([]);
+    const [victories, setVictory] = useState<Victory[]>([]);
     const [open, setOpen] = React.useState(false);
-    const [newVictory, setNewVictory] = useState<Victory>({
-        userId: '',
-        victoryId: 0,
-        name: '',
-        when: null,
-        type: VictoryType.Goal,
-    });
+    const [newVictory, setNewVictory] = useState<Victory>(defaultGoal);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const openMenu = Boolean(anchorEl);
 
     useEffect(() => {
         Api.Victory.getVictories(VictoryType.Goal)
@@ -56,11 +61,7 @@ export const Goals: React.FC = () => {
 
     const onClickAddGoal = () => {
         setNewVictory({
-            userId: '',
-            victoryId: 0,
-            name: '',
-            when: null,
-            type: VictoryType.Goal,
+            ...defaultGoal
         });
         setOpen(true);
     };
@@ -120,35 +121,52 @@ export const Goals: React.FC = () => {
         }
     };
 
-    const onClickEditVictory = (victoryId: number) => {
-        const data = victory.find(goal => goal.victoryId === victoryId);
-        if (data) {
-            setNewVictory({ 
-                ...data,
-                when: data.when && format(parseISO(data.when), 'yyyy-MM-dd')
-             })
-            setOpen(true);
+    const onClickEditVictory = () => {
+        handleCloseMenu();
+        if (victories && anchorEl) {
+            const victoryId = Number(anchorEl.dataset.id);
+            const data = victories.find(goal => goal.victoryId === victoryId);
+            if (data) {
+                setNewVictory({
+                    ...data,
+                    when: data.when && format(parseISO(data.when), 'yyyy-MM-dd')
+                })
+                setOpen(true);
+            }
         }
     };
 
-    const onClickDeleteVictory = (victoryId: number) => {
-        const goal = victory.find(f => f.victoryId === victoryId);
-        confirm({ description: `Are you sure you want to delete ${goal?.name}?` })
-            .then(() => {
-                Api.Victory.deleteVictory(victoryId)
-                    .then(() => {
-                        const idx = victory.findIndex(f => f.victoryId === victoryId);
-                        setVictory(goals => {
-                            return [...goals.slice(0, idx), ...goals.slice(idx + 1)];
-                        });
-                    })
-                    .catch(error => alert.addMessage(error))
-                    .finally(() => setOpen(false));
-            })
-            .catch(() => null);
+    const onClickDeleteVictory = () => {
+        handleCloseMenu();
+        if (victories && anchorEl) {
+            const victoryId = Number(anchorEl.dataset.id);
+            const goal = victories.find(f => f.victoryId === victoryId);
+            confirm({ description: `Are you sure you want to delete ${goal?.name}?` })
+                .then(() => {
+                    Api.Victory.deleteVictory(victoryId)
+                        .then(() => {
+                            const idx = victories.findIndex(f => f.victoryId === victoryId);
+                            setVictory(goals => {
+                                return [...goals.slice(0, idx), ...goals.slice(idx + 1)];
+                            });
+                        })
+                        .catch(error => alert.addMessage(error))
+                        .finally(() => setOpen(false));
+                })
+                .catch(() => null);
+        }
     };
 
-    const sortedVictories = victory.sort((a, b) => a.name > b.name ? 1 : -1);
+    const onClickMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+
+    const sortedVictories = victories.sort((a, b) => a.name > b.name ? 1 : -1);
 
     return (
         <React.Fragment>
@@ -171,14 +189,11 @@ export const Goals: React.FC = () => {
                                         <Box flexGrow={1} display="flex" alignItems="center">
                                             <Box flexGrow={1}><ListItemText primary={goal.name} /></Box>
                                             <Box mx={2}>
-                                                {goal.when && formatDistanceToNow(parseISO(goal.when), {addSuffix: true})}
+                                                {goal.when && formatDistanceToNow(parseISO(goal.when), { addSuffix: true })}
                                             </Box>
                                             <Box whiteSpace="nowrap">
-                                                <IconButton size="small" onClick={() => onClickEditVictory(goal.victoryId)}>
-                                                    <EditOutlinedIcon />
-                                                </IconButton>
-                                                <IconButton size="small" color="secondary" onClick={() => onClickDeleteVictory(goal.victoryId)}>
-                                                    <RemoveCircleIcon />
+                                                <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={goal.victoryId}>
+                                                    <MoreVertIcon />
                                                 </IconButton>
                                             </Box>
                                         </Box>
@@ -190,6 +205,17 @@ export const Goals: React.FC = () => {
                     </List>
                 </Paper>
             </Box>
+
+            <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={openMenu}
+                onClose={handleCloseMenu}
+            >
+                <MenuItem onClick={onClickEditVictory}>Edit</MenuItem>
+                <MenuItem onClick={onClickDeleteVictory}>Delete</MenuItem>
+            </Menu>
 
             <Dialog open={open} onClose={handleClose} disableBackdropClick aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
                 <DialogTitle id="form-dialog-title">Goals</DialogTitle>
@@ -213,7 +239,7 @@ export const Goals: React.FC = () => {
 
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
-                                <TextField name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen}/>
+                                <TextField name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen} />
                             </FormControl>
                         </Grid>
                     </Grid>

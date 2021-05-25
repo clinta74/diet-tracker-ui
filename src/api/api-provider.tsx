@@ -7,6 +7,8 @@ import { FuelingEndpoints, getFuelingEndpoints } from './endpoints/fueling';
 import { NewUserEndpoints, getNewUserEndpoints } from './endpoints/new-user';
 import { getPlanEndpoints, PlanEndpoints } from './endpoints/plan';
 import { UserEndpoints, getUserEndpoints } from './endpoints/user';
+import { getUserDailyTrackingEndpoints, UserDailyTrackingEndpoints } from './endpoints/user-daily-tracking';
+import { getUserTrackingEndpoints, UserTrackingEndpoints } from './endpoints/user-tracking';
 import { getVictoryEndpoints, VictoryEndpoints } from './endpoints/victory';
 
 const createAxiosInstance = (token: string): AxiosInstance => {
@@ -28,6 +30,8 @@ interface IApiContext {
     NewUser: NewUserEndpoints;
     Plan: PlanEndpoints;
     User: UserEndpoints;
+    UserDailyTracking: UserDailyTrackingEndpoints;
+    UserTracking: UserTrackingEndpoints;
     Victory: VictoryEndpoints;
 }
 
@@ -66,6 +70,8 @@ export const ApiProvider: React.FC = ({ children }) => {
                 NewUser: getNewUserEndpoints(client),
                 Plan: getPlanEndpoints(client),
                 User: getUserEndpoints(client),
+                UserDailyTracking: getUserDailyTrackingEndpoints(client),
+                UserTracking: getUserTrackingEndpoints(client),
                 Victory: getVictoryEndpoints(client),
             }
 

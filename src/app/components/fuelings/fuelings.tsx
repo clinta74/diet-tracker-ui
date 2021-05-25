@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { 
-    Box, 
-    Button, 
-    Dialog, 
-    DialogActions, 
-    DialogContent, 
-    DialogContentText, 
-    DialogTitle, 
-    Divider, 
-    Fab, 
-    IconButton, 
-    List, 
-    ListItem, 
-    ListItemText, 
-    Paper, 
-    TextField, 
-    Typography, 
-    useTheme 
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider,
+    Fab,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Paper,
+    TextField,
+    Typography,
+    useTheme
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useApi } from '../../../api';
 import { useCommonStyles } from '../common-styles';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useConfirm } from 'material-ui-confirm';
+
+const defaultFueling: Fueling = {
+    fuelingId: 0,
+    name: '',
+};
 
 export const Fuelings: React.FC = () => {
     const commonClasses = useCommonStyles();
@@ -34,11 +40,11 @@ export const Fuelings: React.FC = () => {
     const { Api } = useApi();
 
     const [open, setOpen] = React.useState(false);
-    const [fuelings, setFuelings] = useState<Fueling[]>([]);
-    const [newFueling, setNewFueling] = useState<Fueling>({
-        fuelingId: 0,
-        name: '',
-    });
+    const [fuelings, setFuelings] = useState<Fueling[]>();
+    const [newFueling, setNewFueling] = useState<Fueling>(defaultFueling);
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const openMenu = Boolean(anchorEl);
 
     useEffect(() => {
         Api.Fueling.getFuelings()
@@ -49,8 +55,7 @@ export const Fuelings: React.FC = () => {
 
     const onClickAddFueling = () => {
         setNewFueling({
-            fuelingId: 0,
-            name: '',
+            ...defaultFueling
         });
         setOpen(true);
     }
@@ -64,10 +69,10 @@ export const Fuelings: React.FC = () => {
             Api.Fueling.addFueling(newFueling)
                 .then(({ data }) => {
                     setFuelings(fuelings => {
-                        return [
+                        return fuelings ? [
                             ...fuelings,
                             data,
-                        ]
+                        ] : [data]
                     });
                 })
                 .catch(error => alert.addMessage(error))
@@ -77,7 +82,7 @@ export const Fuelings: React.FC = () => {
             Api.Fueling.updateFueling(newFueling.fuelingId, newFueling)
                 .then(() => {
                     setFuelings(fuelings => {
-                        return [
+                        return fuelings && [
                             ...fuelings.filter(fueling => fueling.fuelingId !== newFueling.fuelingId),
                             { ...newFueling },
                         ]
@@ -88,29 +93,37 @@ export const Fuelings: React.FC = () => {
         }
     }
 
-    const onClickEditFueling = (fuelingId: number) => {
-        const data = fuelings.find(fueling => fueling.fuelingId === fuelingId);
-        if (data) {
-            setNewFueling({ ...data })
-            setOpen(true);
+    const onClickEditFueling = () => {
+        handleCloseMenu();
+        if (fuelings && anchorEl) {
+            const fuelingId = Number(anchorEl.dataset.id);
+            const data = fuelings.find(fueling => fueling.fuelingId === fuelingId);
+            if (data) {
+                setNewFueling({ ...data })
+                setOpen(true);
+            }
         }
     }
 
-    const handleDeleteFueling = (fuelingId: number) => {
-        const fueling = fuelings.find(f => f.fuelingId === fuelingId);
-        confirm({ description: `Are you sure you want to delete ${fueling?.name}?`})
-            .then(() => {
-                Api.Fueling.deleteFueling(fuelingId)
-                    .then(() => {
-                        const idx = fuelings.findIndex(f => f.fuelingId === fuelingId);
-                        setFuelings(fuelings => {
-                            return [...fuelings.slice(0, idx), ...fuelings.slice(idx + 1)];
-                        });
-                    })
-                    .catch(error => alert.addMessage(error))
-                    .finally(() => setOpen(false));
-            })
-            .catch(() => null);
+    const handleDeleteFueling = () => {
+        handleCloseMenu();
+        if (fuelings && anchorEl) {
+            const fuelingId = Number(anchorEl.dataset.id);
+            const fueling = fuelings.find(f => f.fuelingId === fuelingId);
+            confirm({ description: `Are you sure you want to delete ${fueling?.name}?` })
+                .then(() => {
+                    Api.Fueling.deleteFueling(fuelingId)
+                        .then(() => {
+                            const idx = fuelings.findIndex(f => f.fuelingId === fuelingId);
+                            setFuelings(fuelings => {
+                                return fuelings && [...fuelings.slice(0, idx), ...fuelings.slice(idx + 1)];
+                            });
+                        })
+                        .catch(error => alert.addMessage(error))
+                        .finally(() => setOpen(false));
+                })
+                .catch(() => null);
+        }
     }
 
     const onChangeNewFuelingName: React.ChangeEventHandler<HTMLInputElement> = event => {
@@ -122,7 +135,15 @@ export const Fuelings: React.FC = () => {
         }));
     }
 
-    const sortedFuelings = fuelings.sort((a, b) => a.name > b.name ? 1 : -1)
+    const onClickMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const sortedFuelings = fuelings && fuelings.sort((a, b) => a.name > b.name ? 1 : -1)
 
     return (
         <React.Fragment>
@@ -145,11 +166,8 @@ export const Fuelings: React.FC = () => {
                                         <Box flexGrow={1} display="flex" alignItems="center">
                                             <Box flexGrow={1}><ListItemText primary={fueling.name} /></Box>
                                             <Box whiteSpace="nowrap">
-                                                <IconButton size="small" onClick={() => onClickEditFueling(fueling.fuelingId)}>
-                                                    <EditOutlinedIcon />
-                                                </IconButton>
-                                                <IconButton size="small" color="secondary" onClick={() => handleDeleteFueling(fueling.fuelingId)}>
-                                                    <RemoveCircleIcon />
+                                                <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={fueling.fuelingId}>
+                                                    <MoreVertIcon />
                                                 </IconButton>
                                             </Box>
                                         </Box>
@@ -161,6 +179,17 @@ export const Fuelings: React.FC = () => {
                     </List>
                 </Paper>
             </Box>
+
+            <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={openMenu}
+                onClose={handleCloseMenu}
+            >
+                <MenuItem onClick={onClickEditFueling}>Edit</MenuItem>
+                <MenuItem onClick={handleDeleteFueling}>Delete</MenuItem>
+            </Menu>
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Fueling</DialogTitle>

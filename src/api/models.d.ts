@@ -92,13 +92,12 @@ enum VictoryType {
 interface UserTracking {
     userTrackingId: number;
     userId: UserId;
-    removed: boolean;
     name: string;
     description: string;
     occurrences: number;
     type: UserTrackingType;
-    user: User;
-    trackings: UserDailyTracking[];
+    user?: User;
+    trackings?: UserDailyTracking[];
 }
 
 interface UserTrackingRequest {
@@ -115,8 +114,8 @@ interface UserDailyTracking {
     value: number;
     when: string;
     occurrence: number;
-    userDay: UserDay;
-    tracking: UserTracking;
+    userDay?: UserDay;
+    tracking?: UserTracking;
 }
 
 interface CurrentUserDailyTracking {
@@ -124,7 +123,7 @@ interface CurrentUserDailyTracking {
     day: string;
     value: number;
     when: string;
-    occurance: number;
+    occurrence: number;
     userTrackingId: number;
     name: string;
     description: string;
@@ -134,6 +133,11 @@ enum UserTrackingType
 {
     Number = 'Number',
     Boolean = 'Boolean',
+}
+
+interface CurrentUserDailyTrackingUpdateRequest {
+    value: number;
+    when: string;
 }
 
 type UserId = string;

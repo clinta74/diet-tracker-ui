@@ -2,17 +2,16 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, CircularProgress, createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
-import { format, startOfToday } from 'date-fns';
+import { startOfToday } from 'date-fns';
 
-import { DayView } from './components/day-view/day-view';
-import { Plan } from './components/user-plan/plan';
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
 import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
 import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
-import { Goals } from './components/goals/goals';
 import { ApiProvider } from '../api';
+import { dateToString } from '../utils/date-to-string';
+import { UserRoutes } from './components/user/user-routes';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,8 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     })
 );
-
-const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
 export const AppRoutes: React.FunctionComponent = () => {
     const classes = useStyles();
@@ -50,12 +47,7 @@ export const AppRoutes: React.FunctionComponent = () => {
                         <Route path="/fuelings" component={FuelingRoutes} />
                         <Route path="/plans" component={PlanRoutes} />
                         <UserProvider>
-                            <Switch>
-                                <Route path="/day/:day" component={DayView} />
-                                <Route path="/plan" component={Plan} />
-                                <Route path="/goals" component={Goals} />
-                                <Redirect to={`/day/${dateToString(startOfToday())}`} />
-                            </Switch>
+                            <UserRoutes />
                         </UserProvider>
                         <Redirect to={`/day/${dateToString(startOfToday())}`} />
                     </Switch>
