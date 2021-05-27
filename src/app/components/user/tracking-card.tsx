@@ -1,10 +1,14 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    createStyles,
+    FormControl,
+    makeStyles,
+    Theme
+} from '@material-ui/core';
 import React from 'react';
 
-interface TrackingCardProps {
-    value: CurrentUserDailyTracking;
-    onChange: (value: CurrentUserDailyTracking) => void;
-}
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         card: {
@@ -16,10 +20,25 @@ const useStyles = makeStyles((theme: Theme) => {
     });
 });
 
-export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ value }) => {
+interface TrackingCardProps {
+    trackings: CurrentUserDailyTracking[];
+    onChange: (trackings: CurrentUserDailyTracking[]) => void;
+}
+export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ trackings }) => {
     const classes = useStyles();
 
+    const { name, description } = trackings[0];
+
     return (
-        <div></div>
+        <React.Fragment>
+            <Card className={classes.card}>
+                <CardHeader title={name}>{description}</CardHeader>
+                <CardContent>
+                    <FormControl fullWidth className={classes.formControl}>
+
+                    </FormControl>
+                </CardContent>
+            </Card>
+        </React.Fragment>
     );
 }
