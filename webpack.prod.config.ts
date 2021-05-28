@@ -44,7 +44,7 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new EnvironmentPlugin({
-      NODE_ENV: 'development',
+      NODE_ENV: 'production',
       API_URL: 'https://localhost:5001',
       REACT_APP_AUTH0_DOMAIN: 'dev-clinta74.us.auth0.com',
       REACT_APP_AUTH0_CLIENT_ID: 'I1EPbV0JzhQ4sMebkA5XSg0RhYhJBa1k',
