@@ -4,6 +4,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import ESLintPlugin from "eslint-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
 
 const config: webpack.Configuration = {
   mode: "production",
@@ -20,7 +21,7 @@ const config: webpack.Configuration = {
     rules: [
       {
         test: /\.(ts|js)x?$/i,
-        exclude: /node_modules/,
+        exclude: [ /node_modules/, /static/ ],
         use: {
           loader: "babel-loader",
           options: {
@@ -42,12 +43,23 @@ const config: webpack.Configuration = {
     extensions: [".tsx", ".ts", ".js"],
   },
   plugins: [
-    new EnvironmentPlugin([
-      'API_URL',
-      'REACT_APP_AUTH0_DOMAIN',
-      'REACT_APP_AUTH0_CLIENT_ID',
-      'REACT_APP_AUTH0_AUDIENCE',
-    ]),
+    new EnvironmentPlugin({
+      NODE_ENV: 'development',
+      API_URL: 'https://localhost:5001',
+      REACT_APP_AUTH0_DOMAIN: 'dev-clinta74.us.auth0.com',
+      REACT_APP_AUTH0_CLIENT_ID: 'I1EPbV0JzhQ4sMebkA5XSg0RhYhJBa1k',
+      REACT_APP_AUTH0_AUDIENCE: 'https://diet-tracker.pollyspeople.net',
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'src/static/*', to: '[name][ext]'
+        },
+        {
+          from: 'src/static/icons/*', to: 'icons/[name][ext]'
+        },
+      ]
+    }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
     }),
