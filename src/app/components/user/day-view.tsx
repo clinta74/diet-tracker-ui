@@ -98,6 +98,12 @@ export const DayView: React.FC = () => {
             .catch(error => alert.addMessage(error));
     }, [params]);
 
+    useEffect(() => {
+        if(userDay?.hasChanged) {
+            console.log('data changed.', userDay.hasChanged);
+        }
+    }, [userDay?.hasChanged])
+
     const onChangeWater: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
 
@@ -440,7 +446,7 @@ export const DayView: React.FC = () => {
                         </Grid>
 
 
-                        <Box display="flex" justifyContent="flex-end" mt={2}>
+                        <Box display="flex" justifyContent="flex-end" my={2}>
                             <Box display="flex" alignItems="center">
                                 <Box mr={1} position="relative">
                                     <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>

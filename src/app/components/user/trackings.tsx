@@ -10,6 +10,8 @@ import {
     Grid,
     IconButton,
     InputLabel,
+    ListItem,
+    ListItemText,
     Menu,
     MenuItem,
     Paper,
@@ -33,14 +35,17 @@ import { useApi } from '../../../api';
 import { FormControl } from '@material-ui/core';
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { useConfirm } from 'material-ui-confirm';
+import { List } from '@material-ui/core';
 
 const defaultTracking: UserTracking = {
     userId: '',
-    name: '',
+    title: '',
+    disabled: false,
     description: '',
     occurrences: 0,
-    type: UserTrackingType.Number,
     userTrackingId: 0,
+    order: 0,
+    values: [],
 }
 
 export const Trackings: React.FC = () => {
@@ -89,7 +94,7 @@ export const Trackings: React.FC = () => {
         if (trackings && anchorEl) {
             const userTrackingId = Number(anchorEl.dataset.id);
             const tracking = trackings.find(f => f.userTrackingId === userTrackingId);
-            confirm({ description: `Are you sure you want to delete ${tracking?.name}?` })
+            confirm({ description: `Are you sure you want to delete ${tracking?.title}?` })
                 .then(() => {
                     Api.UserTracking.deleteUserTracking(userTrackingId)
                         .then(() => {
@@ -155,7 +160,7 @@ export const Trackings: React.FC = () => {
                         return trackings ? [
                             ...trackings,
                             data,
-                        ] : [ data ]
+                        ] : [data]
                     });
                 })
                 .catch(error => alert.addMessage(error))
@@ -194,20 +199,31 @@ export const Trackings: React.FC = () => {
                             <TableRow>
                                 <TableCell>Name</TableCell>
                                 <TableCell>Description</TableCell>
-                                <TableCell align="right">Type</TableCell>
-                                <TableCell align="right">Occurances</TableCell>
+                                <TableCell width={1}>Occurances</TableCell>
+                                <TableCell width={1}>Disabled</TableCell>
+                                <TableCell>Value(s)</TableCell>
                                 <TableCell width={1} />
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {
                                 trackings &&
-                                trackings.map(({ userTrackingId, name, description, occurrences, type }) =>
+                                trackings.map(({ userTrackingId, title, description, occurrences, order, disabled, values }) =>
                                     <TableRow key={userTrackingId}>
-                                        <TableCell>{name}</TableCell>
+                                        <TableCell>{title}</TableCell>
                                         <TableCell>{description}</TableCell>
-                                        <TableCell align="right">{type === UserTrackingType.Number ? 'Number' : 'Yes / No'}</TableCell>
                                         <TableCell align="right">{occurrences}</TableCell>
+                                        <TableCell>{disabled ? 'Yes' : 'No'}</TableCell>
+                                        <TableCell>
+                                                {
+                                                    values &&
+                                                    values.map(({ name, description, type, userTrackingValueId }) => 
+                                                        <Box key={userTrackingValueId}>
+                                                            <span title={description}>{name} as {type === UserTrackingType.Number ? 'Number' : 'Yes / No'}</span>
+                                                        </Box>
+                                                    )
+                                                }
+                                        </TableCell>
                                         <TableCell width={1}>
                                             <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={userTrackingId}>
                                                 <MoreVertIcon />
@@ -248,7 +264,7 @@ export const Trackings: React.FC = () => {
                                     id="new-tracking-name"
                                     type="text"
                                     name="name"
-                                    value={newTracking.name}
+                                    value={newTracking.title}
                                     onChange={onChangeNewTrackingTextValue}
                                 />
                             </FormControl>
@@ -283,7 +299,7 @@ export const Trackings: React.FC = () => {
                         </Grid>
 
                         <Grid item xs={6} sm={4}>
-                            <FormControl fullWidth>
+                            {/* <FormControl fullWidth>
                                 <InputLabel id="tracking-select-type-label">Type</InputLabel>
                                 <Select
                                     labelId="tracking-select-type-label"
@@ -294,7 +310,7 @@ export const Trackings: React.FC = () => {
                                     <MenuItem value="Number">Number</MenuItem>
                                     <MenuItem value="Boolean">Yes / No </MenuItem>
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
                         </Grid>
                     </Grid>
                 </DialogContent>

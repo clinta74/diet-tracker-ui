@@ -88,34 +88,47 @@ enum VictoryType {
     NonScale = 'NonScale',
     Goal = 'Goal',
 }
-
 interface UserTracking {
     userTrackingId: number;
     userId: UserId;
-    name: string;
+    disabled: boolean;
+    title: string;
     description: string;
     occurrences: number;
-    type: UserTrackingType;
+    order: number;
     user?: User;
-    trackings?: UserDailyTracking[];
+    values?: UserTrackingValue[];
+}
+
+interface UserTrackingValue {
+    userTrackingValueId: number;
+    userTrackingId: number;
+    name: string;
+    description: string;
+    type: UserTrackingType;
+    order: number;
+    disabled: boolean;
+    tracking?: UserTracking;
+    dailyTrackingValues?: UserDailyTrackingValue[];
 }
 
 interface UserTrackingRequest {
-    name: string;
+    title: string;
     description: string;
     occurrences: number;
-    type: UserTrackingType;
+    order: number;
+    disabled: boolean;
 }
 
-interface UserDailyTracking {
+interface UserDailyTrackingValue {
     userId: UserId;
     day: string;
-    userTrackingId: number;
+    occurrence: number;
+    userTrackingValueId: number;
     value: number;
     when: string;
-    occurrence: number;
-    userDay?: UserDay;
-    tracking?: UserTracking;
+    userDay: UserDay;
+    trackingValue: UserTrackingValue;
 }
 
 interface CurrentUserDailyTracking {
