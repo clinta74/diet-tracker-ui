@@ -2,7 +2,7 @@
     "name": "Food Tracker",
     "short_name": "Food tracker",
     "lang": "en-US",
-    "start_url": "/index.html",
+    "start_url": "/",
     "display": "standalone",
     "icons": [
       {
