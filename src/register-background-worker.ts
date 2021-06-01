@@ -2,7 +2,7 @@ export const registerBackgroundWorker = () => {
     if ('serviceWorker' in navigator) {
         // Override the default scope of '/' with './', so that the registration applies
         // to the current directory and everything underneath it.
-        navigator.serviceWorker.register('service-worker.js', { scope: './' })
+        navigator.serviceWorker.register('/service-worker.js', { scope: './' })
             .then(registration => {
                 // At this point, registration has taken place.
                 // The service worker will not handle requests until this page and any
