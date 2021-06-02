@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Container, createStyles, CssBaseline, makeStyles } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import { BrowserRouter as Router } from "react-router-dom";
 import { ConfirmProvider } from 'material-ui-confirm';
 import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';
@@ -8,6 +10,20 @@ import { AlertMessage, AlertProvider } from './providers/alert-provider';
 import backgroundImage from '../img/wheat-background.jpeg';
 import { Navigation } from './components/navigation/navigation';
 import { UserPermissionProvider } from './providers/user-permission-provider';
+
+const theme = createMuiTheme({
+    palette: {
+      primary: {
+        // Purple and green play nicely together.
+        main: '#4F662B',
+      },
+      secondary: {
+        // This is green.A700 as hex.
+        main: '#A13152',
+      },
+    },
+  });
+
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -29,6 +45,7 @@ export const App: React.FC = () => {
     return (
         <React.Fragment>
             <CssBaseline />
+            <ThemeProvider theme={theme}>
             <ConfirmProvider>
                 <Box position="relative" minHeight="100vh" zIndex={1}>
                     <Box className={classes.background} />
@@ -49,6 +66,7 @@ export const App: React.FC = () => {
                     </Box>
                 </Box>
             </ConfirmProvider>
+            </ThemeProvider>
         </React.Fragment >
     );
 }

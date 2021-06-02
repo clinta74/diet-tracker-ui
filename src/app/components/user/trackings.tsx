@@ -10,8 +10,6 @@ import {
     Grid,
     IconButton,
     InputLabel,
-    ListItem,
-    ListItemText,
     Menu,
     MenuItem,
     Paper,
@@ -35,7 +33,6 @@ import { useApi } from '../../../api';
 import { FormControl } from '@material-ui/core';
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { useConfirm } from 'material-ui-confirm';
-import { List } from '@material-ui/core';
 
 const defaultTracking: UserTracking = {
     userId: '',

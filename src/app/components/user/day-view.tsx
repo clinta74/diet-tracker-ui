@@ -446,8 +446,8 @@ export const DayView: React.FC = () => {
                         </Grid>
 
 
-                        <Box display="flex" justifyContent="flex-end" my={2}>
-                            <Box display="flex" alignItems="center">
+                        <Box display="flex" justifyContent="flex-end">
+                            <Box display="flex" alignItems="center" py={4}>
                                 <Box mr={1} position="relative">
                                     <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
                                     {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
