@@ -34,10 +34,10 @@ const useStyles = makeStyles(() =>
 
 export const AddPlan: React.FC = () => {
     const classes = useStyles();
-    const { Api } = useApi();
     const commonClasses = useCommonStyles();
     const history = useHistory();
     const alert = useAlertMessage();
+    const { Api } = useApi();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [postingJob, setPostingJob] = useState(false);
 
