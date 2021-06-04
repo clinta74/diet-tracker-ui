@@ -3,17 +3,10 @@ import {
     Button,
     CircularProgress,
     createStyles,
-    FormControl,
-    Grid,
-    InputLabel,
     makeStyles,
-    MenuItem,
     Paper,
-    Select,
-    TextField,
     Typography,
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useApi } from '../../../../api';
@@ -44,12 +37,12 @@ export const EditTracking: React.FC = () => {
     const alert = useAlertMessage();
 
     const [tracking, setTracking] = useState<UserTracking>();
-    const [ postingJob, setPostingJob] = useState(false);
+    const [postingTracking, setPostingTracking] = useState(false);
 
     useEffect(() => {
         const userTrackingId = Number(params.userTrackingId)
         Api.UserTracking.getUserTracking(userTrackingId)
-            .then(({data}) => setTracking(data))
+            .then(({ data }) => setTracking(data))
             .catch(error => alert.addMessage(error));
     }, [params]);
 
@@ -58,7 +51,11 @@ export const EditTracking: React.FC = () => {
     }
 
     return (
-        <Paper>
+        <Paper className={commonClasses.paper}>
+            <Box>
+                <Typography variant="h4">Edit Tracking</Typography>
+                Please enter the information about the value you would like to track.
+            </Box>
             {
                 tracking &&
                 <React.Fragment>
@@ -66,11 +63,11 @@ export const EditTracking: React.FC = () => {
                     <Box display="flex" justifyContent="flex-end" mt={2}>
                         <Box display="flex" alignItems="center">
                             <Box mr={1}>
-                                <Button color="primary" onClick={onClickSaveTracking} disabled={postingJob}>Create</Button>
-                                {postingJob && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
+                                <Button color="primary" onClick={onClickSaveTracking} disabled={postingTracking}>Save</Button>
+                                {postingTracking && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
                             </Box>
-                            <Link to="/trackins" className={commonClasses.link}>
-                                <Button color="secondary" disabled={postingJob}>Cancel</Button>
+                            <Link to="/trackings" className={commonClasses.link}>
+                                <Button color="secondary" disabled={postingTracking}>Cancel</Button>
                             </Link>
                         </Box>
                     </Box>

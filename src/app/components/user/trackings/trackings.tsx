@@ -23,6 +23,7 @@ import { useApi } from '../../../../api';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 import { useConfirm } from 'material-ui-confirm';
 import { useHistory } from 'react-router';
+import { LinearProgress } from '@material-ui/core';
 
 export const Trackings: React.FC = () => {
     const commonClasses = useCommonStyles();
@@ -113,7 +114,11 @@ export const Trackings: React.FC = () => {
                         <TableBody>
                             {
                                 trackings &&
-                                trackings.map(({ userTrackingId, title, description, occurrences, order, disabled, values }) =>
+                                trackings.length === 0 &&
+                                <TableRow><TableCell colSpan={6}>No tracking options found.</TableCell></TableRow>
+                                ||
+                                trackings &&
+                                trackings.map(({ userTrackingId, title, description, occurrences, disabled, values }) =>
                                     <TableRow key={userTrackingId}>
                                         <TableCell>{title}</TableCell>
                                         <TableCell>{description}</TableCell>
@@ -136,6 +141,8 @@ export const Trackings: React.FC = () => {
                                         </TableCell>
                                     </TableRow>
                                 )
+                                ||
+                                <TableRow><TableCell colSpan={6}><LinearProgress /></TableCell></TableRow>
                             }
                         </TableBody>
                     </Table>

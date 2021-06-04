@@ -1,42 +1,30 @@
 import React from 'react';
 import {
     Box,
-    createStyles,
+    Button,
     Divider,
+    Fab,
     FormControl,
     Grid,
     InputLabel,
-    makeStyles,
+    List,
+    ListItem,
     MenuItem,
     Select,
     TextField,
     Typography,
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+
 
 import { useCommonStyles } from '../../common-styles';
-
-const useStyles = makeStyles(() =>
-    createStyles({
-        buttonProgress: {
-            position: 'absolute',
-            left: '-100%',
-            marginTop: -12,
-            marginLeft: -12,
-        },
-    }),
-);
-
-interface Params {
-    id: string;
-}
-
-
 interface TrackingFormProps {
     tracking: UserTracking;
     setTracking: React.Dispatch<React.SetStateAction<UserTracking>>;
 }
 
 export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTracking }) => {
+    const commonClasses = useCommonStyles();
 
     const onChangeTrackingTextValue = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { value, name } = event.target;
@@ -95,12 +83,12 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
         }
     };
 
+    const onClickAddTracking = () => {
+        console.log('Add Tracking');
+    }
+
     return (
-        <React.Fragment>
-            <Box>
-                <Typography>Tracking</Typography>
-                Please enter the information about the value you would like to track.
-            </Box>
+        <Box my={2}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
@@ -147,65 +135,78 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
 
                 <Grid item xs={12}>
                     <Box>
-                        <Typography variant="subtitle1">Values</Typography>
-                        {
-                            tracking.values &&
-                            tracking.values.map(({ name, description, type }, idx) =>
-                                <React.Fragment key={`value_${idx}`}>
-                                    <Divider />
-                                    <Box>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={12} sm={8}>
-                                                <FormControl fullWidth>
-                                                    <TextField
-                                                        label="Name"
-                                                        autoComplete="false"
-                                                        id={`new-tracking-value-name-${idx}`}
-                                                        type="text"
-                                                        name="name"
-                                                        value={name}
-                                                        onChange={e => onChangeTrackingValueTextValue(e, idx)}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
+                        <Typography variant="h6">Values</Typography>
+                        <Divider className={commonClasses.divider} />
+                        <List>
+                            {
+                                tracking.values &&
+                                tracking.values.map(({ name, description, type }, idx) =>
+                                    <ListItem key={`value_${idx}`} alignItems="center">
+                                        <Box>
+                                            <Box>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={12} sm={8}>
+                                                        <FormControl fullWidth>
+                                                            <TextField
+                                                                label="Name"
+                                                                autoComplete="false"
+                                                                id={`new-tracking-value-name-${idx}`}
+                                                                type="text"
+                                                                name="name"
+                                                                value={name}
+                                                                onChange={e => onChangeTrackingValueTextValue(e, idx)}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
 
-                                            <Grid item xs={12} sm={4}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id={`tracking-select-type-label-${idx}`}>Type</InputLabel>
-                                                    <Select
-                                                        labelId={`tracking-select-type-label-${idx}`}
-                                                        id={`tracking-select-type-${idx}`}
+                                                    <Grid item xs={12} sm={4}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id={`tracking-select-type-label-${idx}`}>Type</InputLabel>
+                                                            <Select
+                                                                labelId={`tracking-select-type-label-${idx}`}
+                                                                id={`tracking-select-type-${idx}`}
 
-                                                        value={type}
-                                                        onChange={(e) => onChangeTrackingValueTypeValue(e, idx)}
-                                                    >
-                                                        <MenuItem value="Number">Number</MenuItem>
-                                                        <MenuItem value="Boolean">Yes / No </MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
+                                                                value={type}
+                                                                onChange={(e) => onChangeTrackingValueTypeValue(e, idx)}
+                                                            >
+                                                                <MenuItem value="Number">Number</MenuItem>
+                                                                <MenuItem value="Boolean">Yes / No </MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
 
-                                            <Grid item xs={12}>
-                                                <FormControl fullWidth>
-                                                    <TextField
-                                                        label="Description"
-                                                        autoComplete="false"
-                                                        id={`new-tracking-value-desc-${idx}`}
-                                                        type="text"
-                                                        name="description"
-                                                        value={description}
-                                                        onChange={e => onChangeTrackingValueTextValue(e, idx)}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                </React.Fragment>
-                            )
-                        }
+                                                    <Grid item xs={12}>
+                                                        <FormControl fullWidth>
+                                                            <TextField
+                                                                label="Description"
+                                                                autoComplete="false"
+                                                                id={`new-tracking-value-desc-${idx}`}
+                                                                type="text"
+                                                                name="description"
+                                                                value={description}
+                                                                onChange={e => onChangeTrackingValueTextValue(e, idx)}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                            <Box my={2} textAlign="right">
+                                                <Button color="secondary">Remove Value</Button>
+                                            </Box>
+                                        </Box>
+                                    </ListItem>
+                                )
+                            }
+                        </List>
                     </Box>
                 </Grid>
             </Grid>
-        </React.Fragment>
+
+            <Box textAlign="right">
+                <Fab color="primary" title="Add Tracking Value" aria-label="add" onClick={onClickAddTracking}>
+                    <AddIcon />
+                </Fab>
+            </Box>
+        </Box>
     );
 }
