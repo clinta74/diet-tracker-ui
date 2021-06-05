@@ -20,7 +20,7 @@ import {
     CardHeader,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { format, startOfToday, addDays, parseISO, getDay } from 'date-fns';
+import { format, startOfToday, addDays, parseISO, getDay, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
 import { useHistory, useParams } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -34,6 +34,8 @@ import { Autocomplete, createFilterOptions } from '@material-ui/lab';
 import { useUser } from '../../providers/user-provider';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
+
+let autoSaveId: NodeJS.Timeout;
 
 const useStyles = makeStyles((theme: Theme) => {
     const backgroundColors = ['plum', 'lightpink', 'Khaki', 'Aquamarine', 'Wheat', 'PowderBlue', 'Seashell'];
@@ -59,6 +61,12 @@ const useStyles = makeStyles((theme: Theme) => {
         },
         formControl: {
             marginBottom: theme.spacing(1),
+        },
+        autoSave: {
+            position: 'absolute',
+            right: theme.spacing(4),
+            top: theme.spacing(6),
+            zIndex: theme.zIndex.appBar + 1,
         }
     });
 });
@@ -81,6 +89,7 @@ export const DayView: React.FC = () => {
     const [userDay, setUserDay] = useState<TrackedCurrentUserDay>();
     const [fuelings, setFuelings] = useState<Fueling[]>([]);
     const [postingDay, setPostingDay] = useState(false);
+    const [autoSaving, setAutoSaving] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
 
@@ -91,6 +100,7 @@ export const DayView: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        clearTimeout(autoSaveId);
         const day = params.day ? parseISO(params.day) : startOfToday();
         setDay(day);
         Api.Day.getDay(dateToString(day))
@@ -98,11 +108,24 @@ export const DayView: React.FC = () => {
             .catch(error => alert.addMessage(error));
     }, [params]);
 
-    useEffect(() => {
-        if(userDay?.hasChanged) {
-            console.log('data changed.', userDay.hasChanged);
-        }
-    }, [userDay?.hasChanged])
+    // useEffect(() => {
+    //     if (userDay?.hasChanged && !autoSaving) {
+    //         if (autoSaveId) clearTimeout(autoSaveId);
+    //         autoSaveId = setTimeout(async () => {
+    //             setAutoSaving(true);
+    //             try {
+    //                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
+    //                 setUserDay({ ...data, hasChanged: false });
+    //             }
+    //             catch (ex) {
+    //                 clearTimeout(autoSaveId);
+    //             }
+    //             finally {
+    //                 setAutoSaving(false);
+    //             }
+    //         }, 2000);
+    //     }
+    // }, [userDay])
 
     const onChangeWater: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
@@ -172,15 +195,18 @@ export const DayView: React.FC = () => {
                     ..._userDay as CurrentUserDay,
                     hasChanged: true,
                     fuelings: [..._userDay.fuelings.slice(0, idx),
-                    { ..._userDay.fuelings[idx], when: value ? `0001-01-01T${value}` : `0001-01-01T00:00:00` },
+                    {
+                        ..._userDay.fuelings[idx],
+                        when: value ? `0001-01-01T${value}` : null,
+                    },
                     ..._userDay.fuelings.slice(idx + 1)],
                 }
             }
         });
     }
 
-    const onChangeMeal = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
-        const { value, name } = event.target;
+    const onChangeMealName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
+        const { value } = event.target;
 
         setUserDay(_userDay => {
             if (_userDay) {
@@ -188,7 +214,29 @@ export const DayView: React.FC = () => {
                     ..._userDay as CurrentUserDay,
                     hasChanged: true,
                     meals: [..._userDay.meals.slice(0, idx),
-                    { ..._userDay.meals[idx], [name]: (name === 'when' ? `0001-01-01T${value}` : value) },
+                    {
+                        ..._userDay.meals[idx],
+                        name: value || '',
+                    },
+                    ..._userDay.meals.slice(idx + 1)],
+                }
+            }
+        });
+    }
+
+    const onChangeMealWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
+        const { value } = event.target;
+
+        setUserDay(_userDay => {
+            if (_userDay) {
+                return {
+                    ..._userDay as CurrentUserDay,
+                    hasChanged: true,
+                    meals: [..._userDay.meals.slice(0, idx),
+                    {
+                        ..._userDay.meals[idx],
+                        when: value ? `0001-01-01T${value}` : null,
+                    },
                     ..._userDay.meals.slice(idx + 1)],
                 }
             }
@@ -262,11 +310,21 @@ export const DayView: React.FC = () => {
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, -1))}`);
     }
-    
-    const filter = createFilterOptions<string>()
+
+    const filter = createFilterOptions<string>();
+
+    const dateText = formatDistanceToNowStrict(day, { addSuffix: true, unit: 'day', roundingMethod: 'floor' });
+    const formatDateText: { [key: string]: string } = {
+        '0 days ago': 'today',
+        'in 0 days': 'tomorrow',
+    }
 
     return (
         <React.Fragment>
+            {
+                autoSaving &&
+                <div className={classes.autoSave}><CircularProgress /></div>
+            }
             <Paper className={clsx([commonClasses.paper, classes.paperBackground])}>
                 <Box display="flex" alignItems="center">
                     <IconButton onClick={onClickPrevDay}>
@@ -279,6 +337,7 @@ export const DayView: React.FC = () => {
                             <Hidden smDown>{format(day, ', MMM dd')}</Hidden>
                             <Hidden mdDown>{format(day, ', yyyy')}</Hidden>
                         </Typography>
+                        <Box textAlign="center">{formatDateText[dateText] || dateText}</Box>
                     </Box>
 
                     <IconButton onClick={onClickNextDay}>
@@ -297,16 +356,16 @@ export const DayView: React.FC = () => {
                                     <CardHeader title="Fuelings" />
                                     <CardContent>
                                         {
-                                            userDay.fuelings.map((fueling, idx) =>
-                                                <Grid container spacing={2} key={`fueling_${idx}`}>
+                                            userDay.fuelings.map((fueling, idx) => {
+                                                const when = fueling.when === null ? '' : fueling.when.split('T')[1];
+                                                return <Grid container spacing={2} key={`fueling_${idx}`}>
                                                     <Grid item xs={7} sm={8} lg={9}>
                                                         <FormControl fullWidth className={classes.formControl}>
                                                             <Autocomplete
                                                                 freeSolo
                                                                 options={fuelings.map(fueling => fueling.name)}
                                                                 value={fueling.name}
-                                                                //onChange={(e, v) => onChangeFuelingName(e, v, idx)}
-                                                                onInputChange={(e, v) => onChangeFuelingName(e, v, idx) }
+                                                                onInputChange={(e, v) => onChangeFuelingName(e, v, idx)}
                                                                 filterOptions={(options, params) => {
                                                                     params.inputValue = fueling.name;
                                                                     return filter(options, params);
@@ -320,11 +379,11 @@ export const DayView: React.FC = () => {
                                                     </Grid>
                                                     <Grid item xs={5} sm={4} lg={3}>
                                                         <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" name="when" autoComplete="off" value={fueling.when === '0001-01-01T00:00:00' ? '' : fueling.when.split('T')[1]} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
+                                                            <TextField type="time" name="when" autoComplete="off" value={when} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
                                                         </FormControl>
                                                     </Grid>
                                                 </Grid>
-                                            )
+                                            })
                                         }
                                     </CardContent>
                                 </Card>
@@ -335,19 +394,21 @@ export const DayView: React.FC = () => {
                                     <CardHeader title="Lean and Green" />
                                     <CardContent>
                                         {
-                                            userDay.meals.map((meal, idx) =>
-                                                <Grid container spacing={2} key={`meal_${idx}`}>
+                                            userDay.meals.map((meal, idx) => {
+                                                const when = meal.when === null ? '' : meal.when.split('T')[1];
+                                                return <Grid container spacing={2} key={`meal_${idx}`}>
                                                     <Grid item xs={7} sm={8} lg={9}>
                                                         <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField value={meal.name} name="name" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
+                                                            <TextField value={meal.name} name="name" onChange={e => onChangeMealName(e, idx)} disabled={postingDay} />
                                                         </FormControl>
                                                     </Grid>
                                                     <Grid item xs={5} sm={4} lg={3}>
                                                         <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" autoComplete="false" value={meal.when === '0001-01-01T00:00:00' ? '' : meal.when.split('T')[1]} name="when" onChange={e => onChangeMeal(e, idx)} disabled={postingDay} />
+                                                            <TextField type="time" autoComplete="false" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={postingDay} />
                                                         </FormControl>
                                                     </Grid>
                                                 </Grid>
+                                            }
                                             )
                                         }
                                     </CardContent>

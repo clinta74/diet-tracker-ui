@@ -46,7 +46,7 @@ interface UserFueling {
     userId: UserId;
     day: string;
     name: string;
-    when: string;
+    when: string | null;
     userDay: UserDay;
 }
 interface UserMeal {
@@ -54,7 +54,7 @@ interface UserMeal {
     userId: UserId;
     day: string;
     name: string;
-    when: string;
+    when: string | null;
     userDay: UserDay;
 }
 interface UserPlan {
