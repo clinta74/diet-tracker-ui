@@ -1,3 +1,12 @@
+type UserId = string;
+enum VictoryType {
+    NonScale = 'NonScale',
+    Goal = 'Goal',
+}
+enum UserTrackingType {
+    Number = 'Number',
+    Boolean = 'Boolean',
+}
 interface Fueling {
     fuelingId: number;
     name: string;
@@ -19,7 +28,6 @@ interface User {
     userDays?: UserDay[];
     userPlans?: UserPlan[];
 }
-
 interface CurrentUser {
     userId: UserId;
     firstName: string;
@@ -83,11 +91,6 @@ interface Victory {
     type: VictoryType;
     user?: User;
 }
-
-enum VictoryType {
-    NonScale = 'NonScale',
-    Goal = 'Goal',
-}
 interface UserTracking {
     userTrackingId: number;
     userId: UserId;
@@ -99,7 +102,6 @@ interface UserTracking {
     user?: User;
     values?: UserTrackingValue[];
 }
-
 interface UserTrackingValue {
     userTrackingValueId: number;
     userTrackingId: number;
@@ -111,7 +113,6 @@ interface UserTrackingValue {
     tracking?: UserTracking;
     dailyTrackingValues?: UserDailyTrackingValue[];
 }
-
 interface UserTrackingRequest {
     title: string;
     description: string;
@@ -119,38 +120,17 @@ interface UserTrackingRequest {
     order: number;
     disabled: boolean;
 }
-
 interface UserDailyTrackingValue {
     userId: UserId;
     day: string;
     occurrence: number;
     userTrackingValueId: number;
     value: number;
-    when: string;
-    userDay: UserDay;
-    trackingValue: UserTrackingValue;
+    when: string | null;
 }
-
-interface CurrentUserDailyTracking {
-    userId: UserId;
-    day: string;
-    value: number;
-    when: string;
+interface UserDailyTrackingValueRequest {
     occurrence: number;
-    userTrackingId: number;
-    name: string;
-    description: string;
-}
-
-enum UserTrackingType
-{
-    Number = 'Number',
-    Boolean = 'Boolean',
-}
-
-interface CurrentUserDailyTrackingUpdateRequest {
+    userTrackingValueId: number;
     value: number;
-    when: string;
+    when: string | null;
 }
-
-type UserId = string;

@@ -20,7 +20,14 @@ import {
     CardHeader,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { format, startOfToday, addDays, parseISO, getDay, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
+import {
+    format,
+    startOfToday,
+    addDays,
+    parseISO,
+    getDay,
+    formatDistanceToNowStrict
+} from 'date-fns';
 import { useHistory, useParams } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -32,10 +39,9 @@ import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { Autocomplete, createFilterOptions } from '@material-ui/lab';
 import { useUser } from '../../providers/user-provider';
+import { NumberTrackingCard } from './tracking-card';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
-
-let autoSaveId: NodeJS.Timeout;
 
 const useStyles = makeStyles((theme: Theme) => {
     const backgroundColors = ['plum', 'lightpink', 'Khaki', 'Aquamarine', 'Wheat', 'PowderBlue', 'Seashell'];
@@ -75,8 +81,6 @@ interface Params {
     day: string;
 }
 
-interface TrackedCurrentUserDay extends CurrentUserDay { hasChanged: boolean }
-
 export const DayView: React.FC = () => {
     const params = useParams<Params>();
     const commonClasses = useCommonStyles();
@@ -86,10 +90,12 @@ export const DayView: React.FC = () => {
     const { user } = useUser();
 
     const [day, setDay] = useState<Date>(startOfToday());
-    const [userDay, setUserDay] = useState<TrackedCurrentUserDay>();
+    const [userDay, setUserDay] = useState<CurrentUserDay>();
+    const [hasChanged, setHasChanged] = useState(false);
     const [fuelings, setFuelings] = useState<Fueling[]>([]);
     const [postingDay, setPostingDay] = useState(false);
-    const [autoSaving, setAutoSaving] = useState(false);
+    const [trackings, setTrackings] = useState<UserTracking[]>([]);
+    const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
 
@@ -97,35 +103,25 @@ export const DayView: React.FC = () => {
         Api.Fueling.getFuelings()
             .then(({ data }) => setFuelings(data.sort((a, b) => a.name > b.name ? 1 : -1)))
             .catch(error => alert.addMessage(error));
+        Api.UserTracking.getActiveUserTrackings()
+            .then(({ data }) => setTrackings(data))
+            .catch(error => alert.addMessage(error));
     }, []);
 
     useEffect(() => {
-        clearTimeout(autoSaveId);
         const day = params.day ? parseISO(params.day) : startOfToday();
         setDay(day);
         Api.Day.getDay(dateToString(day))
-            .then(({ data }) => setUserDay({ ...data, hasChanged: false }))
+            .then(({ data }) => {
+                setUserDay(data);
+                setHasChanged(false)
+            })
+            .catch(error => alert.addMessage(error));
+
+        Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
+            .then(({ data }) => setTrackingValues(data))
             .catch(error => alert.addMessage(error));
     }, [params]);
-
-    // useEffect(() => {
-    //     if (userDay?.hasChanged && !autoSaving) {
-    //         if (autoSaveId) clearTimeout(autoSaveId);
-    //         autoSaveId = setTimeout(async () => {
-    //             setAutoSaving(true);
-    //             try {
-    //                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-    //                 setUserDay({ ...data, hasChanged: false });
-    //             }
-    //             catch (ex) {
-    //                 clearTimeout(autoSaveId);
-    //             }
-    //             finally {
-    //                 setAutoSaving(false);
-    //             }
-    //         }, 2000);
-    //     }
-    // }, [userDay])
 
     const onChangeWater: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
@@ -135,10 +131,10 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             return {
                 ..._userDay as CurrentUserDay,
-                water,
-                hasChanged: true,
+                water
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeCondiments: React.ChangeEventHandler<HTMLInputElement> = event => {
@@ -150,9 +146,9 @@ export const DayView: React.FC = () => {
             return {
                 ..._userDay as CurrentUserDay,
                 condiments,
-                hasChanged: true,
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeWeight: React.ChangeEventHandler<HTMLInputElement> = event => {
@@ -163,18 +159,17 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             return {
                 ..._userDay as CurrentUserDay,
-                weight,
-                hasChanged: true,
+                weight
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeFuelingName = (event: React.ChangeEvent<unknown>, value: string | null, idx: number) => {
         setUserDay(_userDay => {
             if (_userDay) {
                 return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
+                    ..._userDay,
                     fuelings: [..._userDay.fuelings.slice(0, idx),
                     {
                         ..._userDay.fuelings[idx],
@@ -184,6 +179,7 @@ export const DayView: React.FC = () => {
                 }
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeFuelingWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
@@ -192,8 +188,7 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             if (_userDay) {
                 return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
+                    ..._userDay,
                     fuelings: [..._userDay.fuelings.slice(0, idx),
                     {
                         ..._userDay.fuelings[idx],
@@ -203,6 +198,7 @@ export const DayView: React.FC = () => {
                 }
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeMealName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
@@ -211,8 +207,7 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             if (_userDay) {
                 return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
+                    ..._userDay,
                     meals: [..._userDay.meals.slice(0, idx),
                     {
                         ..._userDay.meals[idx],
@@ -222,6 +217,7 @@ export const DayView: React.FC = () => {
                 }
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeMealWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
@@ -230,8 +226,7 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             if (_userDay) {
                 return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
+                    ..._userDay,
                     meals: [..._userDay.meals.slice(0, idx),
                     {
                         ..._userDay.meals[idx],
@@ -241,6 +236,7 @@ export const DayView: React.FC = () => {
                 }
             }
         });
+        setHasChanged(true);
     }
 
     const onChangeNotes: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = event => {
@@ -249,20 +245,62 @@ export const DayView: React.FC = () => {
         setUserDay(_userDay => {
             if (_userDay) {
                 return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
+                    ..._userDay,
                     notes: value || '',
                 }
             }
         });
+        setHasChanged(true);
     }
 
+    const waterTarget = user.waterTarget || 64;
+    const waterSize = user.waterSize || 8;
+    const waterMarks: boolean[] = new Array(Math.ceil(waterTarget / waterSize));
+    if (userDay) {
+        const end = Math.floor(userDay.water / waterSize);
+        waterMarks.fill(false);
+        waterMarks.fill(true, 0, end);
+    }
+
+    const onClickWaterMark = (event: React.MouseEvent, idx: number) => {
+        setUserDay(_userDay => {
+            if (_userDay) {
+                const water = (_userDay.water - _userDay.water % waterSize) <= (waterSize * idx + 1) ? _userDay.water + waterSize - _userDay.water % waterSize : _userDay.water - waterSize - _userDay.water % waterSize;
+                return {
+                    ..._userDay,
+                    water,
+                }
+            }
+        });
+        setHasChanged(true);
+    }
+
+    const onChangeTrackingValues = (values: UserDailyTrackingValue[]) => {
+        setTrackingValues(trackingValues => {
+            const filtered = trackingValues.filter(tv => !values.some(v => v.userTrackingValueId === tv.userTrackingValueId && v.occurrence === tv.occurrence));
+            return [
+                ...filtered,
+                ...values,
+            ]
+        });
+        setHasChanged(true);
+    }
+
+    // Save and reset calls
     const onClickSave = async () => {
-        if (userDay && userDay.hasChanged) {
+        if (userDay && hasChanged) {
             setPostingDay(true);
             try {
                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-                setUserDay({ ...data, hasChanged: false });
+                setUserDay(data);
+                const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
+                    userTrackingValueId,
+                    occurrence,
+                    value,
+                    when,
+                }));
+                await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
+                setHasChanged(false);
             }
             catch (error) {
                 alert.addMessage(error);
@@ -275,30 +313,14 @@ export const DayView: React.FC = () => {
 
     const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
         Api.Day.getDay(dateToString(day))
-            .then(({ data }) => setUserDay({ ...data, hasChanged: false }))
+            .then(({ data }) => {
+                setUserDay(data);
+                setHasChanged(false);
+            })
             .catch(error => alert.addMessage(error));
-    }
-
-    const waterTarget = user.waterTarget || 64;
-    const waterSize = user.waterSize || 8;
-    const waterMarks: boolean[] = new Array(Math.ceil(waterTarget / waterSize));
-    if (userDay) {
-        const end = Math.floor(userDay.water / waterSize);
-        waterMarks.fill(false);
-        waterMarks.fill(true, 0, end);
-    }
-
-    const onClickWaterMark: React.MouseEventHandler = () => {
-        setUserDay(_userDay => {
-            if (_userDay) {
-                const water = _userDay.water + waterSize - _userDay.water % waterSize;
-                return {
-                    ..._userDay as CurrentUserDay,
-                    hasChanged: true,
-                    water,
-                }
-            }
-        });
+        Api.UserTracking.getActiveUserTrackings()
+            .then(({ data }) => setTrackings(data))
+            .catch(error => alert.addMessage(error));
     }
 
     const onClickNextDay = async () => {
@@ -321,10 +343,6 @@ export const DayView: React.FC = () => {
 
     return (
         <React.Fragment>
-            {
-                autoSaving &&
-                <div className={classes.autoSave}><CircularProgress /></div>
-            }
             <Paper className={clsx([commonClasses.paper, classes.paperBackground])}>
                 <Box display="flex" alignItems="center">
                     <IconButton onClick={onClickPrevDay}>
@@ -470,8 +488,8 @@ export const DayView: React.FC = () => {
                                                     waterMarks.map((mark, idx) =>
                                                         <React.Fragment key={idx}>
                                                             {
-                                                                mark && <LocalDrinkIcon className={classes.waterFill} />
-                                                                || <LocalDrinkIcon onClick={onClickWaterMark} />
+                                                                mark && <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} className={classes.waterFill} />
+                                                                || <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} />
                                                             }
                                                         </React.Fragment>
                                                     )
@@ -491,6 +509,23 @@ export const DayView: React.FC = () => {
                                         </FormControl>
                                     </CardContent>
                                 </Card>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    {
+                                        trackings.length &&
+                                        trackings.map(tracking => {
+                                            const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
+                                            const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
+                                            return (
+                                                <Grid item xs={12} sm={6} md={4} key={`tracking-${tracking.userTrackingId}`}>
+                                                    <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
+                                                </Grid>
+                                            );
+                                        })
+                                    }
+                                </Grid>
                             </Grid>
 
 

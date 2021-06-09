@@ -47,6 +47,7 @@ export const EditTracking: React.FC = () => {
     }, [params]);
 
     const onClickSaveTracking = () => {
+        setPostingTracking(true);
         console.log('Save');
     }
 

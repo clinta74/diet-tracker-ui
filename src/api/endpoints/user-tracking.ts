@@ -5,8 +5,11 @@ const BASE_URL = 'user-tracking'
 export type UserTrackingEndpoints = ReturnType<typeof getUserTrackingEndpoints>;
 
 export const getUserTrackingEndpoints = (client: AxiosInstance) => ({
-    getActiveUserTrackings: () => 
+    getUserTrackings: () => 
         client.get<UserTracking[]>(`user-trackings`),
+
+    getActiveUserTrackings: () => 
+        client.get<UserTracking[]>(`user-trackings/active`),
 
     getUserTracking: (userTrackingId: number) =>
         client.get<UserTracking>(`${BASE_URL}/${userTrackingId}`),

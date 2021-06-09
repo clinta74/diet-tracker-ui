@@ -50,6 +50,7 @@ export const AddTracking: React.FC = () => {
     const [postingTracking, setPostingTracking] = useState(false);
 
     const onClickSaveTracking = () => {
+        setPostingTracking(true);
         console.log('Save');
     }
     
