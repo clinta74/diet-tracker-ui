@@ -15,10 +15,10 @@ export const getUserTrackingEndpoints = (client: AxiosInstance) => ({
         client.get<UserTracking>(`${BASE_URL}/${userTrackingId}`),
 
     addUserTracking: (userTracking: UserTrackingRequest) =>
-        client.post(`user-tracking`, userTracking),
+        client.post<UserTracking>(`user-tracking`, userTracking),
     
     updateUserTracking: (userTrackingId: number, userTracking: UserTrackingRequest) =>
-        client.put(`user-tracking/${userTrackingId}`, userTracking),
+        client.put<UserTracking>(`user-tracking/${userTrackingId}`, userTracking),
 
     deleteUserTracking: (userTrackingId: number) =>
         client.delete(`user-tracking/${userTrackingId}`),

@@ -8,6 +8,9 @@ export const getUserDailyTrackingEndpoints = (client: AxiosInstance) => ({
     getUserDailyTrackingValues: (day: string) =>
         client.get<UserDailyTrackingValue[]>(`${baseUrl}/${day}`),
 
+    addUserDailyTrackingValue: (values: UserDailyTrackingValueRequest[]) =>
+        client.post(`${baseUrl}`, values),
+
     updateUserDailyTrackingValue: (day: string, values: UserDailyTrackingValueRequest[]) =>
         client.put(`${baseUrl}/${day}`, values)
 });

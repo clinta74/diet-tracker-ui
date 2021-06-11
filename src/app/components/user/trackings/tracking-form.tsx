@@ -7,14 +7,13 @@ import {
     FormControl,
     Grid,
     InputLabel,
-    List,
-    ListItem,
     MenuItem,
     Select,
     TextField,
     Typography,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 
 
 import { useCommonStyles } from '../../common-styles';
@@ -84,7 +83,48 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
     };
 
     const onClickAddTracking = () => {
-        console.log('Add Tracking');
+        const defaultValue = {
+            userTrackingValueId: 0,
+            userTrackingId: 0,
+            name: '',
+            description: '',
+            order: tracking.values ? tracking.values.length + 1 : 1,
+            type: UserTrackingType.Number,
+            disabled: false,
+        }
+
+        if (tracking.values) {
+            const values = [
+                ...tracking.values,
+                defaultValue,
+            ]
+
+            setTracking(tracking => ({
+                ...tracking,
+                values,
+            }));
+        }
+        else {
+            setTracking(tracking => ({
+                ...tracking,
+                values: [defaultValue],
+            }));
+        }
+    }
+
+    const onClickRemoveTracking = (event: React.MouseEvent, idx: number) => {
+        if (tracking.values) {
+
+            const values = [
+                ...tracking.values.slice(0, idx),
+                ...tracking.values.slice(idx + 1)
+            ]
+
+            setTracking(tracking => ({
+                ...tracking,
+                values
+            }));
+        }
     }
 
     return (
@@ -93,12 +133,12 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                 <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
                         <TextField
-                            label="Name"
+                            label="Title"
                             autoComplete="false"
                             autoFocus
                             id="new-tracking-name"
                             type="text"
-                            name="name"
+                            name="title"
                             value={tracking.title}
                             onChange={onChangeTrackingTextValue}
                         />
@@ -137,11 +177,11 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                     <Box>
                         <Typography variant="h6">Values</Typography>
                         <Divider className={commonClasses.divider} />
-                        <List>
+                        <Grid container spacing={2}>
                             {
                                 tracking.values &&
-                                tracking.values.map(({ name, description, type }, idx) =>
-                                    <ListItem key={`value_${idx}`} alignItems="center">
+                                tracking.values.map(({ name, description, type, order }, idx) =>
+                                    <Grid item key={`value_${idx}`} xs={12} sm={6}>
                                         <Box>
                                             <Box>
                                                 <Grid container spacing={2}>
@@ -191,13 +231,13 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                 </Grid>
                                             </Box>
                                             <Box my={2} textAlign="right">
-                                                <Button color="secondary">Remove Value</Button>
+                                                <Button color="secondary" onClick={(e => onClickRemoveTracking(e, idx))}>Remove Value</Button>
                                             </Box>
                                         </Box>
-                                    </ListItem>
+                                    </Grid>
                                 )
                             }
-                        </List>
+                        </Grid>
                     </Box>
                 </Grid>
             </Grid>

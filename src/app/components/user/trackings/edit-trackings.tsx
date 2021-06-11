@@ -8,7 +8,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { useApi } from '../../../../api';
 import { useAlertMessage } from '../../../providers/alert-provider';
 import { useCommonStyles } from '../../common-styles';
@@ -35,6 +35,7 @@ export const EditTracking: React.FC = () => {
     const params = useParams<Params>();
     const { Api } = useApi();
     const alert = useAlertMessage();
+    const history = useHistory();
 
     const [tracking, setTracking] = useState<UserTracking>();
     const [postingTracking, setPostingTracking] = useState(false);
@@ -47,8 +48,14 @@ export const EditTracking: React.FC = () => {
     }, [params]);
 
     const onClickSaveTracking = () => {
-        setPostingTracking(true);
-        console.log('Save');
+        if (tracking) {
+            setPostingTracking(true);
+
+            Api.UserTracking.updateUserTracking(tracking.userTrackingId, tracking)
+                .then(() => history.push('/trackings'))
+                .catch(error => alert.addMessage(error))
+                .finally(() => setPostingTracking(false));
+        }
     }
 
     return (

@@ -8,8 +8,10 @@ import {
     Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useApi } from '../../../../api';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
+import { useAlertMessage } from '../../../providers/alert-provider';
 import { useCommonStyles } from '../../common-styles';
 import { TrackingForm } from './tracking-form';
 
@@ -46,18 +48,27 @@ const useStyles = makeStyles(() =>
 export const AddTracking: React.FC = () => {
     const classes = useStyles();
     const commonClasses = useCommonStyles();
+    const { Api } = useApi();
+    const alert = useAlertMessage();
     const [tracking, setTracking] = useState<UserTracking>(defaultTracking);
     const [postingTracking, setPostingTracking] = useState(false);
+    const history = useHistory();
 
     const onClickSaveTracking = () => {
-        setPostingTracking(true);
-        console.log('Save');
+        if (tracking) {
+            setPostingTracking(true);
+
+            Api.UserTracking.addUserTracking(tracking)
+                .then(() => history.push('/trackings'))
+                .catch(error => alert.addMessage(error))
+                .finally(() => setPostingTracking(false));
+        }
     }
     
     return (
         <Paper className={commonClasses.paper}>
             <Box>
-                <Typography variant="h4">Edit Tracking</Typography>
+                <Typography variant="h4">Add Tracking</Typography>
                 Please enter the information about the value you would like to track.
             </Box>
             {
