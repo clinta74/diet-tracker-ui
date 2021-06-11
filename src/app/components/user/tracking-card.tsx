@@ -41,7 +41,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         const numValue = Number(value);
 
         if (numValue) {
-            const idx = values.findIndex(value => value.occurrence === occurrence)
+            const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId)
             onChange([
                 ...values.slice(0, idx),
                 {
@@ -57,7 +57,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     const onChangeMealWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, occurrence: number, userTrackingValueId: number) => {
         const { value } = event.target;
-        const idx = values.findIndex(value => value.occurrence === occurrence)
+        const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId)
         onChange([
             ...values.slice(0, idx),
             {
@@ -93,7 +93,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                 const whenValue = when === null || when === undefined ? '' : when.split('T')[1];
                                 return (
                                     <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}`}>
-                                        <Grid item xs={12} sm={7} md={8}>
+                                        <Grid item xs={12} md={8}>
                                             {
                                                 type === UserTrackingType.Number &&
                                                 <FormControl fullWidth className={classes.formControl}>
@@ -111,7 +111,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                             }
                                         </Grid>
 
-                                        <Grid item xs={12} sm={5} md={4}>
+                                        <Grid item xs={12} md={4}>
                                             <FormControl fullWidth className={classes.formControl}>
                                                 <TextField
                                                     type="time"
