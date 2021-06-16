@@ -180,7 +180,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                         <Grid container spacing={2}>
                             {
                                 tracking.values &&
-                                tracking.values.map(({ name, description, type, order }, idx) =>
+                                tracking.values.map(({ name, description, type }, idx) =>
                                     <Grid item key={`value_${idx}`} xs={12} sm={6}>
                                         <Box>
                                             <Box>

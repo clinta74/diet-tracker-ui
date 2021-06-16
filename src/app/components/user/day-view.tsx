@@ -19,6 +19,9 @@ import {
     CardContent,
     CardHeader,
 } from '@material-ui/core';
+import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
+import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+
 import clsx from 'clsx';
 import {
     format,
@@ -34,6 +37,11 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import LocalDrinkIcon from '@material-ui/icons/LocalDrinkOutlined';
+import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+import RestaurantOutlinedIcon from '@material-ui/icons/RestaurantOutlined';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
+
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
@@ -73,7 +81,12 @@ const useStyles = makeStyles((theme: Theme) => {
             right: theme.spacing(4),
             top: theme.spacing(6),
             zIndex: theme.zIndex.appBar + 1,
-        }
+        },
+        speedDial: {
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+        },
     });
 });
 
@@ -89,6 +102,7 @@ export const DayView: React.FC = () => {
     const { Api } = useApi();
     const { user } = useUser();
 
+    const [open, setOpen] = useState(false);
     const [day, setDay] = useState<Date>(startOfToday());
     const [userDay, setUserDay] = useState<CurrentUserDay>();
     const [hasChanged, setHasChanged] = useState(false);
@@ -122,6 +136,14 @@ export const DayView: React.FC = () => {
             .then(({ data }) => setTrackingValues(data))
             .catch(error => alert.addMessage(error));
     }, [params]);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
 
     const onChangeWater: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
@@ -323,6 +345,18 @@ export const DayView: React.FC = () => {
             .catch(error => alert.addMessage(error));
     }
 
+    const onClickAddNote: React.MouseEventHandler<HTMLDivElement> = () => {
+        setUserDay(_userDay => {
+            if (_userDay) {
+                return ({
+                    ..._userDay,
+                    notes: '',
+                });
+            }
+        });
+        handleClose();
+    }
+
     const onClickNextDay = async () => {
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, 1))}`);
@@ -519,7 +553,7 @@ export const DayView: React.FC = () => {
                                             const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
                                             const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
                                             return (
-                                                <Grid item xs={12} sm={6} md={4} key={`tracking-${tracking.userTrackingId}`}>
+                                                <Grid item xs={12} md={6} xl={4} key={`tracking-${tracking.userTrackingId}`}>
                                                     <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
                                                 </Grid>
                                             );
@@ -527,30 +561,70 @@ export const DayView: React.FC = () => {
                                     }
                                 </Grid>
                             </Grid>
-
-
-                            <Grid item xs={12}>
-                                <Card className={classes.card}>
-                                    <CardHeader title="Notes" />
-                                    <CardContent>
-                                        <FormControl fullWidth>
-                                            <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
-                                        </FormControl>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            {
+                                userDay.notes !== null &&
+                                <Grid item xs={12} md={6}>
+                                    <Card className={classes.card}>
+                                        <CardHeader title="Notes" />
+                                        <CardContent>
+                                            <FormControl fullWidth>
+                                                <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
+                                            </FormControl>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            }
                         </Grid>
 
 
-                        <Box display="flex" justifyContent="flex-end">
+                        <Box display="flex" justifyContent="flex-end" alignItems="center">
                             <Box display="flex" alignItems="center" py={4}>
                                 <Box mr={1} position="relative">
                                     <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
                                     {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
                                 </Box>
-                                <Box>
+                                <Box mr={1}>
                                     <Button color="secondary" onClick={onClickReset} disabled={postingDay}>Reset</Button>
                                 </Box>
+                            </Box>
+                            <Box position="relative" height="56px" width="56px">
+                                <SpeedDial
+                                    className={classes.speedDial}
+                                    ariaLabel="Day Speed dial"
+                                    icon={<SpeedDialIcon />}
+                                    onClose={handleClose}
+                                    onOpen={handleOpen}
+                                    open={open}
+                                    direction="up"
+                                >
+                                    <SpeedDialAction
+                                        key="add-victory"
+                                        icon={<CakeOutlinedIcon />}
+                                        tooltipTitle="Add Victory"
+                                        onClick={handleClose}
+                                    />
+
+                                    <SpeedDialAction
+                                        key="add-notes"
+                                        icon={<AssignmentOutlinedIcon />}
+                                        tooltipTitle="Add Notes"
+                                        onClick={onClickAddNote}
+                                    />
+
+                                    <SpeedDialAction
+                                        key="add-fueling"
+                                        icon={<ShoppingBasketIcon />}
+                                        tooltipTitle="Add Fueling"
+                                        onClick={handleClose}
+                                    />
+
+                                    <SpeedDialAction
+                                        key="add-meals"
+                                        icon={<RestaurantOutlinedIcon />}
+                                        tooltipTitle="Add Lean and Green"
+                                        onClick={handleClose}
+                                    />
+                                </SpeedDial>
                             </Box>
                         </Box>
                     </form>

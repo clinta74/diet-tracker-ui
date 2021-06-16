@@ -55,7 +55,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         }
     }
 
-    const onChangeMealWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, occurrence: number, userTrackingValueId: number) => {
+    const onChangeWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, occurrence: number, userTrackingValueId: number) => {
         const { value } = event.target;
         const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId)
         onChange([
@@ -120,7 +120,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                                     value={whenValue}
                                                     name="when"
                                                     label=" "
-                                                    onChange={e => onChangeMealWhen(e, occurrence, userTrackingValueId)}
+                                                    onChange={e => onChangeWhen(e, occurrence, userTrackingValueId)}
                                                     disabled={disable} />
                                             </FormControl>
                                         </Grid>
