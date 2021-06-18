@@ -41,6 +41,7 @@ import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import RestaurantOutlinedIcon from '@material-ui/icons/RestaurantOutlined';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
+import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
 
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
@@ -48,6 +49,8 @@ import { useAlertMessage } from '../../providers/alert-provider';
 import { Autocomplete, createFilterOptions } from '@material-ui/lab';
 import { useUser } from '../../providers/user-provider';
 import { NumberTrackingCard } from './tracking-card';
+import { VictoriesCard } from './victories-card';
+import { VictoryType } from '../../../api/endpoints/victory';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -308,6 +311,19 @@ export const DayView: React.FC = () => {
         setHasChanged(true);
     }
 
+    const onChangeVictories = (victories: Victory[]) => {
+
+        setUserDay(_userDay => {
+            if (_userDay) {
+                return {
+                    ..._userDay,
+                    victories: [...victories],
+                }
+            }
+        });
+        setHasChanged(true);
+    }
+
     // Save and reset calls
     const onClickSave = async () => {
         if (userDay && hasChanged) {
@@ -346,11 +362,35 @@ export const DayView: React.FC = () => {
     }
 
     const onClickAddNote: React.MouseEventHandler<HTMLDivElement> = () => {
+        if (!userDay?.notes) {
+            setUserDay(_userDay => {
+                if (_userDay) {
+                    return ({
+                        ..._userDay,
+                        notes: '',
+                    });
+                }
+            });
+        }
+        handleClose();
+    }
+
+    const onClickAddVictory: React.MouseEventHandler<HTMLDivElement> = () => {
         setUserDay(_userDay => {
             if (_userDay) {
+                const victories: Victory[] = [
+                    ..._userDay.victories,
+                    {
+                        userId: '',
+                        victoryId: 0,
+                        name: '',
+                        when: dateToString(day),
+                        type: VictoryType.NonScale,
+                    }
+                ]
                 return ({
                     ..._userDay,
-                    notes: '',
+                    victories,
                 });
             }
         });
@@ -553,7 +593,7 @@ export const DayView: React.FC = () => {
                                             const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
                                             const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
                                             return (
-                                                <Grid item xs={12} md={6} xl={4} key={`tracking-${tracking.userTrackingId}`}>
+                                                <Grid item xs={12} md={ tracking.useTime ? 4 : 3 } xl={3} key={`tracking-${tracking.userTrackingId}`}>
                                                     <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
                                                 </Grid>
                                             );
@@ -561,6 +601,14 @@ export const DayView: React.FC = () => {
                                     }
                                 </Grid>
                             </Grid>
+
+                            {
+                                userDay.victories.length > 0 &&
+                                <Grid item xs={12} md={6}>
+                                    <VictoriesCard victories={userDay.victories} disable={postingDay} onChange={onChangeVictories} />
+                                </Grid>
+                            }
+
                             {
                                 userDay.notes !== null &&
                                 <Grid item xs={12} md={6}>
@@ -601,15 +649,18 @@ export const DayView: React.FC = () => {
                                         key="add-victory"
                                         icon={<CakeOutlinedIcon />}
                                         tooltipTitle="Add Victory"
-                                        onClick={handleClose}
+                                        onClick={onClickAddVictory}
                                     />
 
-                                    <SpeedDialAction
-                                        key="add-notes"
-                                        icon={<AssignmentOutlinedIcon />}
-                                        tooltipTitle="Add Notes"
-                                        onClick={onClickAddNote}
-                                    />
+                                    {
+                                        userDay.notes === null &&
+                                        <SpeedDialAction
+                                            key="add-notes"
+                                            icon={<NoteOutlinedIcon />}
+                                            tooltipTitle="Add Notes"
+                                            onClick={onClickAddNote}
+                                        />
+                                    }
 
                                     <SpeedDialAction
                                         key="add-fueling"

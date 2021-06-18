@@ -34,7 +34,7 @@ interface TrackingCardProps {
 export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, values, disable, onChange }) => {
     const classes = useStyles();
 
-    const { title, description } = tracking;
+    const { title, description, useTime } = tracking;
 
     const onChangeValue = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, occurrence: number, userTrackingValueId: number) => {
         const { value } = event.target;
@@ -93,7 +93,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                 const whenValue = when === null || when === undefined ? '' : when.split('T')[1];
                                 return (
                                     <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}`}>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item xs={12} md={useTime ? 8 : 12}>
                                             {
                                                 type === UserTrackingType.Number &&
                                                 <FormControl fullWidth className={classes.formControl}>
@@ -111,19 +111,22 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                             }
                                         </Grid>
 
-                                        <Grid item xs={12} md={4}>
-                                            <FormControl fullWidth className={classes.formControl}>
-                                                <TextField
-                                                    type="time"
-                                                    autoComplete="false"
-                                                    id={`${name}_when_${occurrence}`}
-                                                    value={whenValue}
-                                                    name="when"
-                                                    label=" "
-                                                    onChange={e => onChangeWhen(e, occurrence, userTrackingValueId)}
-                                                    disabled={disable} />
-                                            </FormControl>
-                                        </Grid>
+                                        {
+                                            useTime &&
+                                            <Grid item xs={12} md={4}>
+                                                <FormControl fullWidth className={classes.formControl}>
+                                                    <TextField
+                                                        type="time"
+                                                        autoComplete="false"
+                                                        id={`${name}_when_${occurrence}`}
+                                                        value={whenValue}
+                                                        name="when"
+                                                        label=" "
+                                                        onChange={e => onChangeWhen(e, occurrence, userTrackingValueId)}
+                                                        disabled={disable} />
+                                                </FormControl>
+                                            </Grid>
+                                        }
                                     </Grid>
                                 );
                             });

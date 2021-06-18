@@ -48,6 +48,7 @@ interface UserDay {
     fuelings: UserFueling[];
     meals: UserMeal[];
     notes?: string;
+    victories: Victory[];
 }
 interface UserFueling {
     userFuelingId: number;
@@ -99,6 +100,7 @@ interface UserTracking {
     description: string;
     occurrences: number;
     order: number;
+    useTime: boolean;
     user?: User;
     values?: UserTrackingValue[];
 }

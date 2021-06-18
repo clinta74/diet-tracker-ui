@@ -23,6 +23,7 @@ const defaultTracking: UserTracking = {
     description: '',
     occurrences: 0,
     order: 0,
+    useTime: false,
     values: [{
         userTrackingValueId: 0,
         userTrackingId: 0,
