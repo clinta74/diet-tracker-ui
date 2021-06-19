@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
     Box,
     FormControl,
@@ -134,17 +133,20 @@ export const DayView: React.FC = () => {
     useEffect(() => {
         const day = params.day ? parseISO(params.day) : startOfToday();
         setDay(day);
-        Api.Day.getDay(dateToString(day))
-            .then(({ data }) => {
-                setUserDay(data);
-                setHasChanged(false)
+        loadValues(day);
+    }, [params]);
+
+    const loadValues = (day: Date) => {
+        Promise.all([
+            Api.Day.getDay(dateToString(day)),
+            Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
+        ])
+            .then(([currentUserDay, userDailyTracking]) => {
+                setUserDay(currentUserDay.data);
+                setTrackingValues(userDailyTracking.data)
             })
             .catch(error => alert.addMessage(error));
-
-        Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
-            .then(({ data }) => setTrackingValues(data))
-            .catch(error => alert.addMessage(error));
-    }, [params]);
+    }
 
     const handleClose = () => {
         setOpen(false);
@@ -342,16 +344,7 @@ export const DayView: React.FC = () => {
     }
 
     const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
-        Promise.all([
-            Api.Day.getDay(dateToString(day)),
-            Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
-        ])
-            .then(([currentUserDay, userDailyTracking]) => {
-                setUserDay(currentUserDay.data);
-                setTrackingValues(userDailyTracking.data)
-            })
-            .catch(error => alert.addMessage(error));
-
+        loadValues(day);
     }
 
     const onClickAddNote: React.MouseEventHandler<HTMLDivElement> = () => {
