@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
     Box,
     FormControl,
@@ -341,15 +342,16 @@ export const DayView: React.FC = () => {
     }
 
     const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
-        Api.Day.getDay(dateToString(day))
-            .then(({ data }) => {
-                setUserDay(data);
-                setHasChanged(false);
+        Promise.all([
+            Api.Day.getDay(dateToString(day)),
+            Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
+        ])
+            .then(([currentUserDay, userDailyTracking]) => {
+                setUserDay(currentUserDay.data);
+                setTrackingValues(userDailyTracking.data)
             })
             .catch(error => alert.addMessage(error));
-        Api.UserTracking.getActiveUserTrackings()
-            .then(({ data }) => setTrackings(data))
-            .catch(error => alert.addMessage(error));
+
     }
 
     const onClickAddNote: React.MouseEventHandler<HTMLDivElement> = () => {
@@ -572,7 +574,7 @@ export const DayView: React.FC = () => {
                                                     </Box>
                                                     <FormControl fullWidth >
                                                         <InputLabel>Loss/Gain</InputLabel>
-                                                        <Input readOnly value={userDay.weightChange ? Math.abs(userDay.weightChange) : ''} />
+                                                        <Input readOnly value={Math.abs(userDay.weightChange)} />
                                                     </FormControl>
                                                 </Box>
                                             </Grid>
@@ -580,7 +582,7 @@ export const DayView: React.FC = () => {
                                             <Grid item xs={6} md={3}>
                                                 <FormControl fullWidth>
                                                     <InputLabel>Cumulative</InputLabel>
-                                                    <Input readOnly value={userDay.cumulativeWeightChange ? userDay.cumulativeWeightChange : ''} />
+                                                    <Input readOnly value={userDay.cumulativeWeightChange} />
                                                 </FormControl>
                                             </Grid>
                                         </Grid>
