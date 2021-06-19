@@ -38,7 +38,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import LocalDrinkIcon from '@material-ui/icons/LocalDrinkOutlined';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import RestaurantOutlinedIcon from '@material-ui/icons/RestaurantOutlined';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
@@ -58,7 +57,13 @@ const useStyles = makeStyles((theme: Theme) => {
     const backgroundColors = ['plum', 'lightpink', 'Khaki', 'Aquamarine', 'Wheat', 'PowderBlue', 'Seashell'];
 
     return createStyles({
-        activeLossGain: {
+        weightLoss: {
+            color: 'green',
+        },
+        weightGain: {
+            color: 'red',
+        },
+        inactiveLossGain: {
             color: theme.palette.text.disabled,
         },
         buttonProgress: {
@@ -157,20 +162,6 @@ export const DayView: React.FC = () => {
             return {
                 ..._userDay as CurrentUserDay,
                 water
-            }
-        });
-        setHasChanged(true);
-    }
-
-    const onChangeCondiments: React.ChangeEventHandler<HTMLInputElement> = event => {
-        const { value } = event.target;
-
-        const condiments = Math.max(0, Number(value));
-
-        setUserDay(_userDay => {
-            return {
-                ..._userDay as CurrentUserDay,
-                condiments,
             }
         });
         setHasChanged(true);
@@ -397,6 +388,52 @@ export const DayView: React.FC = () => {
         handleClose();
     }
 
+    const onClickAddFueling: React.MouseEventHandler<HTMLDivElement> = () => {
+        setUserDay(_userDay => {
+            if (_userDay) {
+                const fuelings: UserFueling[] = [
+                    ..._userDay.fuelings,
+                    {
+                        userId: '',
+                        userFuelingId: 0,
+                        name: '',
+                        day: dateToString(day),
+                        when: null
+
+                    }
+                ]
+                return ({
+                    ..._userDay,
+                    fuelings,
+                });
+            }
+        });
+        handleClose();
+    }
+
+    const onClickAddMeal: React.MouseEventHandler<HTMLDivElement> = () => {
+        setUserDay(_userDay => {
+            if (_userDay) {
+                const meals: UserMeal[] = [
+                    ..._userDay.meals,
+                    {
+                        userId: '',
+                        userMealId: 0,
+                        name: '',
+                        day: dateToString(day),
+                        when: null
+
+                    }
+                ]
+                return ({
+                    ..._userDay,
+                    meals,
+                });
+            }
+        });
+        handleClose();
+    }
+
     const onClickNextDay = async () => {
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, 1))}`);
@@ -523,13 +560,13 @@ export const DayView: React.FC = () => {
                                                 <Box display="flex" alignItems="flex-end">
                                                     <Box mr={1} mt={2} mb={-1}>
                                                         <Box mb={-2}>
-                                                            <RemoveIcon fontSize="small" className={clsx({
-                                                                [classes.activeLossGain]: userDay.weightChange < 0
+                                                            <RemoveIcon fontSize="small" className={clsx(classes.weightLoss, {
+                                                                [classes.inactiveLossGain]: userDay.weightChange < 0
                                                             })} />
                                                         </Box>
                                                         <Box>
-                                                            <AddIcon fontSize="small" className={clsx({
-                                                                [classes.activeLossGain]: userDay.weightChange > 0
+                                                            <AddIcon fontSize="small" className={clsx(classes.weightGain, {
+                                                                [classes.inactiveLossGain]: userDay.weightChange > 0
                                                             })} />
                                                         </Box>
                                                     </Box>
@@ -551,7 +588,7 @@ export const DayView: React.FC = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid item xs={12} md={6} lg={3}>
+                            <Grid item xs={12} sm={6} md={3}>
                                 <Card className={classes.card}>
                                     <CardHeader title="Water" />
                                     <CardContent>
@@ -574,54 +611,43 @@ export const DayView: React.FC = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid item xs={12} md={6} lg={3}>
-                                <Card className={classes.card}>
-                                    <CardHeader title="Condiments" />
-                                    <CardContent>
-                                        <FormControl fullWidth className={classes.formControl}>
-                                            <TextField variant="standard" type="number" label="Condiments" id="condiments" name="condiments" value={userDay.condiments ? userDay.condiments : ''} onChange={onChangeCondiments} disabled={postingDay} />
-                                        </FormControl>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            {
+                                trackings.length &&
+                                trackings.map(tracking => {
+                                    const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
+                                    const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
+                                    return (
+                                        <Grid item xs={12} sm={tracking.useTime ? 12 : 6} md={tracking.useTime ? 4 : 3} xl={3} key={`tracking-${tracking.userTrackingId}`}>
+                                            <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
+                                        </Grid>
+                                    );
+                                })
+                            }
 
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
                                     {
-                                        trackings.length &&
-                                        trackings.map(tracking => {
-                                            const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
-                                            const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
-                                            return (
-                                                <Grid item xs={12} md={ tracking.useTime ? 4 : 3 } xl={3} key={`tracking-${tracking.userTrackingId}`}>
-                                                    <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
-                                                </Grid>
-                                            );
-                                        })
+                                        userDay.victories.length > 0 &&
+                                        <Grid item xs={12} md={6}>
+                                            <VictoriesCard victories={userDay.victories} disable={postingDay} onChange={onChangeVictories} />
+                                        </Grid>
+                                    }
+
+                                    {
+                                        userDay.notes !== null &&
+                                        <Grid item xs={12} md={6}>
+                                            <Card className={classes.card}>
+                                                <CardHeader title="Notes" />
+                                                <CardContent>
+                                                    <FormControl fullWidth>
+                                                        <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
+                                                    </FormControl>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
                                     }
                                 </Grid>
                             </Grid>
-
-                            {
-                                userDay.victories.length > 0 &&
-                                <Grid item xs={12} md={6}>
-                                    <VictoriesCard victories={userDay.victories} disable={postingDay} onChange={onChangeVictories} />
-                                </Grid>
-                            }
-
-                            {
-                                userDay.notes !== null &&
-                                <Grid item xs={12} md={6}>
-                                    <Card className={classes.card}>
-                                        <CardHeader title="Notes" />
-                                        <CardContent>
-                                            <FormControl fullWidth>
-                                                <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
-                                            </FormControl>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            }
                         </Grid>
 
 
@@ -666,14 +692,14 @@ export const DayView: React.FC = () => {
                                         key="add-fueling"
                                         icon={<ShoppingBasketIcon />}
                                         tooltipTitle="Add Fueling"
-                                        onClick={handleClose}
+                                        onClick={onClickAddFueling}
                                     />
 
                                     <SpeedDialAction
                                         key="add-meals"
                                         icon={<RestaurantOutlinedIcon />}
                                         tooltipTitle="Add Lean and Green"
-                                        onClick={handleClose}
+                                        onClick={onClickAddMeal}
                                     />
                                 </SpeedDial>
                             </Box>

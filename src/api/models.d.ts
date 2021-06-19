@@ -43,12 +43,10 @@ interface UserDay {
     day: string;
     water: number;
     weight: number;
-    condiments: number;
     user: User;
     fuelings: UserFueling[];
     meals: UserMeal[];
     notes?: string;
-    victories: Victory[];
 }
 interface UserFueling {
     userFuelingId: number;
@@ -56,7 +54,7 @@ interface UserFueling {
     day: string;
     name: string;
     when: string | null;
-    userDay: UserDay;
+    userDay?: UserDay;
 }
 interface UserMeal {
     userMealId: number;
@@ -64,7 +62,7 @@ interface UserMeal {
     day: string;
     name: string;
     when: string | null;
-    userDay: UserDay;
+    userDay?: UserDay;
 }
 interface UserPlan {
     userId: UserId;
@@ -83,6 +81,7 @@ interface NewUser {
 interface CurrentUserDay extends UserDay {
     cumulativeWeightChange: number;
     weightChange: number;
+    victories: Victory[];
 }
 interface Victory {
     victoryId: number;
