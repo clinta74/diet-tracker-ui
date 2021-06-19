@@ -541,7 +541,7 @@ export const DayView: React.FC = () => {
 
                             <Grid item xs={12} md={6}>
                                 <Card className={classes.card}>
-                                    <CardHeader title="Weight" />
+                                    <CardHeader title="Weight" subheader="Keep track of your weight when you want."/>
                                     <CardContent>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6}>
@@ -585,7 +585,7 @@ export const DayView: React.FC = () => {
 
                             <Grid item xs={12} sm={6} md={3}>
                                 <Card className={classes.card}>
-                                    <CardHeader title="Water" />
+                                    <CardHeader title="Water" subheader="How much water have you been drinking?"/>
                                     <CardContent>
                                         <FormControl fullWidth className={classes.formControl}>
                                             <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
@@ -632,9 +632,9 @@ export const DayView: React.FC = () => {
                                         userDay.notes !== null &&
                                         <Grid item xs={12} md={6}>
                                             <Card className={classes.card}>
-                                                <CardHeader title="Notes" />
+                                                <CardHeader title="Notes" subheader="What happened today that you would like to remember?"/>
                                                 <CardContent>
-                                                    <FormControl fullWidth>
+                                                    <FormControl className={classes.formControl} fullWidth>
                                                         <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
                                                     </FormControl>
                                                 </CardContent>

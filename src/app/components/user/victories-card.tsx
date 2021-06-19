@@ -54,11 +54,9 @@ export const VictoriesCard: React.FC<VictoriesProps> = ({ victories, disable, on
                         victories.map(({ name }, idx) => {
 
                             return (
-                                <Box key={`victory-name-${idx}`}>
-                                    <FormControl fullWidth className={classes.formControl}>
-                                        <TextField value={name} name="name" label="Victory" onChange={e => onChangeName(e, idx)} disabled={disable} />
-                                    </FormControl>
-                                </Box>
+                                <FormControl key={`victory-name-${idx}`} fullWidth className={classes.formControl}>
+                                    <TextField value={name} name="name" label="Victory" onChange={e => onChangeName(e, idx)} disabled={disable} />
+                                </FormControl>
                             );
                         })
                     }

@@ -73,7 +73,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
     return (
         <React.Fragment>
             <Card className={classes.card}>
-                <CardHeader title={title}>{description}</CardHeader>
+                <CardHeader title={title} subheader={description} />
                 <CardContent>
                     {
                         tracking.values &&
