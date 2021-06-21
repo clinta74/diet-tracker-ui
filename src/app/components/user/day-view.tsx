@@ -629,7 +629,7 @@ export const DayView: React.FC = () => {
                                 <Card className={classes.card}>
                                     <CardHeader title="Water" subheader="How much water have you been drinking?" />
                                     <CardContent>
-                                        <FormControl fullWidth className={classes.formControl}>
+                                        <FormControl fullWidth>
                                             <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
                                             <Box>
                                                 {
@@ -676,7 +676,7 @@ export const DayView: React.FC = () => {
                                             <Card className={classes.card}>
                                                 <CardHeader title="Notes" subheader="What happened today that you would like to remember?" />
                                                 <CardContent>
-                                                    <FormControl className={classes.formControl} fullWidth>
+                                                    <FormControl fullWidth>
                                                         <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
                                                     </FormControl>
                                                 </CardContent>

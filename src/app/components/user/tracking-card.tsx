@@ -17,9 +17,6 @@ const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         card: {
             margin: theme.spacing(1, 0, 0),
-        },
-        formControl: {
-            marginBottom: theme.spacing(1),
         }
     });
 });
@@ -96,7 +93,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                         <Grid item xs={12} md={useTime ? 8 : 12}>
                                             {
                                                 type === UserTrackingType.Number &&
-                                                <FormControl fullWidth className={classes.formControl}>
+                                                <FormControl fullWidth>
                                                     <TextField
                                                         variant="standard"
                                                         type="number"
@@ -114,7 +111,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                         {
                                             useTime &&
                                             <Grid item xs={12} md={4}>
-                                                <FormControl fullWidth className={classes.formControl}>
+                                                <FormControl fullWidth>
                                                     <TextField
                                                         type="time"
                                                         autoComplete="false"
@@ -132,9 +129,6 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                             });
                         })
                     }
-                    <FormControl fullWidth className={classes.formControl}>
-
-                    </FormControl>
                 </CardContent>
             </Card>
         </React.Fragment>
