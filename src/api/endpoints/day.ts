@@ -8,4 +8,7 @@ export const getDayEndpoints = (client: AxiosInstance) => ({
 
     updateDay: (day: string, userDay: CurrentUserDay) =>
         client.put<CurrentUserDay>(`day/${day}`, userDay),
+
+    getWeight: (startDate: string, endDate?: string) =>
+        client.get<GraphValue[]>(`day/weight`, { params: { startDate, endDate }}),
 })

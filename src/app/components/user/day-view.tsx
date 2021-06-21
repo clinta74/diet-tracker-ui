@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import clsx from 'clsx';
 import {
     Box,
     FormControl,
@@ -18,20 +20,26 @@ import {
     Card,
     CardContent,
     CardHeader,
+    Modal,
 } from '@material-ui/core';
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
-
-import clsx from 'clsx';
 import {
     format,
     startOfToday,
     addDays,
     parseISO,
     getDay,
-    formatDistanceToNowStrict
+    formatDistanceToNowStrict,
 } from 'date-fns';
-import { useHistory, useParams } from 'react-router-dom';
+
+import {
+    ArgumentAxis,
+    ValueAxis,
+    Chart,
+    LineSeries,
+} from '@devexpress/dx-react-chart-material-ui';
+
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -41,6 +49,7 @@ import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 import RestaurantOutlinedIcon from '@material-ui/icons/RestaurantOutlined';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
+import BarChartOutlinedIcon from '@material-ui/icons/BarChartOutlined';
 
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
@@ -80,6 +89,7 @@ const useStyles = makeStyles((theme: Theme) => {
         },
         card: {
             margin: theme.spacing(1, 0, 0),
+            position: 'relative',
         },
         formControl: {
             marginBottom: theme.spacing(1),
@@ -95,13 +105,23 @@ const useStyles = makeStyles((theme: Theme) => {
             bottom: 0,
             right: 0,
         },
+        graphButton: {
+           position: 'absolute',
+           top: theme.spacing(1),
+           right: theme.spacing(1),
+        },
+        graphModal: {
+            position: 'absolute',
+            top: theme.spacing(2),
+            left: theme.spacing(2),
+            width: `calc(100% - ${theme.spacing(4)}px)`,
+        }
     });
 });
 
 interface Params {
     day: string;
 }
-
 export const DayView: React.FC = () => {
     const params = useParams<Params>();
     const commonClasses = useCommonStyles();
@@ -111,6 +131,7 @@ export const DayView: React.FC = () => {
     const { user } = useUser();
 
     const [open, setOpen] = useState(false);
+    const [graphOpen, setGraphOpen] = useState(false);
     const [day, setDay] = useState<Date>(startOfToday());
     const [userDay, setUserDay] = useState<CurrentUserDay>();
     const [hasChanged, setHasChanged] = useState(false);
@@ -118,6 +139,7 @@ export const DayView: React.FC = () => {
     const [postingDay, setPostingDay] = useState(false);
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
+    const [chartData, setChartData] = useState<GraphValue[]>();
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
 
@@ -429,6 +451,21 @@ export const DayView: React.FC = () => {
         handleClose();
     }
 
+    const onClickShowGraph = () => {
+        Api.Day.getWeight(dateToString(addDays(day, -14)))
+            .then(({data}) => {
+                setChartData(data.map(({value, date}) => ({
+                    value,
+                    date: format(parseISO(date), 'M/d')
+                })));
+                setGraphOpen(true);
+            });
+    }
+
+    const onCloseGraph = () => {
+        setGraphOpen(false);
+    }
+
     const onClickNextDay = async () => {
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, 1))}`);
@@ -541,7 +578,12 @@ export const DayView: React.FC = () => {
 
                             <Grid item xs={12} md={6}>
                                 <Card className={classes.card}>
-                                    <CardHeader title="Weight" subheader="Keep track of your weight when you want."/>
+                                    <Box className={classes.graphButton}>
+                                        <IconButton size="small" onClick={onClickShowGraph}>
+                                            <BarChartOutlinedIcon />
+                                        </IconButton>
+                                    </Box>
+                                    <CardHeader title="Weight" subheader="Keep track of your weight when you want." />
                                     <CardContent>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6}>
@@ -585,7 +627,7 @@ export const DayView: React.FC = () => {
 
                             <Grid item xs={12} sm={6} md={3}>
                                 <Card className={classes.card}>
-                                    <CardHeader title="Water" subheader="How much water have you been drinking?"/>
+                                    <CardHeader title="Water" subheader="How much water have you been drinking?" />
                                     <CardContent>
                                         <FormControl fullWidth className={classes.formControl}>
                                             <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
@@ -632,7 +674,7 @@ export const DayView: React.FC = () => {
                                         userDay.notes !== null &&
                                         <Grid item xs={12} md={6}>
                                             <Card className={classes.card}>
-                                                <CardHeader title="Notes" subheader="What happened today that you would like to remember?"/>
+                                                <CardHeader title="Notes" subheader="What happened today that you would like to remember?" />
                                                 <CardContent>
                                                     <FormControl className={classes.formControl} fullWidth>
                                                         <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
@@ -700,6 +742,23 @@ export const DayView: React.FC = () => {
                             </Box>
                         </Box>
                     </form>
+
+                    <Modal open={graphOpen} onClose={onCloseGraph} aria-labelledby="graph-modal-title">
+                        <Paper className={clsx(commonClasses.paper, classes.graphModal)}>
+                            <Typography variant="h6">Weight Data</Typography>
+                            <Box>
+                                <Chart data={chartData}>
+                                    <ArgumentAxis />
+                                    <ValueAxis />
+                                    <LineSeries 
+                                        name="weight"
+                                        valueField="value"
+                                        argumentField="date"
+                                    />
+                                </Chart>
+                            </Box>
+                        </Paper>
+                    </Modal>
                 </React.Fragment>
             }
         </React.Fragment >

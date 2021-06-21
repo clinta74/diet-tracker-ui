@@ -135,3 +135,8 @@ interface UserDailyTrackingValueRequest {
     value: number;
     when: string | null;
 }
+
+interface GraphValue {
+    value: number
+    date: string
+}
