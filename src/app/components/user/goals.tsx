@@ -53,7 +53,7 @@ export const Goals: React.FC = () => {
     const openMenu = Boolean(anchorEl);
 
     useEffect(() => {
-        Api.Victory.getVictories(VictoryType.Goal)
+        Api.Victory.getVictories()
             .then(({ data }) => {
                 setVictory(data);
             });
@@ -168,11 +168,14 @@ export const Goals: React.FC = () => {
 
     const sortedVictories = victories.sort((a, b) => a.name > b.name ? 1 : -1);
 
+    const goals = sortedVictories.filter(victory => victory.type === VictoryType.Goal);
+    const nonScale = sortedVictories.filter(victory => victory.type === VictoryType.NonScale);
+
     return (
         <React.Fragment>
-            <Box position="relative">
+            <Box position="relative" mb={4}>
                 <Box position="absolute" right={theme.spacing(1)} top={theme.spacing(2)}>
-                    <Fab color="primary" title="Create a Fueling" aria-label="add" onClick={onClickAddGoal}>
+                    <Fab color="primary" title="Create a Goal" aria-label="add" onClick={onClickAddGoal}>
                         <AddIcon />
                     </Fab>
                 </Box>
@@ -183,16 +186,17 @@ export const Goals: React.FC = () => {
                     </Box>
                     <List>
                         {
-                            sortedVictories.map(goal =>
-                                <React.Fragment key={goal.victoryId}>
+                            goals.length > 0 &&
+                            goals.map(({ victoryId, name, when }) =>
+                                <React.Fragment key={victoryId}>
                                     <ListItem>
                                         <Box flexGrow={1} display="flex" alignItems="center">
-                                            <Box flexGrow={1}><ListItemText primary={goal.name} /></Box>
+                                            <Box flexGrow={1}><ListItemText primary={name} /></Box>
                                             <Box mx={2}>
-                                                {goal.when && formatDistanceToNow(parseISO(goal.when), { addSuffix: true })}
+                                                {when && format(parseISO(when), 'M/d/yyyy')}
                                             </Box>
                                             <Box whiteSpace="nowrap">
-                                                <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={goal.victoryId}>
+                                                <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={victoryId}>
                                                     <MoreVertIcon />
                                                 </IconButton>
                                             </Box>
@@ -201,6 +205,47 @@ export const Goals: React.FC = () => {
                                     <Divider />
                                 </React.Fragment>
                             )
+                            ||
+                            <ListItem>
+                                <ListItemText primary="You have not set any goals." />
+                            </ListItem>
+
+                        }
+                    </List>
+                </Paper>
+            </Box>
+
+            <Box position="relative">
+                <Paper className={commonClasses.paper}>
+                    <Box mb={2}>
+                        <Typography variant="h4">Non Scale Victories</Typography>
+                        <p>See your victories along you road.</p>
+                    </Box>
+                    <List>
+                        {
+                            nonScale.length > 0 &&
+                            nonScale.map(({ victoryId, name, when }) =>
+                                <React.Fragment key={victoryId}>
+                                    <ListItem>
+                                        <Box flexGrow={1} display="flex" alignItems="center">
+                                            <Box flexGrow={1}><ListItemText primary={name} /></Box>
+                                            <Box mx={2}>
+                                                {when && formatDistanceToNow(parseISO(when), { addSuffix: true })}
+                                            </Box>
+                                            <Box whiteSpace="nowrap">
+                                                <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={victoryId}>
+                                                    <MoreVertIcon />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
+                                    </ListItem>
+                                    <Divider />
+                                </React.Fragment>
+                            )
+                            ||
+                            <ListItem>
+                                <ListItemText primary="You have not added any non-scale victories.  Go to a day and add them as you acheive them." />
+                            </ListItem>
                         }
                     </List>
                 </Paper>

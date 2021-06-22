@@ -3,7 +3,7 @@ import { AxiosInstance } from 'axios';
 export type VictoryEndpoints = ReturnType<typeof getVictoryEndpoints>;
 export const getVictoryEndpoints = (client: AxiosInstance) => ({
 
-    getVictories: (type: VictoryType) =>
+    getVictories: (type?: VictoryType) =>
         client.get<Victory[]>(`victories`, {
             params: {
                 type,
