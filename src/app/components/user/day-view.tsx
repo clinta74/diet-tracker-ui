@@ -20,10 +20,8 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Modal,
 } from '@material-ui/core';
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import {
     format,
     startOfToday,
@@ -32,13 +30,6 @@ import {
     getDay,
     formatDistanceToNowStrict,
 } from 'date-fns';
-
-import {
-    ArgumentAxis,
-    ValueAxis,
-    Chart,
-    LineSeries,
-} from '@devexpress/dx-react-chart-material-ui';
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -50,6 +41,7 @@ import RestaurantOutlinedIcon from '@material-ui/icons/RestaurantOutlined';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
 import BarChartOutlinedIcon from '@material-ui/icons/BarChartOutlined';
+import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
@@ -59,6 +51,7 @@ import { useUser } from '../../providers/user-provider';
 import { NumberTrackingCard } from './tracking-card';
 import { VictoriesCard } from './victories-card';
 import { VictoryType } from '../../../api/endpoints/victory';
+import { GraphModal } from './graph-modal';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -106,9 +99,9 @@ const useStyles = makeStyles((theme: Theme) => {
             right: 0,
         },
         graphButton: {
-           position: 'absolute',
-           top: theme.spacing(1),
-           right: theme.spacing(1),
+            position: 'absolute',
+            top: theme.spacing(1),
+            right: theme.spacing(1),
         },
         graphModal: {
             position: 'absolute',
@@ -119,9 +112,17 @@ const useStyles = makeStyles((theme: Theme) => {
     });
 });
 
+interface ChartData {
+    values?: GraphValue[];
+    name?: string;
+    title?: string;
+    startDate?: Date;
+    endDate?: Date;
+}
 interface Params {
     day: string;
 }
+
 export const DayView: React.FC = () => {
     const params = useParams<Params>();
     const commonClasses = useCommonStyles();
@@ -139,7 +140,7 @@ export const DayView: React.FC = () => {
     const [postingDay, setPostingDay] = useState(false);
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
-    const [chartData, setChartData] = useState<GraphValue[]>();
+    const [chartData, setChartData] = useState<ChartData>();
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
 
@@ -451,13 +452,38 @@ export const DayView: React.FC = () => {
         handleClose();
     }
 
-    const onClickShowGraph = () => {
-        Api.Day.getWeight(dateToString(addDays(day, -14)))
-            .then(({data}) => {
-                setChartData(data.map(({value, date}) => ({
+    const onClickShowWeightGraph = () => {
+        Api.Day.getWeightGraphValues(dateToString(addDays(day, -14)))
+            .then(({ data }) => {
+                const values = data.map(({ value, date }) => ({
                     value,
                     date: format(parseISO(date), 'M/d')
-                })));
+                }));
+
+                setChartData({
+                    name: 'weight',
+                    title: 'Your Weigh-In History',
+                    values,
+                });
+
+                setGraphOpen(true);
+            });
+    }
+
+    const onClickShowWaterGraph = () => {
+        Api.Day.getWaterGraphValue(dateToString(addDays(day, -14)))
+            .then(({ data }) => {
+                const values = data.map(({ value, date }) => ({
+                    value,
+                    date: format(parseISO(date), 'M/d')
+                }));
+
+                setChartData({
+                    name: 'water',
+                    title: 'Your Water Drinking History',
+                    values,
+                });
+
                 setGraphOpen(true);
             });
     }
@@ -579,7 +605,7 @@ export const DayView: React.FC = () => {
                             <Grid item xs={12} md={6}>
                                 <Card className={classes.card}>
                                     <Box className={classes.graphButton}>
-                                        <IconButton size="small" onClick={onClickShowGraph}>
+                                        <IconButton size="small" onClick={onClickShowWeightGraph}>
                                             <BarChartOutlinedIcon />
                                         </IconButton>
                                     </Box>
@@ -627,23 +653,34 @@ export const DayView: React.FC = () => {
 
                             <Grid item xs={12} sm={6} md={3}>
                                 <Card className={classes.card}>
+                                    <Box className={classes.graphButton}>
+                                        <IconButton size="small" onClick={onClickShowWaterGraph}>
+                                            <BarChartOutlinedIcon />
+                                        </IconButton>
+                                    </Box>
                                     <CardHeader title="Water" subheader="How much water have you been drinking?" />
                                     <CardContent>
-                                        <FormControl fullWidth>
-                                            <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
-                                            <Box>
-                                                {
-                                                    waterMarks.map((mark, idx) =>
-                                                        <React.Fragment key={idx}>
-                                                            {
-                                                                mark && <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} className={classes.waterFill} />
-                                                                || <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} />
-                                                            }
-                                                        </React.Fragment>
-                                                    )
-                                                }
-                                            </Box>
-                                        </FormControl>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Box>
+                                                    {
+                                                        waterMarks.map((mark, idx) =>
+                                                            <React.Fragment key={idx}>
+                                                                {
+                                                                    mark && <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} className={classes.waterFill} />
+                                                                    || <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} />
+                                                                }
+                                                            </React.Fragment>
+                                                        )
+                                                    }
+                                                </Box>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <FormControl fullWidth>
+                                                    <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
+                                                </FormControl>
+                                            </Grid>
+                                        </Grid>
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -742,23 +779,7 @@ export const DayView: React.FC = () => {
                             </Box>
                         </Box>
                     </form>
-
-                    <Modal open={graphOpen} onClose={onCloseGraph} aria-labelledby="graph-modal-title">
-                        <Paper className={clsx(commonClasses.paper, classes.graphModal)}>
-                            <Typography variant="h6">Weight Data</Typography>
-                            <Box>
-                                <Chart data={chartData}>
-                                    <ArgumentAxis />
-                                    <ValueAxis />
-                                    <LineSeries 
-                                        name="weight"
-                                        valueField="value"
-                                        argumentField="date"
-                                    />
-                                </Chart>
-                            </Box>
-                        </Paper>
-                    </Modal>
+                    <GraphModal open={graphOpen} onClose={onCloseGraph} values={chartData?.values} name={chartData?.name} title={chartData?.title} />
                 </React.Fragment>
             }
         </React.Fragment >
