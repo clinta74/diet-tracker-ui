@@ -651,7 +651,7 @@ export const DayView: React.FC = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid item xs={12} sm={6} md={3}>
+                            <Grid item xs={12} md={6}>
                                 <Card className={classes.card}>
                                     <Box className={classes.graphButton}>
                                         <IconButton size="small" onClick={onClickShowWaterGraph}>
@@ -660,46 +660,46 @@ export const DayView: React.FC = () => {
                                     </Box>
                                     <CardHeader title="Water" subheader="How much water have you been drinking?" />
                                     <CardContent>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Box>
-                                                    {
-                                                        waterMarks.map((mark, idx) =>
-                                                            <React.Fragment key={idx}>
-                                                                {
-                                                                    mark && <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} className={classes.waterFill} />
-                                                                    || <LocalDrinkIcon onClick={e => onClickWaterMark(e, idx)} />
-                                                                }
-                                                            </React.Fragment>
-                                                        )
-                                                    }
-                                                </Box>
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <FormControl fullWidth>
-                                                    <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid>
+                                        <Box display="flex">
+                                            <Box whiteSpace="nowrap" mr={2}>
+                                                {
+                                                    waterMarks.map((mark, idx) =>
+                                                        <React.Fragment key={idx}>
+                                                            {
+                                                                mark && <LocalDrinkIcon fontSize="large" onClick={e => onClickWaterMark(e, idx)} className={classes.waterFill} />
+                                                                || <LocalDrinkIcon fontSize="large" onClick={e => onClickWaterMark(e, idx)} />
+                                                            }
+                                                        </React.Fragment>
+                                                    )
+                                                }
+                                            </Box>
+                                            <FormControl fullWidth>
+                                                <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
+                                            </FormControl>
+                                        </Box>
                                     </CardContent>
                                 </Card>
                             </Grid>
 
-                            {
-                                trackings.length &&
-                                trackings.map(tracking => {
-                                    const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
-                                    const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
-                                    return (
-                                        <Grid item xs={12} sm={tracking.useTime ? 12 : 6} md={tracking.useTime ? 4 : 3} xl={3} key={`tracking-${tracking.userTrackingId}`}>
-                                            <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
-                                        </Grid>
-                                    );
-                                })
-                            }
+                            <Grid item xs={12} >
+                                <Grid container spacing={2} justify="center">
+                                    {
+                                        trackings.length &&
+                                        trackings.map(tracking => {
+                                            const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
+                                            const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
+                                            return (
+                                                <Grid item xs={12} sm={tracking.useTime ? 12 : 6} md={tracking.useTime ? 4 : 3} xl={3} key={`tracking-${tracking.userTrackingId}`}>
+                                                    <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
+                                                </Grid>
+                                            );
+                                        })
+                                    }
+                                </Grid>
+                            </Grid>
 
                             <Grid item xs={12}>
-                                <Grid container spacing={2}>
+                                <Grid container spacing={2} justify="center">
                                     {
                                         userDay.victories.length > 0 &&
                                         <Grid item xs={12} md={6}>
