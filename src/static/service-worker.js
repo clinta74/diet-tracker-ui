@@ -3,7 +3,7 @@ self.addEventListener('install', e => {
     e.waitUntil(
         // after the service worker is installed,
         // open a new cache
-        caches.open('my-pwa-cache').then(cache => {
+        caches.open('food-pwa-cache').then(cache => {
             // add all URLs of resources we want to cache
             return cache.addAll([
                 '/',
@@ -12,3 +12,12 @@ self.addEventListener('install', e => {
         })
     );
 });
+
+self.addEventListener('fetch', function(event) {
+    console.log(event.request.url);
+    event.respondWith(
+        caches.match(event.request).then(function(response) {
+            return response || fetch(event.request);
+        })
+    );
+});w
