@@ -210,6 +210,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                                 onChange={(e) => onChangeTrackingValueTypeValue(e, idx)}
                                                             >
                                                                 <MenuItem value="Number">Number</MenuItem>
+                                                                <MenuItem value="WholeNumber">Whole Number</MenuItem>
                                                                 <MenuItem value="Boolean">Yes / No </MenuItem>
                                                             </Select>
                                                         </FormControl>

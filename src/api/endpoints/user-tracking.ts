@@ -27,5 +27,6 @@ export const getUserTrackingEndpoints = (client: AxiosInstance) => ({
 export enum UserTrackingType
 {
     Number = 'Number',
+    WholeNumber = 'WholeNumber',
     Boolean = 'Boolean',
 }

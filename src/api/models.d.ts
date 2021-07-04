@@ -5,6 +5,7 @@ enum VictoryType {
 }
 enum UserTrackingType {
     Number = 'Number',
+    WholeNumber = 'WholeNumber',
     Boolean = 'Boolean',
 }
 interface Fueling {

@@ -21,6 +21,12 @@ const useStyles = makeStyles((theme: Theme) => {
     });
 });
 
+const valueCoverter = {
+    [UserTrackingType.Number]: (value: number) => value,
+    [UserTrackingType.WholeNumber]: (value: number) => Math.max(Math.floor(value), 0),
+    [UserTrackingType.Boolean]: (value: number) => value ? 1 : 0,
+}
+
 interface TrackingCardProps {
     tracking: UserTracking;
     values: UserDailyTrackingValue[];
@@ -33,7 +39,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     const { title, description, useTime } = tracking;
 
-    const onChangeValue = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, occurrence: number, userTrackingValueId: number) => {
+    const onChangeValue = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, occurrence: number, userTrackingValueId: number, type: UserTrackingType) => {
         const { value } = event.target;
         const numValue = Number(value);
 
@@ -45,7 +51,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                     ...values[idx],
                     occurrence,
                     userTrackingValueId,
-                    value: numValue,
+                    value: valueCoverter[type](numValue),
                 },
                 ...values.slice(idx + 1)
             ])
@@ -101,7 +107,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                                         name="name"
                                                         label={name}
                                                         value={value || ''}
-                                                        onChange={e => onChangeValue(e, occurrence, userTrackingValueId)}
+                                                        onChange={e => onChangeValue(e, occurrence, userTrackingValueId, type)}
                                                         helperText={description}
                                                         disabled={disable} />
                                                 </FormControl>
