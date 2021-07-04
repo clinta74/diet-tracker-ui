@@ -141,8 +141,11 @@ export const DayView: React.FC = () => {
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
+    const [timeoutHandle, setTimeoutHandle] = useState<NodeJS.Timeout>();
+    const [autosave, setAutosave] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
+    const timeout = 2000;
 
     useEffect(() => {
         Api.Fueling.getFuelings()
@@ -159,6 +162,18 @@ export const DayView: React.FC = () => {
         loadValues(day);
     }, [params]);
 
+    useEffect(() => {
+        timeoutHandle && clearTimeout(timeoutHandle);
+        if (autosave && hasChanged) {
+            setTimeoutHandle(
+                setTimeout(async () => {
+                    console.info('Calling autosave.', day);
+                    await saveValues();
+                }, timeout)
+            );
+        }
+    }, [hasChanged, day, autosave]);
+
     const loadValues = (day: Date) => {
         Promise.all([
             Api.Day.getDay(dateToString(day)),
@@ -169,6 +184,26 @@ export const DayView: React.FC = () => {
                 setTrackingValues(userDailyTracking.data)
             })
             .catch(error => alert.addMessage(error));
+    }
+
+    const saveValues = async () => {
+        try {
+            if (userDay && hasChanged) {
+                const { data } = await Api.Day.updateDay(dateToString(day), userDay);
+                setUserDay(data);
+                const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
+                    userTrackingValueId,
+                    occurrence,
+                    value,
+                    when,
+                }));
+                await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
+                setHasChanged(false);
+            }
+        }
+        catch (error) {
+            alert.addMessage(error);
+        }
     }
 
     const handleClose = () => {
@@ -208,20 +243,22 @@ export const DayView: React.FC = () => {
     }
 
     const onChangeFuelingName = (event: React.ChangeEvent<unknown>, value: string | null, idx: number) => {
-        setUserDay(_userDay => {
-            if (_userDay) {
-                return {
-                    ..._userDay,
-                    fuelings: [..._userDay.fuelings.slice(0, idx),
-                    {
-                        ..._userDay.fuelings[idx],
-                        name: value || '',
-                    },
-                    ..._userDay.fuelings.slice(idx + 1)],
+        if (userDay && userDay.fuelings[idx].name !== value) {
+            setUserDay(_userDay => {
+                if (_userDay) {
+                    return {
+                        ..._userDay,
+                        fuelings: [..._userDay.fuelings.slice(0, idx),
+                        {
+                            ..._userDay.fuelings[idx],
+                            name: value || '',
+                        },
+                        ..._userDay.fuelings.slice(idx + 1)],
+                    }
                 }
-            }
-        });
-        setHasChanged(true);
+            });
+            setHasChanged(true);
+        }
     }
 
     const onChangeFuelingWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
