@@ -698,7 +698,7 @@ export const DayView: React.FC = () => {
                                     <CardHeader title="Water" subheader="How much water have you been drinking?" />
                                     <CardContent>
                                         <Box display="flex">
-                                            <Box whiteSpace="nowrap" mr={2}>
+                                            <Box mr={2}>
                                                 {
                                                     waterMarks.map((mark, idx) =>
                                                         <React.Fragment key={idx}>
@@ -710,7 +710,7 @@ export const DayView: React.FC = () => {
                                                     )
                                                 }
                                             </Box>
-                                            <FormControl fullWidth>
+                                            <FormControl>
                                                 <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
                                             </FormControl>
                                         </Box>

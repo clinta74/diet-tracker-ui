@@ -98,7 +98,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                     <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}`}>
                                         <Grid item xs={12} md={useTime ? 8 : 12}>
                                             {
-                                                type === UserTrackingType.Number &&
+                                                (type === UserTrackingType.Number || type === UserTrackingType.WholeNumber) &&
                                                 <FormControl fullWidth>
                                                     <TextField
                                                         variant="standard"

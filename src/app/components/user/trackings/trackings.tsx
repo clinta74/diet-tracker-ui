@@ -87,6 +87,12 @@ export const Trackings: React.FC = () => {
         setAnchorEl(null);
     };
 
+    const typeNames = {
+        [UserTrackingType.Number]: "Number",
+        [UserTrackingType.WholeNumber]: "Whole Number",
+        [UserTrackingType.Boolean]: "Yes / No"
+    }
+
     return (
         <React.Fragment>
             <Box position="relative">
@@ -129,7 +135,7 @@ export const Trackings: React.FC = () => {
                                                 values &&
                                                 values.map(({ name, description, type, userTrackingValueId }) =>
                                                     <Box key={userTrackingValueId}>
-                                                        <span title={description}>{name} as {type === UserTrackingType.Number ? 'Number' : 'Yes / No'}</span>
+                                                        <span title={description}>{name} as {typeNames[type]}</span>
                                                     </Box>
                                                 )
                                             }
