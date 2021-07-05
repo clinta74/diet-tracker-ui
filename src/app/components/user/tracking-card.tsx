@@ -1,3 +1,5 @@
+import { FormControlLabel, Switch } from '@material-ui/core';
+import { FormHelperText } from '@material-ui/core';
 import {
     Card,
     CardContent,
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => {
 const valueCoverter = {
     [UserTrackingType.Number]: (value: number) => value,
     [UserTrackingType.WholeNumber]: (value: number) => Math.max(Math.floor(value), 0),
-    [UserTrackingType.Boolean]: (value: number) => value ? 1 : 0,
+    [UserTrackingType.Boolean]: (value: number) => value,
 }
 
 interface TrackingCardProps {
@@ -43,8 +45,10 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         const { value } = event.target;
         const numValue = Number(value);
 
+        debugger;
+
         if (numValue !== NaN && numValue >= 0) {
-            const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId)
+            const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
             onChange([
                 ...values.slice(0, idx),
                 {
@@ -56,6 +60,20 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                 ...values.slice(idx + 1)
             ])
         }
+    }
+
+    const onChangeCheckedValue = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean, occurrence: number, userTrackingValueId: number, type: UserTrackingType) => {
+        const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
+        onChange([
+            ...values.slice(0, idx),
+            {
+                ...values[idx],
+                occurrence,
+                userTrackingValueId,
+                value: checked ? 1 : 0,
+            },
+            ...values.slice(idx + 1)
+        ]);
     }
 
     const onChangeWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, occurrence: number, userTrackingValueId: number) => {
@@ -71,6 +89,40 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             },
             ...values.slice(idx + 1)
         ])
+    }
+
+    const NumberComponent = (value: number, occurrence: number, name: string, description: string, userTrackingValueId: number, type: UserTrackingType) => <FormControl fullWidth>
+        <TextField
+            variant="standard"
+            type="number"
+            id={`${name}_name_${occurrence}`}
+            name="name"
+            label={name}
+            value={value || ''}
+            onChange={e => onChangeValue(e, occurrence, userTrackingValueId, type)}
+            helperText={description}
+            disabled={disable} />
+    </FormControl>
+
+    const YesNoComponent = (value: number, occurrence: number, name: string, description: string, userTrackingValueId: number, type: UserTrackingType) => <FormControl fullWidth>
+        <FormControlLabel
+            control={
+                <Switch
+                    checked={value !== 0 ? true : false}
+                    onChange={(e, checked) => onChangeCheckedValue(e, checked, occurrence, userTrackingValueId, type)}
+                    name={name}
+                    color="primary"
+                />
+            }
+            label={name}
+        />
+        <FormHelperText>{description}</FormHelperText>
+    </FormControl>
+
+    const valueControl = {
+        [UserTrackingType.Number]: NumberComponent,
+        [UserTrackingType.WholeNumber]: NumberComponent,
+        [UserTrackingType.Boolean]: YesNoComponent,
     }
 
     return (
@@ -95,25 +147,12 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
                                 const whenValue = when === null || when === undefined ? '' : when.split('T')[1];
                                 return (
-                                    <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}`}>
+                                    <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
                                         <Grid item xs={12} md={useTime ? 8 : 12}>
                                             {
-                                                (type === UserTrackingType.Number || type === UserTrackingType.WholeNumber) &&
-                                                <FormControl fullWidth>
-                                                    <TextField
-                                                        variant="standard"
-                                                        type="number"
-                                                        id={`${name}_name_${occurrence}`}
-                                                        name="name"
-                                                        label={name}
-                                                        value={value || ''}
-                                                        onChange={e => onChangeValue(e, occurrence, userTrackingValueId, type)}
-                                                        helperText={description}
-                                                        disabled={disable} />
-                                                </FormControl>
+                                                valueControl[type](value, occurrence, name, description, userTrackingValueId, type)
                                             }
                                         </Grid>
-
                                         {
                                             useTime &&
                                             <Grid item xs={12} md={4}>
