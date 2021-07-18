@@ -27,6 +27,7 @@ const valueCoverter = {
     [UserTrackingType.Number]: (value: number) => value,
     [UserTrackingType.WholeNumber]: (value: number) => Math.max(Math.floor(value), 0),
     [UserTrackingType.Boolean]: (value: number) => value,
+    [UserTrackingType.Icon]: (value: number) => value,
 }
 
 interface TrackingCardProps {
@@ -104,25 +105,27 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             disabled={disable} />
     </FormControl>
 
-    const YesNoComponent = (value: number, occurrence: number, name: string, description: string, userTrackingValueId: number, type: UserTrackingType) => <FormControl fullWidth>
-        <FormControlLabel
-            control={
-                <Switch
-                    checked={value !== 0 ? true : false}
-                    onChange={(e, checked) => onChangeCheckedValue(e, checked, occurrence, userTrackingValueId, type)}
-                    name={name}
-                    color="primary"
-                />
-            }
-            label={name}
-        />
-        <FormHelperText>{description}</FormHelperText>
-    </FormControl>
+    const YesNoComponent = (value: number, occurrence: number, name: string, description: string, userTrackingValueId: number, type: UserTrackingType) =>
+        <FormControl fullWidth>
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={value !== 0 ? true : false}
+                        onChange={(e, checked) => onChangeCheckedValue(e, checked, occurrence, userTrackingValueId, type)}
+                        name={name}
+                        color="primary"
+                    />
+                }
+                label={name}
+            />
+            <FormHelperText>{description}</FormHelperText>
+        </FormControl>
 
     const valueControl = {
         [UserTrackingType.Number]: NumberComponent,
         [UserTrackingType.WholeNumber]: NumberComponent,
         [UserTrackingType.Boolean]: YesNoComponent,
+        [UserTrackingType.Icon]: NumberComponent,
     }
 
     return (

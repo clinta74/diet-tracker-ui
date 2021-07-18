@@ -90,7 +90,8 @@ export const Trackings: React.FC = () => {
     const typeNames = {
         [UserTrackingType.Number]: "Number",
         [UserTrackingType.WholeNumber]: "Whole Number",
-        [UserTrackingType.Boolean]: "Yes / No"
+        [UserTrackingType.Boolean]: "Yes / No",
+        [UserTrackingType.Icon]: "Yes / No",
     }
 
     return (

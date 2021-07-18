@@ -7,7 +7,9 @@ enum UserTrackingType {
     Number = 'Number',
     WholeNumber = 'WholeNumber',
     Boolean = 'Boolean',
+    Icon = 'Icon',
 }
+
 interface Fueling {
     fuelingId: number;
     name: string;
