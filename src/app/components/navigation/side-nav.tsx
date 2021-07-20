@@ -132,10 +132,10 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                             </ListItem>
                         </NavLink>
 
-                        <NavLink to="/plan" className={classes.link}>
+                        <NavLink to="/settings" className={classes.link}>
                             <ListItem button>
-                                <ListItemIcon title="Your Plan"><AssignmentOutlinedIcon /></ListItemIcon>
-                                <ListItemText primary="Your Plan" />
+                                <ListItemIcon title="Settings"><AssignmentOutlinedIcon /></ListItemIcon>
+                                <ListItemText primary="Settings" />
                             </ListItem>
                         </NavLink>
                         
