@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -20,8 +20,6 @@ import {
     Card,
     CardContent,
     CardHeader,
-    FormControlLabel,
-    Switch,
 } from '@material-ui/core';
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
 import {
@@ -143,12 +141,11 @@ export const DayView: React.FC = () => {
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
+    const [timeoutHandle, setTimeoutHandle] = useState<NodeJS.Timeout>();
     const [autosave, setAutosave] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
-
-    const timeoutHandle = useRef<NodeJS.Timeout>();
-    const timeout = 3000;
+    const timeout = 2000;
 
     useEffect(() => {
         Api.Fueling.getFuelings()
@@ -166,25 +163,16 @@ export const DayView: React.FC = () => {
     }, [params]);
 
     useEffect(() => {
-        if (timeoutHandle.current) {
-            clearTimeout(timeoutHandle.current);
-        }
-
+        timeoutHandle && clearTimeout(timeoutHandle);
         if (autosave && hasChanged) {
-            timeoutHandle.current = setTimeout(async () => {
-                console.info('Calling autosave.', timeoutHandle);
-                saveValues();
-            }, timeout);
+            setTimeoutHandle(
+                setTimeout(async () => {
+                    console.info('Calling autosave.', day);
+                    await saveValues();
+                }, timeout)
+            );
         }
-        console.log('Timeout Handle', timeoutHandle);
-
-        return () => {
-            if (timeoutHandle.current) {
-                clearTimeout(timeoutHandle.current);
-            }
-        }
-
-    }, [hasChanged, autosave]);
+    }, [hasChanged, day, autosave]);
 
     const loadValues = (day: Date) => {
         Promise.all([
@@ -201,9 +189,8 @@ export const DayView: React.FC = () => {
     const saveValues = async () => {
         try {
             if (userDay && hasChanged) {
-                setHasChanged(false);
                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-
+                setUserDay(data);
                 const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
                     userTrackingValueId,
                     occurrence,
@@ -211,8 +198,7 @@ export const DayView: React.FC = () => {
                     when,
                 }));
                 await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
-
-                setUserDay(data);
+                setHasChanged(false);
             }
         }
         catch (error) {
@@ -227,10 +213,6 @@ export const DayView: React.FC = () => {
     const handleOpen = () => {
         setOpen(true);
     };
-
-    const onChangeAutoSave = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        setAutosave(checked);
-    }
 
     const onChangeWater: React.ChangeEventHandler<HTMLInputElement> = event => {
         const { value } = event.target;
@@ -398,9 +380,27 @@ export const DayView: React.FC = () => {
 
     // Save and reset calls
     const onClickSave = async () => {
+        if (userDay && hasChanged) {
             setPostingDay(true);
-            await saveValues();
-            setPostingDay(false);
+            try {
+                const { data } = await Api.Day.updateDay(dateToString(day), userDay);
+                setUserDay(data);
+                const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
+                    userTrackingValueId,
+                    occurrence,
+                    value,
+                    when,
+                }));
+                await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
+                setHasChanged(false);
+            }
+            catch (error) {
+                alert.addMessage(error);
+            }
+            finally {
+                setPostingDay(false);
+            }
+        }
     }
 
     const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
@@ -764,19 +764,6 @@ export const DayView: React.FC = () => {
 
                         <Box display="flex" justifyContent="flex-end" alignItems="center">
                             <Box display="flex" alignItems="center" py={4}>
-                                <FormControl fullWidth>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={autosave}
-                                                onChange={onChangeAutoSave}
-                                                name="autosave"
-                                                color="primary"
-                                            />
-                                        }
-                                        label="AUTOSAVE"
-                                    />
-                                </FormControl>
                                 <Box mr={1} position="relative">
                                     <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
                                     {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
