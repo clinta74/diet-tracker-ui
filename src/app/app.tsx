@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Container, createStyles, CssBaseline, makeStyles } from '@material-ui/core';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme, Theme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { BrowserRouter as Router } from "react-router-dom";
 import { ConfirmProvider } from 'material-ui-confirm';
@@ -25,7 +25,7 @@ const theme = createMuiTheme({
   });
 
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         background: {
             position: 'absolute',
@@ -35,6 +35,9 @@ const useStyles = makeStyles(() =>
             height: '100%',
             width: '100%',
             zIndex: 1,
+        },
+        container: {
+            paddingBottom: theme.spacing(2),
         },
     })
 );
@@ -56,7 +59,7 @@ export const App: React.FC = () => {
                                 <Auth0ProviderWithHistory>
                                     <UserPermissionProvider>
                                         <Navigation />
-                                        <Container maxWidth="lg">
+                                        <Container className={classes.container} maxWidth="lg">
                                             <AppRoutes />
                                         </Container>
                                     </UserPermissionProvider>

@@ -8,4 +8,7 @@ export const getUserEndpoints = (client: AxiosInstance) => ({
 
     getUserExists: () =>
         client.get<boolean>(`user/exists`),
+
+    updateUser: (user: CurrentUser) =>
+        client.patch(`user`, user),
 });

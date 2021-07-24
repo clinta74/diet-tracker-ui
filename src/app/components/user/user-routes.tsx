@@ -8,12 +8,16 @@ import { Plan } from './plan';
 import { Trackings } from './trackings/trackings';
 import { EditTracking } from './trackings/edit-trackings';
 import { AddTracking } from './trackings/add-trackings';
+import { Water } from './water';
 
 export const UserRoutes: React.FC = () => {
     return (
         <Switch>
             <Route path="/day/:day" component={DayView} />
-            <Route path="/plan" component={Plan} />
+            <Route path="/settings">
+                <Plan />
+                <Water />
+            </Route>
             <Route path="/goals" component={Goals} />
             <Route path="/tracking/add" component={AddTracking} />
             <Route path="/tracking/:userTrackingId" component={EditTracking} />
