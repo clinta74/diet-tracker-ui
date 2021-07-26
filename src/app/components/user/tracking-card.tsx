@@ -46,8 +46,6 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         const { value } = event.target;
         const numValue = Number(value);
 
-        debugger;
-
         if (numValue !== NaN && numValue >= 0) {
             const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
             onChange([
