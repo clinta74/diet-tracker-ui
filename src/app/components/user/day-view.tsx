@@ -52,6 +52,7 @@ import { NumberTrackingCard } from './tracking-card';
 import { VictoriesCard } from './victories-card';
 import { VictoryType } from '../../../api/endpoints/victory';
 import { GraphModal } from './graph-modal';
+import { useDebounce } from 'react-use';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -141,8 +142,6 @@ export const DayView: React.FC = () => {
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
-    const [timeoutHandle, setTimeoutHandle] = useState<NodeJS.Timeout>();
-    const [autosave, setAutosave] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
     const timeout = 2000;
@@ -162,19 +161,16 @@ export const DayView: React.FC = () => {
         loadValues(day);
     }, [params]);
 
-    useEffect(() => {
-        timeoutHandle && clearTimeout(timeoutHandle);
-        if (autosave && hasChanged) {
-            setTimeoutHandle(
-                setTimeout(async () => {
-                    console.info('Calling autosave.', day);
-                    await saveValues();
-                }, timeout)
-            );
+
+    const [cancel] = useDebounce(() => {
+        if (userDay && hasChanged) {
+            console.log('Autosave', new Date());
+            saveValues();
         }
-    }, [hasChanged, day, autosave]);
+    }, timeout, [userDay, trackingValues]);
 
     const loadValues = (day: Date) => {
+        cancel();
         Promise.all([
             Api.Day.getDay(dateToString(day)),
             Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
@@ -185,12 +181,13 @@ export const DayView: React.FC = () => {
             })
             .catch(error => alert.addMessage(error));
     }
-
     const saveValues = async () => {
         try {
-            if (userDay && hasChanged) {
+            if (userDay) {
+                setHasChanged(false);
                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
                 setUserDay(data);
+                cancel();
                 const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
                     userTrackingValueId,
                     occurrence,
@@ -198,7 +195,6 @@ export const DayView: React.FC = () => {
                     when,
                 }));
                 await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
-                setHasChanged(false);
             }
         }
         catch (error) {
@@ -381,18 +377,10 @@ export const DayView: React.FC = () => {
     // Save and reset calls
     const onClickSave = async () => {
         if (userDay && hasChanged) {
+            cancel();
             setPostingDay(true);
             try {
-                const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-                setUserDay(data);
-                const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
-                    userTrackingValueId,
-                    occurrence,
-                    value,
-                    when,
-                }));
-                await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
-                setHasChanged(false);
+                await saveValues();
             }
             catch (error) {
                 alert.addMessage(error);
@@ -721,7 +709,7 @@ export const DayView: React.FC = () => {
                             <Grid item xs={12} >
                                 <Grid container spacing={2} justify="center">
                                     {
-                                        trackings.length &&
+                                        trackings.length > 0 &&
                                         trackings.map(tracking => {
                                             const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
                                             const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
