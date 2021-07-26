@@ -61,7 +61,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         }
     }
 
-    const onChangeCheckedValue = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean, occurrence: number, userTrackingValueId: number, type: UserTrackingType) => {
+    const onChangeCheckedValue = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean, occurrence: number, userTrackingValueId: number) => {
         const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
         onChange([
             ...values.slice(0, idx),
@@ -103,13 +103,13 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             disabled={disable} />
     </FormControl>
 
-    const YesNoComponent = (value: number, occurrence: number, name: string, description: string, userTrackingValueId: number, type: UserTrackingType) =>
+    const YesNoComponent = (value: number, occurrence: number, name: string, description: string, userTrackingValueId: number) =>
         <FormControl fullWidth>
             <FormControlLabel
                 control={
                     <Switch
                         checked={value !== 0 ? true : false}
-                        onChange={(e, checked) => onChangeCheckedValue(e, checked, occurrence, userTrackingValueId, type)}
+                        onChange={(e, checked) => onChangeCheckedValue(e, checked, occurrence, userTrackingValueId)}
                         name={name}
                         color="primary"
                     />
