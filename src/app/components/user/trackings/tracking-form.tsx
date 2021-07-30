@@ -91,6 +91,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
             order: tracking.values ? tracking.values.length + 1 : 1,
             type: UserTrackingType.Number,
             disabled: false,
+            min: 0,
         }
 
         if (tracking.values) {
@@ -211,7 +212,8 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                             >
                                                                 <MenuItem value="Number">Number</MenuItem>
                                                                 <MenuItem value="WholeNumber">Whole Number</MenuItem>
-                                                                <MenuItem value="Boolean">Yes / No </MenuItem>
+                                                                <MenuItem value="Boolean">Yes / No</MenuItem>
+                                                                <MenuItem value="Icon">Icon</MenuItem>
                                                             </Select>
                                                         </FormControl>
                                                     </Grid>

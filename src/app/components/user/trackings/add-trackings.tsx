@@ -32,6 +32,7 @@ const defaultTracking: UserTracking = {
         type: UserTrackingType.Number,
         order: 1,
         disabled: false,
+        min: 0,
     }],
 }
 

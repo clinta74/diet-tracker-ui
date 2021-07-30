@@ -113,6 +113,8 @@ interface UserTrackingValue {
     description: string;
     type: UserTrackingType;
     order: number;
+    min: number;
+    max?: number;
     disabled: boolean;
     tracking?: UserTracking;
     dailyTrackingValues?: UserDailyTrackingValue[];
