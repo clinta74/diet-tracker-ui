@@ -14,7 +14,6 @@ import {
     TextField,
     Theme
 } from '@material-ui/core';
-import clsx from 'clsx';
 
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { iconLibrary } from '../../icons';
@@ -109,7 +108,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     const NumberComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, type, whenValue, useTime }) =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
-            <Grid item xs={12} md={useTime ? 8 : 12} className={clsx()}>
+            <Grid item xs={12} md={useTime ? 8 : 12}>
                 <FormControl fullWidth>
                     <TextField
                         variant="standard"
@@ -144,7 +143,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     const YesNoComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, whenValue, useTime }) =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
-            <Grid item xs={12} md={useTime ? 8 : 12} className={clsx()}>
+            <Grid item xs={12} md={useTime ? 8 : 12}>
                 <FormControl fullWidth>
                     <FormControlLabel
                         control={
