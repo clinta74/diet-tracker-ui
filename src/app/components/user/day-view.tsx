@@ -718,7 +718,7 @@ export const DayView: React.FC = () => {
                             </Grid>
 
                             <Grid item xs={12} >
-                                <Grid container spacing={2} justify="center">
+                                <Grid container spacing={2} justifyContent="center">
                                     {
                                         trackings.length > 0 &&
                                         trackings.map(tracking => {
@@ -735,7 +735,7 @@ export const DayView: React.FC = () => {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Grid container spacing={2} justify="center">
+                                <Grid container spacing={2} justifyContent="center">
                                     {
                                         userDay.victories.length > 0 &&
                                         <Grid item xs={12} md={6}>

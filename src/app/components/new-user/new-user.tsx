@@ -117,7 +117,7 @@ export const NewUser: React.FC = () => {
     };
 
     return (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <Grid item xs={12} md={10} xl={8}>
                 <Paper className={commonClasses.paper}>
                     <Box mb={2}>
@@ -125,7 +125,7 @@ export const NewUser: React.FC = () => {
                         <p>To be able to access your daily tracking you must first register.</p>
                     </Box>
                     <form noValidate autoComplete="off">
-                        <Grid container justify="center" alignItems="stretch" spacing={2}>
+                        <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
                             <Grid item xs={6}>
                                 <FormControl fullWidth>
                                     <TextField error={showErrors && hasErrors('firstName')} label="First Name" id="firstName" name="firstName" value={newUser.firstName} onChange={onChangeStringField} disabled={postingNewUser} required />

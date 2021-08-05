@@ -1,6 +1,7 @@
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import React from 'react';
 import { iconLibrary } from '../../../../icons';
+import { getIconMetadata } from './icon-tracking-metadata';
 
 interface IconTrackingProps {
     metadata: Metadata[],
@@ -11,8 +12,7 @@ interface IconTrackingProps {
 
 export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTrackingValueId, idx, onChange }) => {
 
-    const iconName = metadata.find(m => m.key === 'IconName')?.value || '';
-    const count = Number(metadata.find(m => m.key === 'Count')?.value) || 0;
+    const { iconName, count } = getIconMetadata(metadata);
 
     const onChangeTrackingIconMetadataText = (event: React.ChangeEvent<{ value: unknown }>, key: string) => {
         const _iconName = event.target.value as string;
@@ -63,11 +63,11 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
             <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                     <TextField
-                        label="Name"
+                        label="Count"
                         autoComplete="false"
                         id={`new-tracking-icon-value-name-${idx}`}
                         type="number"
-                        name="name"
+                        name="count"
                         value={count|| ''}
                         onChange={e => onChangeTrackingIconMetadataNumber(e, 'Count')}
                     />

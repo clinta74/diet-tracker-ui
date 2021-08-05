@@ -96,14 +96,14 @@ export const EditPlan: React.FC = () => {
         .length > 0;
 
     return (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <Grid item md={10} lg={7} xl={5}>
                 <Paper className={commonClasses.paper}>
                     <Box mb={2}>
                         <Typography variant="h4">Edit Plan</Typography>
                     </Box>
                     <form noValidate autoComplete="off">
-                        <Grid container justify="center" alignItems="stretch" spacing={2}>
+                        <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
                             <Grid item xs={12}>
                                 <FormControl fullWidth>
                                     <TextField variant="standard" error={showErrors && hasErrors('name')} label="Name" id="name" name="name" value={plan.name} onChange={onChangeStringField} disabled={postingPlan} required />
