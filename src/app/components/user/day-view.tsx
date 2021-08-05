@@ -20,6 +20,7 @@ import {
     Card,
     CardContent,
     CardHeader,
+    LinearProgress,
 } from '@material-ui/core';
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
 import {
@@ -142,6 +143,7 @@ export const DayView: React.FC = () => {
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
+    const [isLoading, setIsLoading] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
     const timeout = 2000;
@@ -171,6 +173,7 @@ export const DayView: React.FC = () => {
 
     const loadValues = (day: Date) => {
         cancel();
+        setIsLoading(true);
         Promise.all([
             Api.Day.getDay(dateToString(day)),
             Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
@@ -179,7 +182,10 @@ export const DayView: React.FC = () => {
                 setUserDay(currentUserDay.data);
                 setTrackingValues(userDailyTracking.data)
             })
-            .catch(error => alert.addMessage(error));
+            .catch(error => alert.addMessage(error))
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
     const saveValues = async () => {
         try {
@@ -537,26 +543,31 @@ export const DayView: React.FC = () => {
 
     return (
         <React.Fragment>
-            <Paper className={clsx([commonClasses.paper, classes.paperBackground])}>
-                <Box display="flex" alignItems="center">
-                    <IconButton onClick={onClickPrevDay}>
-                        <ArrowBackIcon />
-                    </IconButton>
+            <Box>
+                <Paper className={clsx([commonClasses.paper, classes.paperBackground])}>
+                    <Box display="flex" alignItems="center">
+                        <IconButton onClick={onClickPrevDay}>
+                            <ArrowBackIcon />
+                        </IconButton>
 
-                    <Box flexGrow={1} textAlign="center">
-                        <Typography variant="h4">
-                            {format(day, 'EEEE')}
-                            <Hidden smDown>{format(day, ', MMM dd')}</Hidden>
-                            <Hidden mdDown>{format(day, ', yyyy')}</Hidden>
-                        </Typography>
-                        <Box textAlign="center">{formatDateText[dateText] || dateText}</Box>
+                        <Box flexGrow={1} textAlign="center">
+                            <Typography variant="h4">
+                                {format(day, 'EEEE')}
+                                <Hidden smDown>{format(day, ', MMM dd')}</Hidden>
+                                <Hidden mdDown>{format(day, ', yyyy')}</Hidden>
+                            </Typography>
+                            <Box textAlign="center">{formatDateText[dateText] || dateText}</Box>
+                        </Box>
+
+                        <IconButton onClick={onClickNextDay}>
+                            <ArrowForwardIcon />
+                        </IconButton>
                     </Box>
-
-                    <IconButton onClick={onClickNextDay}>
-                        <ArrowForwardIcon />
-                    </IconButton>
-                </Box>
-            </Paper>
+                </Paper>
+                {
+                    isLoading && <LinearProgress />
+                }
+            </Box>
 
             {
                 userDay &&
