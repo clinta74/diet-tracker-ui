@@ -7,11 +7,11 @@ import OutlinedFlagOutlinedIcon from '@material-ui/icons/OutlinedFlagOutlined';
 import PickleIcon from './svg/pickle';
 
 export const iconLibrary: {[key: string ]: JSX.Element} = {
-    ['coffeeCup']: <FreeBreakfastOutlinedIcon />,
-    ['checkmark']: <CheckOutlinedIcon />,
-    ['snowflake']: <AcUnitOutlinedIcon />,
-    ['flag']: <OutlinedFlagOutlinedIcon />,
-    ['pickle']: <PickleIcon />,
+    ['coffeeCup']: <FreeBreakfastOutlinedIcon fontSize="inherit"/>,
+    ['checkmark']: <CheckOutlinedIcon fontSize="inherit"/>,
+    ['snowflake']: <AcUnitOutlinedIcon fontSize="inherit"/>,
+    ['flag']: <OutlinedFlagOutlinedIcon fontSize="inherit"/>,
+    ['pickle']: <PickleIcon fontSize="inherit"/>,
 }
 
 export const iconNames = Object.keys(iconLibrary);

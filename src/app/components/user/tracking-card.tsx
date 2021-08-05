@@ -40,8 +40,7 @@ interface ValueControlProps {
     description: string;
     userTrackingValueId: number;
     type: UserTrackingType;
-    min: number;
-    max?: number;
+    metadata: any;
     whenValue: string;
     useTime: boolean;
 }
@@ -178,7 +177,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         </Grid>
 
 
-    const IconComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId }) =>
+    const IconComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, metadata }) =>
         <FormControl key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
             <FormControlLabel
                 control={
@@ -211,7 +210,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                 <CardContent>
                     {
                         tracking.values &&
-                        tracking.values.map(({ name, description, type, min, max, userTrackingValueId }) => {
+                        tracking.values.map(({ name, description, type, userTrackingValueId, metadata }) => {
 
                             const occurrences: number[] = [];
                             for (let idx = 1; idx <= tracking.occurrences; idx++) {
@@ -231,9 +230,8 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                     name,
                                     description,
                                     userTrackingValueId,
-                                    min,
-                                    max,
                                     type,
+                                    metadata,
                                     whenValue,
                                     useTime,
                                 })

@@ -113,11 +113,15 @@ interface UserTrackingValue {
     description: string;
     type: UserTrackingType;
     order: number;
-    min: number;
-    max?: number;
     disabled: boolean;
+    metadata: Metadata[];
     tracking?: UserTracking;
     dailyTrackingValues?: UserDailyTrackingValue[];
+}
+interface Metadata {
+    userTrackingValueId: number;
+    key: string;
+    value: string;
 }
 interface UserTrackingRequest {
     title: string;

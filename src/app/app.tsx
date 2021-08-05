@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Container, createStyles, CssBaseline, makeStyles } from '@material-ui/core';
-import { createMuiTheme, Theme } from '@material-ui/core/styles';
+import { createTheme, Theme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { BrowserRouter as Router } from "react-router-dom";
 import { ConfirmProvider } from 'material-ui-confirm';
@@ -11,7 +11,7 @@ import backgroundImage from '../img/wheat-background.jpeg';
 import { Navigation } from './components/navigation/navigation';
 import { UserPermissionProvider } from './providers/user-permission-provider';
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
       primary: {
         // Purple and green play nicely together.
