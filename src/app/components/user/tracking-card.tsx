@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Box,
     Card,
     CardContent,
     CardHeader,
@@ -16,6 +17,7 @@ import {
 } from '@material-ui/core';
 
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
+import { getIconMetadata } from './trackings/metadata/icon-tracking-metadata';
 import { iconLibrary } from '../../icons';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -40,8 +42,7 @@ interface ValueControlProps {
     description: string;
     userTrackingValueId: number;
     type: UserTrackingType;
-    min: number;
-    max?: number;
+    metadata: Metadata[];
     whenValue: string;
     useTime: boolean;
 }
@@ -104,6 +105,22 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             },
             ...values.slice(idx + 1)
         ])
+    }
+
+    const onChangeTrackingValue = (numValue: number, occurrence: number, userTrackingValueId: number, type: UserTrackingType) => {
+        if (numValue !== NaN && numValue >= 0) {
+            const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
+            onChange([
+                ...values.slice(0, idx),
+                {
+                    ...values[idx],
+                    occurrence,
+                    userTrackingValueId,
+                    value: valueCoverter[type](numValue),
+                },
+                ...values.slice(idx + 1)
+            ])
+        }
     }
 
     const NumberComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, type, whenValue, useTime }) =>
@@ -178,24 +195,45 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         </Grid>
 
 
-    const IconComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId }) =>
-        <FormControl key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        disabled={disable}
-                        id={`${name}_name_${occurrence}`}
-                        name={`${name}_name_${occurrence}`}
-                        checked={value !== 0 ? true : false}
-                        icon={iconLibrary.coffeeCup}
-                        checkedIcon={iconLibrary.coffeeCup}
-                        title={description}
-                        onChange={(e, checked) => onChangeCheckedValue(e, checked, occurrence, userTrackingValueId)}
-                    />
+    const IconComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, metadata }) => {
+        const { iconName, count } = getIconMetadata(metadata);
+
+        const trackingIcons: boolean[] = new Array(count).fill(false).map((trackingIcon, idx) =>
+            (value & Math.pow(2, idx)) === Math.pow(2, idx));
+
+        const onClickTrackingIcon = (idx: number, checked: boolean) => {
+            const newValue = checked ? value + Math.pow(2, idx) : value - Math.pow(2, idx);
+            onChangeTrackingValue(newValue, occurrence, userTrackingValueId, UserTrackingType.Icon);
+        }
+
+        return (
+            <Box key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
+                {
+                    trackingIcons.map((trackingIcon, idx) =>
+                        <Box key={idx} display="inline-block">
+                            {
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            disabled={disable}
+                                            id={`${name}_name_${occurrence}_${idx}`}
+                                            name={`${name}_name_${occurrence}_${idx}`}
+                                            checked={trackingIcon}
+                                            icon={iconLibrary[iconName]}
+                                            checkedIcon={iconLibrary[iconName]}
+                                            title={description}
+                                            onChange={(e, checked) => onClickTrackingIcon(idx, checked)}
+                                        />
+                                    }
+                                    label=" "
+                                />
+                            }
+                        </Box>
+                    )
                 }
-                label=" "
-            />
-        </FormControl>
+            </Box>
+        );
+    }
 
     const valueControl = {
         [UserTrackingType.Number]: NumberComponent,
@@ -211,7 +249,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                 <CardContent>
                     {
                         tracking.values &&
-                        tracking.values.map(({ name, description, type, min, max, userTrackingValueId }) => {
+                        tracking.values.map(({ name, description, type, userTrackingValueId, metadata }) => {
 
                             const occurrences: number[] = [];
                             for (let idx = 1; idx <= tracking.occurrences; idx++) {
@@ -231,9 +269,8 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                     name,
                                     description,
                                     userTrackingValueId,
-                                    min,
-                                    max,
                                     type,
+                                    metadata,
                                     whenValue,
                                     useTime,
                                 })

@@ -75,7 +75,7 @@ export const Plan: React.FC = () => {
     const hasErrors = results.length > 0;
 
     return (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <Grid item xs={12} md={10} xl={8}>
                 <Paper className={commonClasses.paper}>
                     <Box mb={2}>

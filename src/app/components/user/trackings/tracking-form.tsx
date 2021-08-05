@@ -17,6 +17,7 @@ import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 
 
 import { useCommonStyles } from '../../common-styles';
+import { IconTracking, NullTracking } from './metadata/icon-tracking';
 interface TrackingFormProps {
     tracking: UserTracking;
     setTracking: React.Dispatch<React.SetStateAction<UserTracking>>;
@@ -91,7 +92,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
             order: tracking.values ? tracking.values.length + 1 : 1,
             type: UserTrackingType.Number,
             disabled: false,
-            min: 0,
+            metadata: [],
         }
 
         if (tracking.values) {
@@ -127,6 +128,31 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
             }));
         }
     }
+
+    const onChangeMetadata = (metadata: Metadata[], idx: number) => {
+        if (tracking.values) {
+            const values = [
+                ...tracking.values.slice(0, idx), {
+                    ...tracking.values[idx],
+                    metadata
+                },
+                ...tracking.values.slice(idx + 1)
+            ]
+
+            setTracking(tracking => ({
+                ...tracking,
+                values
+            }));
+        }
+    }
+
+    const metadataComponent = {
+        [UserTrackingType.Icon]: IconTracking,
+        [UserTrackingType.Number]: NullTracking,
+        [UserTrackingType.WholeNumber]: NullTracking,
+        [UserTrackingType.Boolean]: NullTracking,
+    }
+
 
     return (
         <Box my={2}>
@@ -181,7 +207,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                         <Grid container spacing={2}>
                             {
                                 tracking.values &&
-                                tracking.values.map(({ name, description, type }, idx) =>
+                                tracking.values.map(({ name, description, type, metadata, userTrackingValueId }, idx) =>
                                     <Grid item key={`value_${idx}`} xs={12} sm={6}>
                                         <Box>
                                             <Box>
@@ -232,6 +258,10 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                         </FormControl>
                                                     </Grid>
                                                 </Grid>
+                                                <Box my={2}>
+                                                    {metadataComponent[type]({ metadata, userTrackingValueId, onChange: onChangeMetadata, idx })}
+                                                </Box>
+
                                             </Box>
                                             <Box my={2} textAlign="right">
                                                 <Button color="secondary" onClick={(e => onClickRemoveTracking(e, idx))}>Remove Value</Button>

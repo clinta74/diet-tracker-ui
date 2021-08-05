@@ -125,7 +125,7 @@ export const Water: React.FC = () => {
     }
 
     return (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <Grid item xs={12} md={10} xl={8}>
                 <Paper className={commonClasses.paper}>
                     <Box mb={2}>
