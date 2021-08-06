@@ -208,9 +208,10 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
         return (
             <Box key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
+                <Box>{name}</Box>
                 {
                     trackingIcons.map((trackingIcon, idx) =>
-                        <Box key={idx} display="inline-block">
+                        <Box key={idx} display="inline">
                             {
                                 <FormControlLabel
                                     control={
@@ -231,6 +232,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                         </Box>
                     )
                 }
+                <FormHelperText>{description}</FormHelperText>
             </Box>
         );
     }

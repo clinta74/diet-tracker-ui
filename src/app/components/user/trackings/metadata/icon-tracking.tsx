@@ -44,17 +44,23 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
                         value={iconName}
                         onChange={e => onChangeTrackingIconMetadataText(e, 'IconName')}
                     >
-                        <MenuItem value="coffeeCup">
-                            <IconMenuItem name="coffeeCup">Coffee Cup</IconMenuItem>
-                        </MenuItem>
                         <MenuItem value="checkmark">
                             <IconMenuItem name="checkmark">Checkmark</IconMenuItem>
+                        </MenuItem>
+                        <MenuItem value="circle">
+                            <IconMenuItem name="circle">Circle</IconMenuItem>
+                        </MenuItem>
+                        <MenuItem value="coffeeCup">
+                            <IconMenuItem name="coffeeCup">Coffee Cup</IconMenuItem>
                         </MenuItem>
                         <MenuItem value="snowflake">
                             <IconMenuItem name="snowflake">Snowflake</IconMenuItem>
                         </MenuItem>
-                        <MenuItem value="flag">
-                            <IconMenuItem name="flag">Flag</IconMenuItem>
+                        <MenuItem value="square">
+                            <IconMenuItem name="square">Square</IconMenuItem>
+                        </MenuItem>
+                        <MenuItem value="triangle">
+                            <IconMenuItem name="triangle">Triangle</IconMenuItem>
                         </MenuItem>
                     </Select>
                 </FormControl>

@@ -113,7 +113,7 @@ export const Trackings: React.FC = () => {
                         <p>You can add tracking for either numbers or events everyday.</p>
                     </Box>
                     <Hidden smDown>
-                        <TableContainer component={Paper} className={commonClasses.paper}>
+                        <TableContainer>
                             <Table>
                                 <TableHead>
                                     <TableRow>
