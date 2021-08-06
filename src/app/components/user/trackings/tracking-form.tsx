@@ -5,10 +5,13 @@ import {
     Divider,
     Fab,
     FormControl,
+    FormControlLabel,
+    FormHelperText,
     Grid,
     InputLabel,
     MenuItem,
     Select,
+    Switch,
     TextField,
     Typography,
 } from '@material-ui/core';
@@ -41,6 +44,13 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
         setTracking(tracking => ({
             ...tracking,
             [name]: num,
+        }));
+    }
+
+    const onChangeTrackingCheckedValue = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+        setTracking(tracking => ({
+            ...tracking,
+            disabled: checked,
         }));
     }
 
@@ -196,6 +206,21 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                             name="occurrences"
                             value={tracking.occurrences ? tracking.occurrences : ''}
                             onChange={onChangeTrackingNumericValue}
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={6} md={2}>
+                    <FormControl fullWidth>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={tracking.disabled}
+                                    onChange={onChangeTrackingCheckedValue}
+                                    name="disabled"
+                                    color="primary"
+                                />
+                            }
+                            label="Disabled"
                         />
                     </FormControl>
                 </Grid>

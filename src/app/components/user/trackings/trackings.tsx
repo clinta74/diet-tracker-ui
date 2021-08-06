@@ -1,5 +1,6 @@
 import {
     Box,
+    Divider,
     Fab,
     Hidden,
     IconButton,
@@ -166,8 +167,9 @@ export const Trackings: React.FC = () => {
                         <List>
                             {
                                 trackings &&
-                                trackings.map(({ userTrackingId, title, description, occurrences, disabled, values }) =>
-                                    <ListItem key={userTrackingId}>
+                                trackings.map(({ userTrackingId, title, description, occurrences, disabled, values }, idx) =>
+                                    <React.Fragment key={userTrackingId}>
+                                    <ListItem>
                                         <Box width="100%">
                                             <Box fontSize="1.25em" fontWeight="bold">{title}</Box>
                                             <Box display="flex">
@@ -194,7 +196,12 @@ export const Trackings: React.FC = () => {
                                             </Box>
                                         </Box>
                                     </ListItem>
+                                    {
+                                        idx < trackings.length -1 && <Divider />
+                                    }
+                                    </React.Fragment>
                                 )
+                                
                             }
                         </List>
                     </Hidden>
