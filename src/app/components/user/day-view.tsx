@@ -110,6 +110,11 @@ const useStyles = makeStyles((theme: Theme) => {
             top: theme.spacing(2),
             left: theme.spacing(2),
             width: `calc(100% - ${theme.spacing(4)}px)`,
+        },
+        loader: {
+            top: '-10px',
+            width: '100%',
+            position: 'absolute',
         }
     });
 });
@@ -565,10 +570,9 @@ export const DayView: React.FC = () => {
                     </Box>
                 </Paper>
                 {
-                    isLoading && <LinearProgress />
+                    isLoading && <Box position="relative"><Box className={classes.loader}><LinearProgress /></Box></Box>
                 }
             </Box>
-
             {
                 userDay &&
                 <React.Fragment>
