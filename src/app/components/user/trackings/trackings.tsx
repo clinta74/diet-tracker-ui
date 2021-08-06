@@ -6,7 +6,6 @@ import {
     IconButton,
     List,
     ListItem,
-    ListItemText,
     Menu,
     MenuItem,
     Paper,
