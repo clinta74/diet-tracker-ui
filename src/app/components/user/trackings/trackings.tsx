@@ -1,7 +1,11 @@
 import {
     Box,
     Fab,
+    Hidden,
     IconButton,
+    List,
+    ListItem,
+    ListItemText,
     Menu,
     MenuItem,
     Paper,
@@ -38,7 +42,7 @@ export const Trackings: React.FC = () => {
     const openMenu = Boolean(anchorEl);
 
     useEffect(() => {
-        Api.UserTracking.getActiveUserTrackings()
+        Api.UserTracking.getUserTrackings()
             .then(({ data }) => setTrackings(data))
             .catch(error => alert.addMessage(error));
     }, []);
@@ -102,58 +106,100 @@ export const Trackings: React.FC = () => {
                         <AddIcon />
                     </Fab>
                 </Box>
-                <TableContainer component={Paper} className={commonClasses.paper}>
+                <Paper className={commonClasses.paper}>
                     <Box mb={2}>
                         <Typography variant="h4">Extra Trackings</Typography>
                         <p>You can add tracking for either numbers or events everyday.</p>
                     </Box>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell width={1}>Occurances</TableCell>
-                                <TableCell width={1}>Disabled</TableCell>
-                                <TableCell>Value(s)</TableCell>
-                                <TableCell width={1} />
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
+                    <Hidden smDown>
+                        <TableContainer component={Paper} className={commonClasses.paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Description</TableCell>
+                                        <TableCell width={1}>Occurances</TableCell>
+                                        <TableCell width={1}>Disabled</TableCell>
+                                        <TableCell>Value(s)</TableCell>
+                                        <TableCell width={1} />
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        trackings &&
+                                        trackings.length === 0 &&
+                                        <TableRow><TableCell colSpan={6}>No tracking options found.</TableCell></TableRow>
+                                        ||
+                                        trackings &&
+                                        trackings.map(({ userTrackingId, title, description, occurrences, disabled, values }) =>
+                                            <TableRow key={userTrackingId}>
+                                                <TableCell>{title}</TableCell>
+                                                <TableCell>{description}</TableCell>
+                                                <TableCell align="right">{occurrences}</TableCell>
+                                                <TableCell>{disabled ? 'Yes' : 'No'}</TableCell>
+                                                <TableCell>
+                                                    {
+                                                        values &&
+                                                        values.map(({ name, description, type, userTrackingValueId }) =>
+                                                            <Box key={userTrackingValueId}>
+                                                                <span title={description}>{name} as {typeNames[type]}</span>
+                                                            </Box>
+                                                        )
+                                                    }
+                                                </TableCell>
+                                                <TableCell width={1}>
+                                                    <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={userTrackingId}>
+                                                        <MoreVertIcon />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                        ||
+                                        <TableRow><TableCell colSpan={6}><LinearProgress /></TableCell></TableRow>
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Hidden>
+
+                    <Hidden mdUp>
+                        <List>
                             {
                                 trackings &&
-                                trackings.length === 0 &&
-                                <TableRow><TableCell colSpan={6}>No tracking options found.</TableCell></TableRow>
-                                ||
-                                trackings &&
                                 trackings.map(({ userTrackingId, title, description, occurrences, disabled, values }) =>
-                                    <TableRow key={userTrackingId}>
-                                        <TableCell>{title}</TableCell>
-                                        <TableCell>{description}</TableCell>
-                                        <TableCell align="right">{occurrences}</TableCell>
-                                        <TableCell>{disabled ? 'Yes' : 'No'}</TableCell>
-                                        <TableCell>
-                                            {
-                                                values &&
-                                                values.map(({ name, description, type, userTrackingValueId }) =>
-                                                    <Box key={userTrackingValueId}>
-                                                        <span title={description}>{name} as {typeNames[type]}</span>
+                                    <ListItem key={userTrackingId}>
+                                        <Box width="100%">
+                                            <Box fontSize="1.25em" fontWeight="bold">{title}</Box>
+                                            <Box display="flex">
+                                                <Box flexGrow={1}>
+                                                    <Box>{description}</Box>
+                                                    <Box><strong>Occurrences:</strong> {occurrences}</Box>
+                                                    <Box><strong>Disabled:</strong> {disabled ? 'Yes' : 'No'}</Box>
+                                                    <Box>
+                                                        {
+                                                            values &&
+                                                            values.map(({ name, description, type, userTrackingValueId }) =>
+                                                                <Box key={userTrackingValueId}>
+                                                                    <span title={description}>{name} as {typeNames[type]}</span>
+                                                                </Box>
+                                                            )
+                                                        }
                                                     </Box>
-                                                )
-                                            }
-                                        </TableCell>
-                                        <TableCell width={1}>
-                                            <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={userTrackingId}>
-                                                <MoreVertIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
+                                                </Box>
+                                                <Box flexShrink={1}>
+                                                    <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={userTrackingId}>
+                                                        <MoreVertIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </ListItem>
                                 )
-                                ||
-                                <TableRow><TableCell colSpan={6}><LinearProgress /></TableCell></TableRow>
                             }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                        </List>
+                    </Hidden>
+                </Paper>
+
 
                 <Menu
                     id="long-menu"
@@ -166,6 +212,7 @@ export const Trackings: React.FC = () => {
                     <MenuItem onClick={onClickDeleteTracking}>Delete</MenuItem>
                 </Menu>
             </Box>
+
         </React.Fragment>
     );
 }
