@@ -165,8 +165,9 @@ export const Goals: React.FC = () => {
         setAnchorEl(null);
     };
 
+    const parseDate = (when: string | null) => when != null ? parseISO(when) : new Date(0);
 
-    const sortedVictories = victories.sort((a, b) => a.name > b.name ? 1 : -1);
+    const sortedVictories = victories.sort((a, b) => parseDate(a.when) < parseDate(b.when) ? 1 : -1);
 
     const goals = sortedVictories.filter(victory => victory.type === VictoryType.Goal);
     const nonScale = sortedVictories.filter(victory => victory.type === VictoryType.NonScale);
