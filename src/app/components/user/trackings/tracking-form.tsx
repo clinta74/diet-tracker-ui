@@ -6,6 +6,7 @@ import {
     Fab,
     FormControl,
     FormControlLabel,
+    FormHelperText,
     Grid,
     InputLabel,
     MenuItem,
@@ -50,6 +51,13 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
         setTracking(tracking => ({
             ...tracking,
             disabled: checked,
+        }));
+    }
+    
+    const onChangeUseTimeCheckedValue = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+        setTracking(tracking => ({
+            ...tracking,
+            useTime: checked,
         }));
     }
 
@@ -208,7 +216,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                         />
                     </FormControl>
                 </Grid>
-                <Grid item xs={6} md={2}>
+                <Grid item xs={6} md={4}>
                     <FormControl fullWidth>
                         <FormControlLabel
                             control={
@@ -221,10 +229,28 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                             }
                             label="Disabled"
                         />
+                        <FormHelperText>Disable this tracking so it will no longer show on your day view.</FormHelperText>
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={6} md={4}>
+                    <FormControl fullWidth>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={tracking.useTime}
+                                    onChange={onChangeUseTimeCheckedValue}
+                                    name="useTime"
+                                    color="primary"
+                                />
+                            }
+                            label="When"
+                        />
+                        <FormHelperText>Make time option available for some tracking types.</FormHelperText>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={6}>
                     <Box>
                         <Typography variant="h6">Values</Typography>
                         <Divider className={commonClasses.divider} />
