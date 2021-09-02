@@ -9,10 +9,12 @@ import { Trackings } from './trackings/trackings';
 import { EditTracking } from './trackings/edit-trackings';
 import { AddTracking } from './trackings/add-trackings';
 import { Water } from './water';
+import { PlanLeanAndGreen } from './plan/plan-lean-and-green';
 
 export const UserRoutes: React.FC = () => {
     return (
         <Switch>
+            <Route path="/day/:day/plan/:number" component={PlanLeanAndGreen} />
             <Route path="/day/:day" component={DayView} />
             <Route path="/settings">
                 <Plan />

@@ -14,6 +14,7 @@ import {
     ValueAxis,
     Chart,
     LineSeries,
+    Tooltip,
 } from '@devexpress/dx-react-chart-material-ui';
 import { useCommonStyles } from '../common-styles';
 
@@ -58,6 +59,7 @@ export const GraphModal: React.FC<GraphModalProps> = ({ open, onClose, values: d
                             valueField="value"
                             argumentField="date"
                         />
+                        <Tooltip />
                     </Chart>
                 </Box>
             </Paper>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Box,
     Card,
@@ -10,29 +10,56 @@ import {
     FormControlLabel,
     FormHelperText,
     Grid,
+    IconButton,
+    LinearProgress,
+    List,
+    ListItem,
     makeStyles,
+    Modal,
+    Paper,
     Switch,
     TextField,
-    Theme
+    Theme,
+    Typography
 } from '@material-ui/core';
+import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { getIconMetadata } from './trackings/metadata/icon-tracking-metadata';
 import { iconLibrary } from '../../icons';
+import { useApi } from '../../../api';
+import { dateToString } from './day-view';
+import { addDays, parseISO, startOfToday } from 'date-fns';
+import clsx from 'clsx';
+import { useCommonStyles } from '../common-styles';
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         card: {
             margin: theme.spacing(1, 0, 0),
-        }
+            position: 'relative',
+        },
+        graphButton: {
+            position: 'absolute',
+            top: theme.spacing(1),
+            right: theme.spacing(1),
+        },
+        graphModal: {
+            position: 'absolute',
+            top: theme.spacing(2),
+            left: theme.spacing(2),
+            width: `calc(100% - ${theme.spacing(4)}px)`,
+        },
     });
 });
 
+const maxInt = 4294967296;
+
 const valueCoverter = {
-    [UserTrackingType.Number]: (value: number) => value,
-    [UserTrackingType.WholeNumber]: (value: number) => Math.max(Math.floor(value), 0),
-    [UserTrackingType.Boolean]: (value: number) => value,
-    [UserTrackingType.Icon]: (value: number) => value,
+    [UserTrackingType.Number]: (value: number) => Math.min(value, maxInt),
+    [UserTrackingType.WholeNumber]: (value: number) => Math.min(maxInt, Math.max(Math.floor(value), 0)),
+    [UserTrackingType.Boolean]: (value: number) => Math.min(value, maxInt),
+    [UserTrackingType.Icon]: (value: number) => Math.min(value, maxInt),
 }
 
 interface ValueControlProps {
@@ -56,6 +83,11 @@ interface TrackingCardProps {
 
 export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, values, disable, onChange }) => {
     const classes = useStyles();
+    const commonClasses = useCommonStyles();
+    const { Api } = useApi();
+
+    const [historyOpen, setHistoryOpen] = useState(false);
+    const [historyData, setHistoryData] = useState<UserDailyTrackingValue[]>();
 
     const { title, description, useTime } = tracking;
 
@@ -244,9 +276,27 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         [UserTrackingType.Icon]: IconComponent,
     }
 
+    const onClickShowHistory = () => {
+        setHistoryOpen(true);
+        Api.UserDailyTracking.getUserDailyTrackingHistoryValues(tracking.userTrackingId, dateToString(addDays(startOfToday(), -14)))
+            .then(({ data }) => {
+                setHistoryData(data);
+            });
+    }
+
+    const onClose = () => {
+        setHistoryData(undefined);
+        setHistoryOpen(false);
+    }
+
     return (
         <React.Fragment>
             <Card className={classes.card}>
+                <Box className={classes.graphButton}>
+                    <IconButton size="small" onClick={onClickShowHistory}>
+                        <TimelineOutlinedIcon />
+                    </IconButton>
+                </Box>
                 <CardHeader title={title} subheader={description} />
                 <CardContent>
                     {
@@ -282,6 +332,46 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                     }
                 </CardContent>
             </Card>
+
+            <Modal open={historyOpen} onClose={onClose} aria-labelledby="graph-modal-title">
+                <Paper className={clsx(commonClasses.paper, classes.graphModal)}>
+                    <Box mb={2}>
+                        <Typography variant="h6" id="graph-modal-title">{title}</Typography>
+                    </Box>
+
+                    <Box>
+                        <List>
+                            {
+
+                                historyData &&
+                                historyData.map((history: UserDailyTrackingValue) =>
+                                    <ListItem key={`${history.userTrackingValueId}_${history.day}_${history.occurrence}`}>
+                                        <Grid container>
+                                            <Grid item xs={6} sm={3}>
+                                                Day: {dateToString(parseISO(history.day))}
+                                            </Grid>
+                                            
+                                            <Grid item xs={6} sm={3}>
+                                                Occurrence: {history.occurrence}
+                                            </Grid>
+
+                                            <Grid item xs={6} sm={3}>
+                                                Name: {(tracking.values && tracking.values.find(v => v.userTrackingValueId === history.userTrackingValueId)?.name) || ''}
+                                            </Grid>
+
+                                            <Grid item xs={6} sm={3}>
+                                                Value: {history.value}
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                )
+                                || <LinearProgress />
+                            }
+                        </List>
+
+                    </Box>
+                </Paper>
+            </Modal>
         </React.Fragment>
     );
 }

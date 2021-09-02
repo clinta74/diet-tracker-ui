@@ -43,6 +43,7 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
 import BarChartOutlinedIcon from '@material-ui/icons/BarChartOutlined';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
@@ -55,7 +56,7 @@ import { VictoryType } from '../../../api/endpoints/victory';
 import { GraphModal } from './graph-modal';
 import { useDebounce } from 'react-use';
 
-const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
+export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
 const useStyles = makeStyles((theme: Theme) => {
     const backgroundColors = ['plum', 'lightpink', 'Khaki', 'Aquamarine', 'Wheat', 'PowderBlue', 'Seashell'];
@@ -104,12 +105,6 @@ const useStyles = makeStyles((theme: Theme) => {
             position: 'absolute',
             top: theme.spacing(1),
             right: theme.spacing(1),
-        },
-        graphModal: {
-            position: 'absolute',
-            top: theme.spacing(2),
-            left: theme.spacing(2),
-            width: `calc(100% - ${theme.spacing(4)}px)`,
         },
         loader: {
             top: '-10px',
@@ -538,6 +533,11 @@ export const DayView: React.FC = () => {
         history.push(`/day/${dateToString(addDays(day, -1))}`);
     }
 
+    const onClickPlanLeanAndGreen = async (idx: number) => {
+        await onClickSave();
+        history.push(`/day/${dateToString(day)}/plan/${idx}`);
+    }
+
     const filter = createFilterOptions<string>();
 
     const dateText = formatDistanceToNowStrict(day, { addSuffix: true, unit: 'day', roundingMethod: 'floor' });
@@ -578,7 +578,7 @@ export const DayView: React.FC = () => {
                 <React.Fragment>
                     <form noValidate autoComplete="off">
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={5}>
                                 <Card className={classes.card}>
                                     <CardHeader title="Fuelings" />
                                     <CardContent>
@@ -616,27 +616,37 @@ export const DayView: React.FC = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={7}>
                                 <Card className={classes.card}>
                                     <CardHeader title="Lean and Green" />
                                     <CardContent>
                                         {
                                             userDay.meals.map((meal, idx) => {
                                                 const when = meal.when === null ? '' : meal.when.split('T')[1];
-                                                return <Grid container spacing={2} key={`meal_${idx}`}>
-                                                    <Grid item xs={7} sm={8} lg={9}>
-                                                        <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField value={meal.name} name="name" onChange={e => onChangeMealName(e, idx)} disabled={postingDay} />
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={5} sm={4} lg={3}>
-                                                        <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" autoComplete="false" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={postingDay} />
-                                                        </FormControl>
-                                                    </Grid>
-                                                </Grid>
-                                            }
-                                            )
+                                                return (
+                                                    <Box display="flex" key={`meal_${idx}`} alignItems="top">
+                                                        <Box flexGrow={1}>
+                                                            <Grid container spacing={2} >
+                                                                <Grid item xs={7} sm={8} lg={9}>
+                                                                    <FormControl fullWidth className={classes.formControl}>
+                                                                        <TextField value={meal.name} name="name" onChange={e => onChangeMealName(e, idx)} disabled={postingDay} />
+                                                                    </FormControl>
+                                                                </Grid>
+                                                                <Grid item xs={5} sm={4} lg={3}>
+                                                                    <FormControl fullWidth className={classes.formControl}>
+                                                                        <TextField type="time" autoComplete="false" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={postingDay} />
+                                                                    </FormControl>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Box>
+                                                        <Box>
+                                                            <IconButton title="Plan Lean and Green" onClick={e => onClickPlanLeanAndGreen(idx)}>
+                                                                <AssignmentTurnedInOutlinedIcon />
+                                                            </IconButton>
+                                                        </Box>
+                                                    </Box>
+                                                );
+                                            })
                                         }
                                     </CardContent>
                                 </Card>
