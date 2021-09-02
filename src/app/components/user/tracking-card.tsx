@@ -125,7 +125,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     const NumberComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, type, whenValue, useTime }) =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
-            <Grid item xs={12} md={useTime ? 8 : 12}>
+            <Grid item xs={useTime ? 8 : 12}>
                 <FormControl fullWidth>
                     <TextField
                         variant="standard"
@@ -141,7 +141,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             </Grid>
             {
                 useTime &&
-                <Grid item xs={12} md={4}>
+                <Grid item xs={4}>
                     <FormControl fullWidth>
                         <TextField
                             type="time"

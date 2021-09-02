@@ -233,7 +233,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={6} md={4}>
+                <Grid item xs={6} md={8}>
                     <FormControl fullWidth>
                         <FormControlLabel
                             control={
