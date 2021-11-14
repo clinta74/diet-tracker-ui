@@ -1,4 +1,4 @@
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText } from '@mui/material';
 import React from 'react';
 import { StandardValidationResult } from '../../utils/validate';
 

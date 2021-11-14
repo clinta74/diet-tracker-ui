@@ -1,5 +1,5 @@
-import { SvgIcon, SvgIconTypeMap } from "@material-ui/core";
-import { OverridableComponent } from "@material-ui/core/OverridableComponent";
+import { SvgIcon, SvgIconTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React from "react";
 
 const PickleIcon: OverridableComponent<SvgIconTypeMap> = (props: unknown) => {

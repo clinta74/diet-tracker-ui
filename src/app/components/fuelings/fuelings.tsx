@@ -19,9 +19,9 @@ import {
     TextField,
     Typography,
     useTheme
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useApi } from '../../../api';
 import { useCommonStyles } from '../common-styles';
 import { useAlertMessage } from '../../providers/alert-provider';

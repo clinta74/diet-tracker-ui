@@ -1,5 +1,5 @@
-import { Button, CircularProgress } from '@material-ui/core';
-import { Box, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography } from '@material-ui/core';
+import { Button, CircularProgress, SelectChangeEvent } from '@mui/material';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../../api/api-provider';
 import { validateAll, ValidationTest } from '../../../utils/validate';
@@ -42,9 +42,9 @@ export const Plan: React.FC = () => {
         setPlanId(user.currentPlan.planId);
     }, [user]);
 
-    const handleChangePlanId = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChangePlanId = (event: SelectChangeEvent<number>) => {
         const { value } = event.target;
-        setPlanId(Number(value as string));
+        setPlanId(Number(value));
     };
 
     const updatePlan = async () => {

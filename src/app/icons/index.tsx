@@ -1,11 +1,11 @@
 import React from 'react';
-import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
-import FreeBreakfastOutlinedIcon from '@material-ui/icons/FreeBreakfastOutlined';
-import AcUnitOutlinedIcon from '@material-ui/icons/AcUnitOutlined';
-import OutlinedFlagOutlinedIcon from '@material-ui/icons/OutlinedFlagOutlined';
-import ChangeHistoryOutlinedIcon from '@material-ui/icons/ChangeHistoryOutlined';
-import FiberManualRecordOutlinedIcon from '@material-ui/icons/FiberManualRecordOutlined';
-import CropSquareOutlinedIcon from '@material-ui/icons/CropSquareOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import FreeBreakfastOutlinedIcon from '@mui/icons-material/FreeBreakfastOutlined';
+import AcUnitOutlinedIcon from '@mui/icons-material/AcUnitOutlined';
+import OutlinedFlagOutlinedIcon from '@mui/icons-material/OutlinedFlagOutlined';
+import ChangeHistoryOutlinedIcon from '@mui/icons-material/ChangeHistoryOutlined';
+import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
+import CropSquareOutlinedIcon from '@mui/icons-material/CropSquareOutlined';
 
 import PickleIcon from './svg/pickle';
 

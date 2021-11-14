@@ -1,7 +1,8 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Box, CircularProgress, createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import { Box, CircularProgress, Theme, Typography } from '@mui/material';
+import { createStyles, makeStyles } from "@mui/styles";
 import { startOfToday } from 'date-fns';
 
 import { FuelingRoutes } from './components/fuelings/fueling-routes';

@@ -8,9 +8,7 @@ import {
     Paper,
     TextField,
     Typography,
-    makeStyles,
     Theme,
-    createStyles,
     InputLabel,
     Input,
     Button,
@@ -21,8 +19,9 @@ import {
     CardContent,
     CardHeader,
     LinearProgress,
-} from '@material-ui/core';
-import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
+    SpeedDial, 
+    SpeedDialAction
+} from '@mui/material';
 import {
     format,
     startOfToday,
@@ -32,28 +31,29 @@ import {
     formatDistanceToNowStrict,
 } from 'date-fns';
 
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import LocalDrinkIcon from '@material-ui/icons/LocalDrinkOutlined';
-import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
-import RestaurantOutlinedIcon from '@material-ui/icons/RestaurantOutlined';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
-import NoteOutlinedIcon from '@material-ui/icons/NoteOutlined';
-import BarChartOutlinedIcon from '@material-ui/icons/BarChartOutlined';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import LocalDrinkIcon from '@mui/icons-material/LocalDrinkOutlined';
+import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined';
+import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketOutlined';
+import NoteOutlinedIcon from '@mui/icons-material/NoteOutlined';
+import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 
 import { useCommonStyles } from '../common-styles';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
-import { Autocomplete, createFilterOptions } from '@material-ui/lab';
+import { Autocomplete, createFilterOptions } from '@mui/material';
 import { useUser } from '../../providers/user-provider';
 import { NumberTrackingCard } from './tracking-card';
 import { VictoriesCard } from './victories-card';
 import { VictoryType } from '../../../api/endpoints/victory';
 import { GraphModal } from './graph-modal';
 import { useDebounce } from 'react-use';
+import { makeStyles, createStyles } from '@mui/styles';
 
 const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -754,7 +754,7 @@ export const DayView: React.FC = () => {
                                                 <CardHeader title="Notes" subheader="What happened today that you would like to remember?" />
                                                 <CardContent>
                                                     <FormControl fullWidth>
-                                                        <TextField variant="standard" label="Notes" id="notes" name="notes" multiline rowsMax={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
+                                                        <TextField variant="standard" label="Notes" id="notes" name="notes" multiline maxRows={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
                                                     </FormControl>
                                                 </CardContent>
                                             </Card>

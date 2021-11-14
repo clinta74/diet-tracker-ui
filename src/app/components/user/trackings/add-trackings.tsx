@@ -2,11 +2,10 @@ import {
     Box,
     Button,
     CircularProgress,
-    createStyles,
-    makeStyles,
     Paper,
     Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useApi } from '../../../../api';

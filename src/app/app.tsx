@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Container, createStyles, CssBaseline, makeStyles } from '@material-ui/core';
-import { createTheme, Theme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
+import { Box, Container, createTheme, CssBaseline, Theme, ThemeProvider } from '@mui/material';
+import { createStyles, makeStyles } from "@mui/styles";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ConfirmProvider } from 'material-ui-confirm';
 import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';

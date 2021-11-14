@@ -17,17 +17,17 @@ import {
     TableRow,
     Typography,
     useTheme
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import AddIcon from '@material-ui/icons/Add';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useAlertMessage } from '../../../providers/alert-provider';
 import { useCommonStyles } from '../../common-styles';
 import { useApi } from '../../../../api';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 import { useConfirm } from 'material-ui-confirm';
 import { useHistory } from 'react-router';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 
 export const Trackings: React.FC = () => {
     const commonClasses = useCommonStyles();

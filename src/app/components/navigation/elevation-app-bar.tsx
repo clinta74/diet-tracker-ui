@@ -5,20 +5,20 @@ import {
     Avatar,
     Box,
     Button,
-    createStyles,
     Hidden,
     IconButton,
-    makeStyles,
     Theme,
     Toolbar,
     Typography,
     useScrollTrigger
-} from '@material-ui/core';
+} from '@mui/material';
 import clsx from 'clsx';
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 
 // Local imports
 import { Authenticated } from '../../../auth/authenticated';
+import { createStyles, makeStyles } from '@mui/styles';
+import { drawerWidth } from './navigation';
 
 const ElevationScroll: React.FC = ({ children }) => {
     const trigger = useScrollTrigger({
@@ -31,8 +31,6 @@ const ElevationScroll: React.FC = ({ children }) => {
         elevation: trigger ? 4 : 0,
     });
 }
-
-const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

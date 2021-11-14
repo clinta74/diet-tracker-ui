@@ -11,11 +11,12 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    SelectChangeEvent,
     Switch,
     TextField,
     Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 
 
@@ -81,7 +82,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
 
     }
 
-    const onChangeTrackingValueTypeValue = (event: React.ChangeEvent<{ value: unknown }>, idx: number) => {
+    const onChangeTrackingValueTypeValue = (event: SelectChangeEvent, idx: number) => {
         const type = event.target.value as UserTrackingType;
         if (tracking.values) {
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { ElevateAppBar } from './elevation-app-bar';
 import { SideNav } from './side-nav';
 
+export const drawerWidth = 240;
+
 export const Navigation: React.FC = () => {
     const [open, setOpen] = React.useState(false);
 
@@ -14,7 +16,7 @@ export const Navigation: React.FC = () => {
         setOpen(false);
     };
 
-    const handleClickAway: React.MouseEventHandler<Document> = () => {
+    const handleClickAway = () => {
         setOpen(false);
     }
 

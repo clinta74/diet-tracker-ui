@@ -2,43 +2,41 @@ import React, { createContext } from 'react';
 import {
     Drawer,
     IconButton,
-    makeStyles,
     Theme,
-    createStyles,
     useTheme,
     List,
     Divider,
     ClickAwayListener,
     ListItemIcon,
     ListItemText
-} from '@material-ui/core';
+} from '@mui/material';
 import clsx from 'clsx';
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TodayIcon from '@material-ui/icons/Today';
-import FlagOutlinedIcon from '@material-ui/icons/FlagOutlined';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasketOutlined';
-import SettingsIcon from '@material-ui/icons/SettingsOutlined';
-import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import TodayIcon from '@mui/icons-material/Today';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketOutlined';
+import SettingsIcon from '@mui/icons-material/SettingsOutlined';
+import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 
 import { Authenticated } from '../../../auth/authenticated';
-import { ListItem } from '@material-ui/core';
+import { ListItem } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { LogoutOptions, useAuth0 } from '@auth0/auth0-react';
 import { Authorized } from '../../providers/user-permission-provider';
+import { createStyles, makeStyles } from '@mui/styles';
+import { drawerWidth } from './navigation';
 
 interface SideNavProps {
     open: boolean;
     handleDrawerClose: React.MouseEventHandler;
-    handleClickAway: React.MouseEventHandler<Document>;
+    handleClickAway: (event: MouseEvent | TouchEvent) => void;
 }
 
 export const SideNavContext = createContext(false);
-
-const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

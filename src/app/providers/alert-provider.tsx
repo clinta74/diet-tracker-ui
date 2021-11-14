@@ -1,10 +1,10 @@
-import { Box, Button, createStyles, Divider, makeStyles, Portal, Theme } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert, AlertTitle, Box, Button, Divider, Portal, Theme } from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, { createContext, useState } from 'react';
 
 
 interface AlertHandlers {
-    addMessage: (message: string) => void;
+    addMessage: (alert: unknown) => void;
     clearMessages: () => void;
     messages?: string[];
 }
@@ -20,8 +20,15 @@ export const AlertProvider: React.FunctionComponent = ({ children }) => {
     const [messages, setMessages] = useState<string[]>();
 
     const alertHandlers = {
-        addMessage: (message: string) =>
-            setMessages(_messages => _messages ? [..._messages, message] : [message]),
+        addMessage: (alert: unknown) => {
+            let message = "An unknown error has occured.";
+            if (typeof alert === 'string')
+                message = alert;
+            else if (typeof alert === 'object')
+                message = (alert as { message: string }).message;
+
+            setMessages(_messages => _messages ? [..._messages, message] : [message]);
+        },
         clearMessages: () =>
             setMessages(undefined),
         messages,
@@ -51,9 +58,9 @@ export const AlertMessage: React.FunctionComponent = () => {
                 value => value.messages &&
                     <Portal>
                         <Box className={classes.root} boxShadow={2}>
-                        <Box p={1} textAlign="right">
-                            <Button onClick={value.clearMessages}>Clear</Button>
-                        </Box>
+                            <Box p={1} textAlign="right">
+                                <Button onClick={value.clearMessages}>Clear</Button>
+                            </Box>
                             {
                                 value.messages.map((message, idx) =>
                                     <React.Fragment key={idx}>

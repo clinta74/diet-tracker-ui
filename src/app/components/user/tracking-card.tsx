@@ -5,20 +5,19 @@ import {
     CardContent,
     CardHeader,
     Checkbox,
-    createStyles,
     FormControl,
     FormControlLabel,
     FormHelperText,
     Grid,
-    makeStyles,
     Switch,
     TextField,
     Theme
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { getIconMetadata } from './trackings/metadata/icon-tracking-metadata';
 import { iconLibrary } from '../../icons';
+import { createStyles, makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
