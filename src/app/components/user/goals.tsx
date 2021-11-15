@@ -274,6 +274,7 @@ export const Goals: React.FC = () => {
                             <FormControl fullWidth>
                                 <TextField
                                     autoComplete="false"
+                                    variant="standard"
                                     autoFocus
                                     id="goal"
                                     type="text"
@@ -285,7 +286,7 @@ export const Goals: React.FC = () => {
 
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
-                                <TextField name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen} />
+                                <TextField variant="standard" name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen} />
                             </FormControl>
                         </Grid>
                     </Grid>

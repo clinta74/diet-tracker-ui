@@ -76,11 +76,11 @@ const useStyles = makeStyles((theme: Theme) => {
             top: '5px',
         },
         paperBackground: {
-            backgroundColor: (data: { dayOfWeek: number }) => backgroundColors[data.dayOfWeek],
+            backgroundColor: (data: { dayOfWeek: number }) => backgroundColors[data.dayOfWeek] + ' !important',
             marginBottom: theme.spacing(1),
         },
         waterFill: {
-            fill: 'blue'
+            fill: 'blue !important'
         },
         card: {
             margin: theme.spacing(1, 0, 0),
@@ -549,7 +549,7 @@ export const DayView: React.FC = () => {
     return (
         <React.Fragment>
             <Box>
-                <Paper className={clsx([commonClasses.paper, classes.paperBackground])}>
+                <Paper className={clsx([classes.paperBackground, commonClasses.paper])}>
                     <Box display="flex" alignItems="center">
                         <IconButton onClick={onClickPrevDay}>
                             <ArrowBackIcon />
@@ -599,14 +599,14 @@ export const DayView: React.FC = () => {
                                                                 }}
                                                                 disabled={postingDay}
                                                                 renderInput={(params) => (
-                                                                    <TextField autoComplete="off" {...params} name="name" />
+                                                                    <TextField autoComplete="off" variant="standard" {...params} name="name" />
                                                                 )}
                                                             />
                                                         </FormControl>
                                                     </Grid>
                                                     <Grid item xs={5} sm={4} lg={3}>
                                                         <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" name="when" autoComplete="off" value={when} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
+                                                            <TextField type="time" name="when" autoComplete="off" variant="standard" value={when} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
                                                         </FormControl>
                                                     </Grid>
                                                 </Grid>
@@ -626,12 +626,12 @@ export const DayView: React.FC = () => {
                                                 return <Grid container spacing={2} key={`meal_${idx}`}>
                                                     <Grid item xs={7} sm={8} lg={9}>
                                                         <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField value={meal.name} name="name" onChange={e => onChangeMealName(e, idx)} disabled={postingDay} />
+                                                            <TextField value={meal.name} name="name" variant="standard" onChange={e => onChangeMealName(e, idx)} disabled={postingDay} />
                                                         </FormControl>
                                                     </Grid>
                                                     <Grid item xs={5} sm={4} lg={3}>
                                                         <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" autoComplete="false" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={postingDay} />
+                                                            <TextField type="time" autoComplete="false" variant="standard" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={postingDay} />
                                                         </FormControl>
                                                     </Grid>
                                                 </Grid>

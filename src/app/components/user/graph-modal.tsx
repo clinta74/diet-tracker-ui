@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
             position: 'absolute',
             top: theme.spacing(2),
             left: theme.spacing(2),
-            width: `calc(100% - ${theme.spacing(4)}px)`,
+            width: `calc(100% - ${theme.spacing(4)})`,
         }
     })
 );

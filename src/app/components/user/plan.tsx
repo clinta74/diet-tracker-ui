@@ -92,6 +92,7 @@ export const Plan: React.FC = () => {
                                 name="planId"
                                 value={plans.length > 0 ? planId : 0}
                                 onChange={handleChangePlanId}
+                                variant="standard"
                             >
                                 <MenuItem value={0}>
                                     <em>None</em>
