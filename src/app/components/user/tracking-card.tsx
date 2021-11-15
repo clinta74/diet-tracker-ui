@@ -5,26 +5,30 @@ import {
     CardContent,
     CardHeader,
     Checkbox,
-    createStyles,
     FormControl,
     FormControlLabel,
     FormHelperText,
     Grid,
-    makeStyles,
     Switch,
     TextField,
     Theme
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { getIconMetadata } from './trackings/metadata/icon-tracking-metadata';
 import { iconLibrary } from '../../icons';
+import { createStyles, makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         card: {
             margin: theme.spacing(1, 0, 0),
-        }
+        },
+        control: {
+            '&.Mui-checked .MuiSvgIcon-root': {
+                fill: theme.palette.secondary.dark
+            }
+        },
     });
 });
 
@@ -146,6 +150,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                         <TextField
                             type="time"
                             autoComplete="false"
+                            variant="standard"
                             id={`${name}_when_${occurrence}`}
                             value={whenValue}
                             name="when"
@@ -224,6 +229,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                             checkedIcon={iconLibrary[iconName]}
                                             title={description}
                                             onChange={(e, checked) => onClickTrackingIcon(idx, checked)}
+                                            className={classes.control}
                                         />
                                     }
                                     label=" "

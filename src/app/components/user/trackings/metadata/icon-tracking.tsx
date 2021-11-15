@@ -1,4 +1,4 @@
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React from 'react';
 import { iconLibrary } from '../../../../icons';
 import { getIconMetadata } from './icon-tracking-metadata';
@@ -14,7 +14,7 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
 
     const { iconName, count } = getIconMetadata(metadata);
 
-    const onChangeTrackingIconMetadataText = (event: React.ChangeEvent<{ value: unknown }>, key: string) => {
+    const onChangeTrackingIconMetadataText = (event: SelectChangeEvent, key: string) => {
         const _iconName = event.target.value as string;
         onChange([
             ...metadata.filter(m => m.key !== key),
@@ -22,8 +22,8 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
         ], idx);
     }
 
-    const onChangeTrackingIconMetadataNumber = (event: React.ChangeEvent<{ value: unknown }>, key: string) => {
-        const num = Number(event.target.value as string);
+    const onChangeTrackingIconMetadataNumber = (event: React.ChangeEvent<{ value: string }>, key: string) => {
+        const num = Number(event.target.value);
         const _value = Math.min(Math.max(Math.floor(num), 0), 32).toString();
 
         onChange([

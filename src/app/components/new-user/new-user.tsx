@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
@@ -108,7 +108,7 @@ export const NewUser: React.FC = () => {
         .filter(({ name }) => inputName === name)
         .length > 0;
 
-    const handleChangePlanId = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChangePlanId = (event: SelectChangeEvent<number>) => {
         const { value } = event.target;
         setNewUser(newUser => ({
             ...newUser,

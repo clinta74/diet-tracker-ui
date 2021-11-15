@@ -1,5 +1,5 @@
 import { AppState, useAuth0 } from '@auth0/auth0-react';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 
 export const Welcome: React.FC = () => {

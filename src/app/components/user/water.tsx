@@ -9,7 +9,7 @@ import {
     InputLabel,
     Paper,
     Typography
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../../api/api-provider';
 import { validateAll, ValidationTest } from '../../../utils/validate';

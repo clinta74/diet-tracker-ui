@@ -1,12 +1,12 @@
-import { Box, Fab, IconButton, LinearProgress, Menu, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@material-ui/core';
-import { Paper } from '@material-ui/core';
+import { Box, Fab, IconButton, LinearProgress, Menu, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material';
+import { Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import AddIcon from '@material-ui/icons/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
 import { useHistory } from 'react-router-dom';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import { useApi } from '../../../api/api-provider';
 
 export const Plans: React.FC = () => {

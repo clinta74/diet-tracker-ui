@@ -2,12 +2,11 @@ import {
     Card,
     CardContent,
     CardHeader,
-    createStyles,
     FormControl,
-    makeStyles,
     TextField,
     Theme
-} from '@material-ui/core';
+} from '@mui/material';
+import { createStyles, makeStyles } from "@mui/styles";
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -54,7 +53,7 @@ export const VictoriesCard: React.FC<VictoriesProps> = ({ victories, disable, on
 
                             return (
                                 <FormControl key={`victory-name-${idx}`} fullWidth>
-                                    <TextField value={name} name="name" label="Victory" onChange={e => onChangeName(e, idx)} disabled={disable} />
+                                    <TextField variant="standard" value={name} name="name" label="Victory" onChange={e => onChangeName(e, idx)} disabled={disable} />
                                 </FormControl>
                             );
                         })

@@ -2,13 +2,11 @@ import React from 'react';
 import clsx from 'clsx';
 import {
     Box,
-    createStyles,
-    makeStyles,
     Modal,
     Paper,
     Theme,
     Typography
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     ArgumentAxis,
     ValueAxis,
@@ -16,6 +14,7 @@ import {
     LineSeries,
 } from '@devexpress/dx-react-chart-material-ui';
 import { useCommonStyles } from '../common-styles';
+import { createStyles, makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
             position: 'absolute',
             top: theme.spacing(2),
             left: theme.spacing(2),
-            width: `calc(100% - ${theme.spacing(4)}px)`,
+            width: `calc(100% - ${theme.spacing(4)})`,
         }
     })
 );

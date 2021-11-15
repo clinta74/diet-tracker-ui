@@ -19,17 +19,17 @@ import {
     TextField,
     Typography,
     useTheme
-} from '@material-ui/core';
+} from '@mui/material';
 import { useConfirm } from 'material-ui-confirm';
 import React, { useState, useEffect } from 'react';
-import AddIcon from '@material-ui/icons/Add';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import { VictoryType } from '../../../api/endpoints/victory';
-import { Divider } from '@material-ui/core';
+import { Divider } from '@mui/material';
 
 const defaultGoal: Victory = {
     userId: '',
@@ -263,7 +263,7 @@ export const Goals: React.FC = () => {
                 <MenuItem onClick={onClickDeleteVictory}>Delete</MenuItem>
             </Menu>
 
-            <Dialog open={open} onClose={handleClose} disableBackdropClick aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
                 <DialogTitle id="form-dialog-title">Goals</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -274,6 +274,7 @@ export const Goals: React.FC = () => {
                             <FormControl fullWidth>
                                 <TextField
                                     autoComplete="false"
+                                    variant="standard"
                                     autoFocus
                                     id="goal"
                                     type="text"
@@ -285,7 +286,7 @@ export const Goals: React.FC = () => {
 
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
-                                <TextField name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen} />
+                                <TextField variant="standard" name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen} />
                             </FormControl>
                         </Grid>
                     </Grid>

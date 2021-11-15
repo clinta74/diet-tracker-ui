@@ -1,4 +1,5 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { Theme } from "@mui/material";
+import { createStyles, makeStyles } from "@mui/styles";
 
 
 export const useCommonStyles = makeStyles((theme: Theme) => createStyles({
@@ -34,5 +35,4 @@ export const useCommonStyles = makeStyles((theme: Theme) => createStyles({
             margin: theme.spacing(1, 1)
         },
     }
-})
-);
+}));
