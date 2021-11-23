@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -19,7 +19,7 @@ import {
     CardContent,
     CardHeader,
     LinearProgress,
-    SpeedDial, 
+    SpeedDial,
     SpeedDialAction
 } from '@mui/material';
 import {
@@ -43,19 +43,19 @@ import NoteOutlinedIcon from '@mui/icons-material/NoteOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 
-import { useCommonStyles } from '../common-styles';
-import { useApi } from '../../../api';
-import { useAlertMessage } from '../../providers/alert-provider';
-import { Autocomplete, createFilterOptions } from '@mui/material';
-import { useUser } from '../../providers/user-provider';
-import { NumberTrackingCard } from './tracking-card';
-import { VictoriesCard } from './victories-card';
-import { VictoryType } from '../../../api/endpoints/victory';
-import { GraphModal } from './graph-modal';
+import { useCommonStyles } from '../../common-styles';
+import { useApi } from '../../../../api';
+import { useAlertMessage } from '../../../providers/alert-provider';
+import { useUser } from '../../../providers/user-provider';
+import { NumberTrackingCard } from '../tracking-card';
+import { VictoriesCard } from '../victories-card';
+import { VictoryType } from '../../../../api/endpoints/victory';
+import { GraphModal } from '../graph-modal';
 import { useDebounce } from 'react-use';
 import { makeStyles, createStyles } from '@mui/styles';
+import { DayFuelings } from './day-fuelings';
 
-const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
+export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
 const useStyles = makeStyles((theme: Theme) => {
     const backgroundColors = ['plum', 'lightpink', 'Khaki', 'Aquamarine', 'Wheat', 'PowderBlue', 'Seashell'];
@@ -70,11 +70,6 @@ const useStyles = makeStyles((theme: Theme) => {
         inactiveLossGain: {
             color: theme.palette.text.disabled,
         },
-        buttonProgress: {
-            position: 'absolute',
-            left: '1.5em',
-            top: '5px',
-        },
         paperBackground: {
             backgroundColor: (data: { dayOfWeek: number }) => backgroundColors[data.dayOfWeek] + ' !important',
             marginBottom: theme.spacing(1),
@@ -82,18 +77,8 @@ const useStyles = makeStyles((theme: Theme) => {
         waterFill: {
             fill: 'blue !important'
         },
-        card: {
-            margin: theme.spacing(1, 0, 0),
-            position: 'relative',
-        },
         formControl: {
             marginBottom: theme.spacing(1),
-        },
-        autoSave: {
-            position: 'absolute',
-            right: theme.spacing(4),
-            top: theme.spacing(6),
-            zIndex: theme.zIndex.appBar + 1,
         },
         speedDial: {
             position: 'absolute',
@@ -130,6 +115,13 @@ interface Params {
     day: string;
 }
 
+export interface Ref {
+    save: () => Promise<void>;
+    add: () => void;
+}
+
+export const timeout = 2000;
+
 export const DayView: React.FC = () => {
     const params = useParams<Params>();
     const commonClasses = useCommonStyles();
@@ -143,7 +135,6 @@ export const DayView: React.FC = () => {
     const [day, setDay] = useState<Date>(startOfToday());
     const [userDay, setUserDay] = useState<CurrentUserDay>();
     const [hasChanged, setHasChanged] = useState(false);
-    const [fuelings, setFuelings] = useState<Fueling[]>([]);
     const [postingDay, setPostingDay] = useState(false);
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
@@ -151,12 +142,9 @@ export const DayView: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
-    const timeout = 2000;
+    const fuelingRef = useRef<Ref>(null);
 
     useEffect(() => {
-        Api.Fueling.getFuelings()
-            .then(({ data }) => setFuelings(data.sort((a, b) => a.name > b.name ? 1 : -1)))
-            .catch(error => alert.addMessage(error));
         Api.UserTracking.getActiveUserTrackings()
             .then(({ data }) => setTrackings(data))
             .catch(error => alert.addMessage(error));
@@ -179,12 +167,19 @@ export const DayView: React.FC = () => {
     const loadValues = (day: Date) => {
         cancel();
         setIsLoading(true);
+        const dayStr = dateToString(day);
         Promise.all([
-            Api.Day.getDay(dateToString(day)),
-            Api.UserDailyTracking.getUserDailyTrackingValues(dateToString(day))
+            Api.Day.getDay(dayStr),
+            Api.Day.getDayMeals(dayStr),
+            Api.Day.getDayVictories(dayStr),
+            Api.UserDailyTracking.getUserDailyTrackingValues(dayStr)
         ])
-            .then(([currentUserDay, userDailyTracking]) => {
-                setUserDay(currentUserDay.data);
+            .then(([currentUserDay, meals, victories, userDailyTracking]) => {
+                setUserDay({
+                    ...currentUserDay.data,
+                    meals: meals.data,
+                    victories: victories.data,
+                });
                 setTrackingValues(userDailyTracking.data)
             })
             .catch(error => alert.addMessage(error))
@@ -192,12 +187,19 @@ export const DayView: React.FC = () => {
                 setIsLoading(false);
             });
     }
+    
     const saveValues = async () => {
         try {
             if (userDay) {
                 setHasChanged(false);
                 const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-                setUserDay(data);
+                setUserDay(_ => {
+                    return _ && {
+                        ...userDay,
+                        weightChange: data.weightChange,
+                        cumulativeWeightChange: data.cumulativeWeightChange,
+                    };
+                });
                 cancel();
                 const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
                     userTrackingValueId,
@@ -244,44 +246,6 @@ export const DayView: React.FC = () => {
             return {
                 ..._userDay as CurrentUserDay,
                 weight
-            }
-        });
-        setHasChanged(true);
-    }
-
-    const onChangeFuelingName = (event: React.ChangeEvent<unknown>, value: string | null, idx: number) => {
-        if (userDay && userDay.fuelings[idx].name !== value) {
-            setUserDay(_userDay => {
-                if (_userDay) {
-                    return {
-                        ..._userDay,
-                        fuelings: [..._userDay.fuelings.slice(0, idx),
-                        {
-                            ..._userDay.fuelings[idx],
-                            name: value || '',
-                        },
-                        ..._userDay.fuelings.slice(idx + 1)],
-                    }
-                }
-            });
-            setHasChanged(true);
-        }
-    }
-
-    const onChangeFuelingWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
-        const { value } = event.target;
-
-        setUserDay(_userDay => {
-            if (_userDay) {
-                return {
-                    ..._userDay,
-                    fuelings: [..._userDay.fuelings.slice(0, idx),
-                    {
-                        ..._userDay.fuelings[idx],
-                        when: value ? `0001-01-01T${value}` : null,
-                    },
-                    ..._userDay.fuelings.slice(idx + 1)],
-                }
             }
         });
         setHasChanged(true);
@@ -392,6 +356,7 @@ export const DayView: React.FC = () => {
             setPostingDay(true);
             try {
                 await saveValues();
+                await fuelingRef?.current?.save();
             }
             catch (error) {
                 alert.addMessage(error);
@@ -443,25 +408,8 @@ export const DayView: React.FC = () => {
     }
 
     const onClickAddFueling: React.MouseEventHandler<HTMLDivElement> = () => {
-        setUserDay(_userDay => {
-            if (_userDay) {
-                const fuelings: UserFueling[] = [
-                    ..._userDay.fuelings,
-                    {
-                        userId: '',
-                        userFuelingId: 0,
-                        name: '',
-                        day: dateToString(day),
-                        when: null
-
-                    }
-                ]
-                return ({
-                    ..._userDay,
-                    fuelings,
-                });
-            }
-        });
+        debugger;
+        fuelingRef?.current?.add();
         handleClose();
     }
 
@@ -538,8 +486,6 @@ export const DayView: React.FC = () => {
         history.push(`/day/${dateToString(addDays(day, -1))}`);
     }
 
-    const filter = createFilterOptions<string>();
-
     const dateText = formatDistanceToNowStrict(day, { addSuffix: true, unit: 'day', roundingMethod: 'floor' });
     const formatDateText: { [key: string]: string } = {
         '0 days ago': 'today',
@@ -579,45 +525,11 @@ export const DayView: React.FC = () => {
                     <form noValidate autoComplete="off">
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
-                                <Card className={classes.card}>
-                                    <CardHeader title="Fuelings" />
-                                    <CardContent>
-                                        {
-                                            userDay.fuelings.map((fueling, idx) => {
-                                                const when = fueling.when === null ? '' : fueling.when.split('T')[1];
-                                                return <Grid container spacing={2} key={`fueling_${idx}`}>
-                                                    <Grid item xs={7} sm={8} lg={9}>
-                                                        <FormControl fullWidth className={classes.formControl}>
-                                                            <Autocomplete
-                                                                freeSolo
-                                                                options={fuelings.map(fueling => fueling.name)}
-                                                                value={fueling.name}
-                                                                onInputChange={(e, v) => onChangeFuelingName(e, v, idx)}
-                                                                filterOptions={(options, params) => {
-                                                                    params.inputValue = fueling.name;
-                                                                    return filter(options, params);
-                                                                }}
-                                                                disabled={postingDay}
-                                                                renderInput={(params) => (
-                                                                    <TextField autoComplete="off" variant="standard" {...params} name="name" />
-                                                                )}
-                                                            />
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={5} sm={4} lg={3}>
-                                                        <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" name="when" autoComplete="off" variant="standard" value={when} onChange={e => onChangeFuelingWhen(e, idx)} disabled={postingDay} />
-                                                        </FormControl>
-                                                    </Grid>
-                                                </Grid>
-                                            })
-                                        }
-                                    </CardContent>
-                                </Card>
+                                <DayFuelings day={day} ref={fuelingRef} />
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Card className={classes.card}>
+                                <Card className={commonClasses.card}>
                                     <CardHeader title="Lean and Green" />
                                     <CardContent>
                                         {
@@ -643,7 +555,7 @@ export const DayView: React.FC = () => {
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Card className={classes.card}>
+                                <Card className={commonClasses.card}>
                                     <Box className={classes.graphButton}>
                                         <IconButton size="small" onClick={onClickShowWeightGraph}>
                                             <BarChartOutlinedIcon />
@@ -692,7 +604,7 @@ export const DayView: React.FC = () => {
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Card className={classes.card}>
+                                <Card className={commonClasses.card}>
                                     <Box className={classes.graphButton}>
                                         <IconButton size="small" onClick={onClickShowWaterGraph}>
                                             <BarChartOutlinedIcon />
@@ -750,7 +662,7 @@ export const DayView: React.FC = () => {
                                     {
                                         userDay.notes !== null &&
                                         <Grid item xs={12} md={6}>
-                                            <Card className={classes.card}>
+                                            <Card className={commonClasses.card}>
                                                 <CardHeader title="Notes" subheader="What happened today that you would like to remember?" />
                                                 <CardContent>
                                                     <FormControl fullWidth>
@@ -769,7 +681,7 @@ export const DayView: React.FC = () => {
                             <Box display="flex" alignItems="center" py={4}>
                                 <Box mr={1} position="relative">
                                     <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
-                                    {postingDay && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
+                                    {postingDay && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
                                 </Box>
                                 <Box mr={1}>
                                     <Button color="secondary" onClick={onClickReset} disabled={postingDay}>Reset</Button>

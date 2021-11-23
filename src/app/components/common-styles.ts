@@ -34,5 +34,9 @@ export const useCommonStyles = makeStyles((theme: Theme) => createStyles({
         [theme.breakpoints.down('sm')]: {
             margin: theme.spacing(1, 1)
         },
+    },
+    card: {
+        margin: theme.spacing(1, 0, 0),
+        position: 'relative',
     }
 }));

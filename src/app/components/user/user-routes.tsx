@@ -3,7 +3,7 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { dateToString } from '../../../utils/date-to-string';
 import { Goals } from './goals';
-import { DayView } from './day-view';
+import { DayView } from './day/day-view';
 import { Plan } from './plan';
 import { Trackings } from './trackings/trackings';
 import { EditTracking } from './trackings/edit-trackings';

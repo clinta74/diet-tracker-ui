@@ -74,6 +74,27 @@ interface UserPlan {
     plan?: Plan;
     user: User;
 }
+interface UserDayFueling {
+    userFuelingId: number;
+    userId: UserId;
+    day: string;
+    name: string;
+    when: string | null;
+}
+interface UserDayMeal {
+    userMealId: number;
+    userId: UserId;
+    day: string;
+    name: string;
+    when: string | null;
+}
+interface UserDayVictory {
+    victoryId: number;
+    userId: UserId;
+    name: string;
+    when: string | null;
+    type: VictoryType;
+}
 interface NewUser {
     userId: UserId;
     firstName: string;
@@ -81,10 +102,15 @@ interface NewUser {
     emailAddress: string;
     planId: number;
 }
-interface CurrentUserDay extends UserDay {
+interface CurrentUserDay {
+    userId: UserId;
+    day: string;
+    water: number;
+    weight: number;
+    user: User;
+    notes?: string;
     cumulativeWeightChange: number;
     weightChange: number;
-    victories: Victory[];
 }
 interface Victory {
     victoryId: number;
