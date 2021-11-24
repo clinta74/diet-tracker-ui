@@ -24,6 +24,9 @@ export const getDayEndpoints = (client: AxiosInstance) => ({
     updateDayMeals: (day: string, userMeals: UserMeal[]) =>
         client.put<CurrentUserDay>(`day/${day}/meals`, userMeals),
 
+    updateDayVictories: (day: string, victories: Victory[]) =>
+        client.put<CurrentUserDay>(`day/${day}/victories`, victories),
+
     getWeightGraphValues: (startDate: string, endDate?: string) =>
         client.get<GraphValue[]>(`day/weight`, { params: { startDate, endDate } }),
 

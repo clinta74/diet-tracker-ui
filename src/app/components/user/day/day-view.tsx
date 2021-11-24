@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
@@ -51,9 +51,10 @@ import { NumberTrackingCard } from '../tracking-card';
 import { VictoriesCard } from '../victories-card';
 import { VictoryType } from '../../../../api/endpoints/victory';
 import { GraphModal } from '../graph-modal';
-import { useDebounce } from 'react-use';
 import { makeStyles, createStyles } from '@mui/styles';
 import { DayFuelings } from './day-fuelings';
+import { UserDayProvider, useUserDay } from './user-day-provider';
+import { DayMeals } from './day-meals';
 
 export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 
@@ -115,105 +116,60 @@ interface Params {
     day: string;
 }
 
-export interface Ref {
-    save: () => Promise<void>;
-    add: () => void;
-}
-
-export const timeout = 2000;
-
 export const DayView: React.FC = () => {
     const params = useParams<Params>();
+    const [day, setDay] = useState<Date>(startOfToday());
+
+    useEffect(() => {
+        const day = params.day ? parseISO(params.day) : startOfToday();
+        setDay(day);
+    }, [params]);
+
+    return (
+        <UserDayProvider day={day}>
+            <UserDay />
+        </UserDayProvider>
+    );
+}
+
+export const UserDay: React.FC = () => {
     const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const history = useHistory();
     const { Api } = useApi();
     const { user } = useUser();
+    const {
+        day,
+        dayStr,
+        userDay,
+        victories,
+        trackingValues,
+        setUserDay,
+        loadValues,
+        saveValues,
+        isLoading,
+        cancel,
+        setUserFuelings,
+        setUserMeals,
+        setVictories,
+        setTrackingValues,
+        isPosting,
+        setIsPosting,
+    } = useUserDay();
 
     const [open, setOpen] = useState(false);
     const [graphOpen, setGraphOpen] = useState(false);
-    const [day, setDay] = useState<Date>(startOfToday());
-    const [userDay, setUserDay] = useState<CurrentUserDay>();
-    const [hasChanged, setHasChanged] = useState(false);
-    const [postingDay, setPostingDay] = useState(false);
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
-    const [trackingValues, setTrackingValues] = useState<UserDailyTrackingValue[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
-    const [isLoading, setIsLoading] = useState(false);
 
     const classes = useStyles({ dayOfWeek: getDay(day) });
-    const fuelingRef = useRef<Ref>(null);
 
     useEffect(() => {
+        loadValues();
         Api.UserTracking.getActiveUserTrackings()
             .then(({ data }) => setTrackings(data))
             .catch(error => alert.addMessage(error));
-    }, []);
-
-    useEffect(() => {
-        const day = params.day ? parseISO(params.day) : startOfToday();
-        setDay(day);
-        loadValues(day);
-    }, [params]);
-
-
-    const [cancel] = useDebounce(() => {
-        if (userDay && hasChanged) {
-            console.log('Autosave', new Date());
-            saveValues();
-        }
-    }, timeout, [userDay, trackingValues]);
-
-    const loadValues = (day: Date) => {
-        cancel();
-        setIsLoading(true);
-        const dayStr = dateToString(day);
-        Promise.all([
-            Api.Day.getDay(dayStr),
-            Api.Day.getDayMeals(dayStr),
-            Api.Day.getDayVictories(dayStr),
-            Api.UserDailyTracking.getUserDailyTrackingValues(dayStr)
-        ])
-            .then(([currentUserDay, meals, victories, userDailyTracking]) => {
-                setUserDay({
-                    ...currentUserDay.data,
-                    meals: meals.data,
-                    victories: victories.data,
-                });
-                setTrackingValues(userDailyTracking.data)
-            })
-            .catch(error => alert.addMessage(error))
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }
-    
-    const saveValues = async () => {
-        try {
-            if (userDay) {
-                setHasChanged(false);
-                const { data } = await Api.Day.updateDay(dateToString(day), userDay);
-                setUserDay(_ => {
-                    return _ && {
-                        ...userDay,
-                        weightChange: data.weightChange,
-                        cumulativeWeightChange: data.cumulativeWeightChange,
-                    };
-                });
-                cancel();
-                const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
-                    userTrackingValueId,
-                    occurrence,
-                    value,
-                    when,
-                }));
-                await Api.UserDailyTracking.updateUserDailyTrackingValue(dateToString(day), values);
-            }
-        }
-        catch (error) {
-            alert.addMessage(error);
-        }
-    }
+    }, [day]);
 
     const handleClose = () => {
         setOpen(false);
@@ -234,7 +190,6 @@ export const DayView: React.FC = () => {
                 water
             }
         });
-        setHasChanged(true);
     }
 
     const onChangeWeight: React.ChangeEventHandler<HTMLInputElement> = event => {
@@ -248,45 +203,6 @@ export const DayView: React.FC = () => {
                 weight
             }
         });
-        setHasChanged(true);
-    }
-
-    const onChangeMealName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
-        const { value } = event.target;
-
-        setUserDay(_userDay => {
-            if (_userDay) {
-                return {
-                    ..._userDay,
-                    meals: [..._userDay.meals.slice(0, idx),
-                    {
-                        ..._userDay.meals[idx],
-                        name: value || '',
-                    },
-                    ..._userDay.meals.slice(idx + 1)],
-                }
-            }
-        });
-        setHasChanged(true);
-    }
-
-    const onChangeMealWhen = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
-        const { value } = event.target;
-
-        setUserDay(_userDay => {
-            if (_userDay) {
-                return {
-                    ..._userDay,
-                    meals: [..._userDay.meals.slice(0, idx),
-                    {
-                        ..._userDay.meals[idx],
-                        when: value ? `0001-01-01T${value}` : null,
-                    },
-                    ..._userDay.meals.slice(idx + 1)],
-                }
-            }
-        });
-        setHasChanged(true);
     }
 
     const onChangeNotes: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = event => {
@@ -300,19 +216,9 @@ export const DayView: React.FC = () => {
                 }
             }
         });
-        setHasChanged(true);
     }
 
-    const waterTarget = user.waterTarget || 64;
-    const waterSize = user.waterSize || 8;
-    const waterMarks: boolean[] = new Array(Math.ceil(waterTarget / waterSize));
-    if (userDay) {
-        const end = Math.floor(userDay.water / waterSize);
-        waterMarks.fill(false);
-        waterMarks.fill(true, 0, end);
-    }
-
-    const onClickWaterMark = (event: React.MouseEvent, idx: number) => {
+    const onClickWaterMark = (idx: number) => {
         setUserDay(_userDay => {
             if (_userDay) {
                 const water = (_userDay.water - _userDay.water % waterSize) <= (waterSize * idx + 1) ? _userDay.water + waterSize - _userDay.water % waterSize : _userDay.water - waterSize - _userDay.water % waterSize;
@@ -322,7 +228,6 @@ export const DayView: React.FC = () => {
                 }
             }
         });
-        setHasChanged(true);
     }
 
     const onChangeTrackingValues = (values: UserDailyTrackingValue[]) => {
@@ -333,42 +238,25 @@ export const DayView: React.FC = () => {
                 ...values,
             ]
         });
-        setHasChanged(true);
     }
 
     const onChangeVictories = (victories: Victory[]) => {
-
-        setUserDay(_userDay => {
-            if (_userDay) {
-                return {
-                    ..._userDay,
-                    victories: [...victories],
-                }
-            }
-        });
-        setHasChanged(true);
+        setVictories([...victories]);
     }
 
     // Save and reset calls
     const onClickSave = async () => {
-        if (userDay && hasChanged) {
-            cancel();
-            setPostingDay(true);
-            try {
-                await saveValues();
-                await fuelingRef?.current?.save();
-            }
-            catch (error) {
-                alert.addMessage(error);
-            }
-            finally {
-                setPostingDay(false);
-            }
+        cancel();
+        setIsPosting(true);
+        try {
+            await saveValues();
         }
-    }
-
-    const onClickReset: React.MouseEventHandler<HTMLButtonElement> = () => {
-        loadValues(day);
+        catch (error) {
+            alert.addMessage(error);
+        }
+        finally {
+            setIsPosting(false);
+        }
     }
 
     const onClickAddNote: React.MouseEventHandler<HTMLDivElement> = () => {
@@ -386,53 +274,45 @@ export const DayView: React.FC = () => {
     }
 
     const onClickAddVictory: React.MouseEventHandler<HTMLDivElement> = () => {
-        setUserDay(_userDay => {
-            if (_userDay) {
-                const victories: Victory[] = [
-                    ..._userDay.victories,
-                    {
-                        userId: '',
-                        victoryId: 0,
-                        name: '',
-                        when: dateToString(day),
-                        type: VictoryType.NonScale,
-                    }
-                ]
-                return ({
-                    ..._userDay,
-                    victories,
-                });
+        setVictories(_victories => [
+            ..._victories,
+            {
+                userId: '',
+                victoryId: 0,
+                name: '',
+                when: dayStr,
+                type: VictoryType.NonScale,
             }
-        });
+        ]);
         handleClose();
     }
 
     const onClickAddFueling: React.MouseEventHandler<HTMLDivElement> = () => {
-        debugger;
-        fuelingRef?.current?.add();
+        setUserFuelings(_userFuelings => [
+            ..._userFuelings,
+            {
+                userId: '',
+                userFuelingId: 0,
+                name: '',
+                day: dayStr,
+                when: null
+            }
+        ]);
         handleClose();
     }
 
     const onClickAddMeal: React.MouseEventHandler<HTMLDivElement> = () => {
-        setUserDay(_userDay => {
-            if (_userDay) {
-                const meals: UserMeal[] = [
-                    ..._userDay.meals,
-                    {
-                        userId: '',
-                        userMealId: 0,
-                        name: '',
-                        day: dateToString(day),
-                        when: null
+        setUserMeals(_userMeals => [
+            ..._userMeals,
+            {
+                userId: '',
+                userMealId: 0,
+                name: '',
+                day: dayStr,
+                when: null
 
-                    }
-                ]
-                return ({
-                    ..._userDay,
-                    meals,
-                });
             }
-        });
+        ]);
         handleClose();
     }
 
@@ -492,6 +372,15 @@ export const DayView: React.FC = () => {
         'in 0 days': 'tomorrow',
     }
 
+    const waterTarget = user.waterTarget || 64;
+    const waterSize = user.waterSize || 8;
+    const waterMarks: boolean[] = new Array(Math.ceil(waterTarget / waterSize));
+    if (userDay) {
+        const end = Math.floor(userDay.water / waterSize);
+        waterMarks.fill(false);
+        waterMarks.fill(true, 0, end);
+    }
+
     return (
         <React.Fragment>
             <Box>
@@ -525,33 +414,11 @@ export const DayView: React.FC = () => {
                     <form noValidate autoComplete="off">
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
-                                <DayFuelings day={day} ref={fuelingRef} />
+                                <DayFuelings />
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Card className={commonClasses.card}>
-                                    <CardHeader title="Lean and Green" />
-                                    <CardContent>
-                                        {
-                                            userDay.meals.map((meal, idx) => {
-                                                const when = meal.when === null ? '' : meal.when.split('T')[1];
-                                                return <Grid container spacing={2} key={`meal_${idx}`}>
-                                                    <Grid item xs={7} sm={8} lg={9}>
-                                                        <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField value={meal.name} name="name" variant="standard" onChange={e => onChangeMealName(e, idx)} disabled={postingDay} />
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={5} sm={4} lg={3}>
-                                                        <FormControl fullWidth className={classes.formControl}>
-                                                            <TextField type="time" autoComplete="false" variant="standard" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={postingDay} />
-                                                        </FormControl>
-                                                    </Grid>
-                                                </Grid>
-                                            }
-                                            )
-                                        }
-                                    </CardContent>
-                                </Card>
+                                <DayMeals />
                             </Grid>
 
                             <Grid item xs={12} md={6}>
@@ -566,7 +433,7 @@ export const DayView: React.FC = () => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} md={6}>
                                                 <FormControl fullWidth>
-                                                    <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} disabled={postingDay} />
+                                                    <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} disabled={isPosting} />
                                                 </FormControl>
                                             </Grid>
 
@@ -618,15 +485,15 @@ export const DayView: React.FC = () => {
                                                     waterMarks.map((mark, idx) =>
                                                         <React.Fragment key={idx}>
                                                             {
-                                                                mark && <LocalDrinkIcon fontSize="large" onClick={e => onClickWaterMark(e, idx)} className={classes.waterFill} />
-                                                                || <LocalDrinkIcon fontSize="large" onClick={e => onClickWaterMark(e, idx)} />
+                                                                mark && <LocalDrinkIcon fontSize="large" onClick={() => onClickWaterMark(idx)} className={classes.waterFill} />
+                                                                || <LocalDrinkIcon fontSize="large" onClick={() => onClickWaterMark(idx)} />
                                                             }
                                                         </React.Fragment>
                                                     )
                                                 }
                                             </Box>
                                             <FormControl>
-                                                <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={postingDay} />
+                                                <TextField variant="standard" type="number" label="Water" id="water" name="water" value={userDay.water ? userDay.water : ''} onChange={onChangeWater} disabled={isPosting} />
                                             </FormControl>
                                         </Box>
                                     </CardContent>
@@ -642,7 +509,7 @@ export const DayView: React.FC = () => {
                                             const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
                                             return (
                                                 <Grid item xs={12} sm={tracking.useTime ? 12 : 6} md={tracking.useTime ? 4 : 3} xl={3} key={`tracking-${tracking.userTrackingId}`}>
-                                                    <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={postingDay} />
+                                                    <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={isPosting} />
                                                 </Grid>
                                             );
                                         })
@@ -653,9 +520,9 @@ export const DayView: React.FC = () => {
                             <Grid item xs={12}>
                                 <Grid container spacing={2} justifyContent="center">
                                     {
-                                        userDay.victories.length > 0 &&
+                                        victories.length > 0 &&
                                         <Grid item xs={12} md={6}>
-                                            <VictoriesCard victories={userDay.victories} disable={postingDay} onChange={onChangeVictories} />
+                                            <VictoriesCard victories={victories} disable={isPosting} onChange={onChangeVictories} />
                                         </Grid>
                                     }
 
@@ -666,7 +533,7 @@ export const DayView: React.FC = () => {
                                                 <CardHeader title="Notes" subheader="What happened today that you would like to remember?" />
                                                 <CardContent>
                                                     <FormControl fullWidth>
-                                                        <TextField variant="standard" label="Notes" id="notes" name="notes" multiline maxRows={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={postingDay} />
+                                                        <TextField variant="standard" label="Notes" id="notes" name="notes" multiline maxRows={3} value={userDay.notes || ''} onChange={onChangeNotes} disabled={isPosting} />
                                                     </FormControl>
                                                 </CardContent>
                                             </Card>
@@ -680,11 +547,8 @@ export const DayView: React.FC = () => {
                         <Box display="flex" justifyContent="flex-end" alignItems="center">
                             <Box display="flex" alignItems="center" py={4}>
                                 <Box mr={1} position="relative">
-                                    <Button color="primary" onClick={onClickSave} disabled={postingDay}>Save</Button>
-                                    {postingDay && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
-                                </Box>
-                                <Box mr={1}>
-                                    <Button color="secondary" onClick={onClickReset} disabled={postingDay}>Reset</Button>
+                                    <Button color="primary" onClick={onClickSave} disabled={isPosting}>Save</Button>
+                                    {isPosting && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
                                 </Box>
                             </Box>
                             <Box position="relative" height="56px" width="56px">
