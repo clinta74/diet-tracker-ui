@@ -36,7 +36,7 @@ interface UserDayContextValues {
 }
 
 export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
-export const timeout = 2000;
+export const timeout = 2500;
 
 const UserDayContext = React.createContext<UserDayContextValues | null>(null);
 
@@ -62,7 +62,8 @@ export const UserDayProvider: React.FC<UserDayProviderProps> = ({ day, children 
     const dayStr = dateToString(day);
 
     const [cancel] = useDebounce(() => {
-        if (hasChanged.length) {
+        if (hasChanged && !isPosting) {
+            console.log('Autosave');
             saveValues();
         }
     }, timeout, [userDay, userFuelings, userMeals, victories, trackingValues]);
@@ -99,31 +100,58 @@ export const UserDayProvider: React.FC<UserDayProviderProps> = ({ day, children 
         cancel();
         setHasChanged([]);
         try {
-            if (userDay && hasChanged.length) {
+            if (hasChanged.length) {
+                if (userDay) {
+                    const { data } = await Api.Day.updateDay(dayStr, userDay);
+                    setUserDay(_userDay => {
+                        return _userDay && {
+                            ..._userDay,
+                            weightChange: data.weightChange,
+                            cumulativeWeightChange: data.cumulativeWeightChange,
+                        };
+                    });
 
-                const { data } = await Api.Day.updateDay(dayStr, userDay);
-                setUserDay(_userDay => {
-                    return _userDay && {
-                        ..._userDay,
-                        weightChange: data.weightChange,
-                        cumulativeWeightChange: data.cumulativeWeightChange,
-                    };
-                });
+                    cancel();
+                }
 
-                cancel();
+                const requests = [];
+
+                if (hasChanged.includes('userFuelings')) {
+                    requests.push(async () => {
+                        const { data } = await Api.Day.updateDayFuelings(dayStr, userFuelings);
+                        setUserFuelings(data);
+                    });
+                }
+
+                if (hasChanged.includes('userMeals')) {
+                    requests.push(async () => { 
+                        const { data } = await Api.Day.updateDayMeals(dayStr, userMeals);
+                        setUserMeals(data);
+                    });
+                }
+
+                if (hasChanged.includes('victories')) {
+                    requests.push(async () => { 
+                        const { data } = await Api.Day.updateDayVictories(dayStr, victories);
+                        setVictories(data);
+                    });
+                }
+
+                if (hasChanged.includes('trackingValues')) {
+                    const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
+                        userTrackingValueId,
+                        occurrence,
+                        value,
+                        when,
+                    }));
+
+                    requests.push(async () => { 
+                        await Api.UserDailyTracking.updateUserDailyTrackingValue(dayStr, values);
+                    });
+                }
+
+                requests.forEach(async fn => await fn());
             }
-
-            hasChanged.includes('userFuelings') && await Api.Day.updateDayFuelings(dayStr, userFuelings);
-            hasChanged.includes('userMeals') && await Api.Day.updateDayMeals(dayStr, userMeals);
-            hasChanged.includes('victories') && await Api.Day.updateDayVictories(dayStr, victories);
-
-            const values = trackingValues.map(({ userTrackingValueId, occurrence, value, when }) => ({
-                userTrackingValueId,
-                occurrence,
-                value,
-                when,
-            }));
-            hasChanged.includes('trackingValues') && await Api.UserDailyTracking.updateUserDailyTrackingValue(dayStr, values);
         }
         catch (error) {
             alert.addMessage(error);
@@ -132,7 +160,7 @@ export const UserDayProvider: React.FC<UserDayProviderProps> = ({ day, children 
 
     const withSetHasChanged = <T extends unknown | undefined>(action: Dispatch<SetStateAction<T>>, value: HasChangedValues) => (data: SetStateAction<T>) => {
         action(data);
-        setHasChanged(_ => [..._, value]);
+        setHasChanged(_ => [..._ || [], value]);
     }
 
     const userDayContext: UserDayContextValues = {

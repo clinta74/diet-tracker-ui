@@ -33,7 +33,7 @@ export const DayFuelings: React.FC = () => {
     const filter = createFilterOptions<string>();
 
     // Change handlers
-    const onChangeFuelingName = (event: React.ChangeEvent<unknown>, value: string | null, idx: number) => {
+    const onChangeFuelingName = (value: string | null, idx: number) => {
         if (userFuelings[idx].name !== value) {
             setUserFuelings(_userFueling => {
                 return [..._userFueling.slice(0, idx),
@@ -73,7 +73,7 @@ export const DayFuelings: React.FC = () => {
                                         freeSolo
                                         options={fuelings.map(fueling => fueling.name)}
                                         value={fueling.name}
-                                        onInputChange={(e, v) => onChangeFuelingName(e, v, idx)}
+                                        onInputChange={(e, v) => onChangeFuelingName(v, idx)}
                                         filterOptions={(options, params) => {
                                             params.inputValue = fueling.name;
                                             return filter(options, params);
