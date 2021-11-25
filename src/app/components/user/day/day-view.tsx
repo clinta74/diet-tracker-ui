@@ -112,21 +112,10 @@ interface ChartData {
     startDate?: Date;
     endDate?: Date;
 }
-interface Params {
-    day: string;
-}
 
 export const DayView: React.FC = () => {
-    const params = useParams<Params>();
-    const [day, setDay] = useState<Date>(startOfToday());
-
-    useEffect(() => {
-        const day = params.day ? parseISO(params.day) : startOfToday();
-        setDay(day);
-    }, [params]);
-
     return (
-        <UserDayProvider day={day}>
+        <UserDayProvider>
             <UserDay />
         </UserDayProvider>
     );

@@ -1,5 +1,6 @@
-import { format } from 'date-fns';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { format, parseISO, startOfToday } from 'date-fns';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useDebounce } from 'react-use';
 import { useApi } from '../../../../api';
 import { useAlertMessage } from '../../../providers/alert-provider';
@@ -35,16 +36,24 @@ interface UserDayContextValues {
     cancel: () => boolean | null;
 }
 
+interface Params {
+    day: string;
+}
+
 export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 export const timeout = 2500;
 
 const UserDayContext = React.createContext<UserDayContextValues | null>(null);
 
-interface UserDayProviderProps {
-    day: Date;
-}
+export const UserDayProvider: React.FC = ({ children }) => {
+    const params = useParams<Params>();
+    const [day, setDay] = useState<Date>(startOfToday());
 
-export const UserDayProvider: React.FC<UserDayProviderProps> = ({ day, children }) => {
+    useEffect(() => {
+        const day = params.day ? parseISO(params.day) : startOfToday();
+        setDay(day);
+    }, [params]);
+    
     const { Api } = useApi();
     const alert = useAlertMessage();
 
