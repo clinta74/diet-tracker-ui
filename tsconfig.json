@@ -5,6 +5,7 @@
             "dom.iterable",
             "esnext"
         ],
+        "module": "esnext",
         "allowJs": true,
         "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,

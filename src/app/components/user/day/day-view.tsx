@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import {
     Box,
@@ -24,7 +24,6 @@ import {
 } from '@mui/material';
 import {
     format,
-    startOfToday,
     addDays,
     parseISO,
     getDay,
@@ -121,7 +120,7 @@ export const DayView: React.FC = () => {
     );
 }
 
-export const UserDay: React.FC = () => {
+const UserDay: React.FC = () => {
     const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const history = useHistory();
