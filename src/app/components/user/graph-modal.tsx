@@ -50,7 +50,7 @@ export const GraphModal: React.FC<GraphModalProps> = ({ open, onClose, values, n
                 </Box>
 
                 <Box>
-                    <LineChart data={data} />
+                    <LineChart id={name} data={data} min={null} max={null} />
                 </Box>
             </Paper>
         </Modal>
