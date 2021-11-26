@@ -2,10 +2,9 @@
   "name": "diet-tracker-ui",
   "version": "1.0.0",
   "description": "Diet Tracker",
-  "main": "index.js",
   "scripts": {
     "start": "parcel serve src/index.html --port 4000",
-    "clean": "rm -Rf build",
+    "clean": "rm -Rf dist",
     "build-parcel": "parcel build src/index.html",
     "build": "npm run clean && npm run build-parcel"
   },
@@ -20,6 +19,7 @@
     "@mui/styles": "^5.1.0",
     "axios": "^0.21.1",
     "chart.js": "^3.6.0",
+    "chartkick": "^4.1.1",
     "clsx": "^1.1.1",
     "date-fns": "^2.21.1",
     "jwt-decode": "^3.1.2",

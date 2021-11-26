@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { createContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useApi } from '../../api';
 import { useAlertMessage } from './alert-provider';
 

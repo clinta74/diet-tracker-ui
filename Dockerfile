@@ -24,4 +24,4 @@ RUN npm ci && \
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1.18-alpine
 COPY --from=build /build/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /build/build /usr/share/nginx/html
+COPY --from=build /build/dist /usr/share/nginx/html

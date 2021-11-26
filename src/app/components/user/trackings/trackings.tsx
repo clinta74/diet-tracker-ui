@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react';
+import { useConfirm } from 'material-ui-confirm';
+import { useHistory } from 'react-router-dom';
 import {
     Box,
     Divider,
@@ -16,18 +19,16 @@ import {
     TableHead,
     TableRow,
     Typography,
-    useTheme
+    useTheme,
+    LinearProgress,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 import { useAlertMessage } from '../../../providers/alert-provider';
 import { useCommonStyles } from '../../common-styles';
 import { useApi } from '../../../../api';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
-import { useConfirm } from 'material-ui-confirm';
-import { useHistory } from 'react-router';
-import { LinearProgress } from '@mui/material';
 
 export const Trackings: React.FC = () => {
     const commonClasses = useCommonStyles();
