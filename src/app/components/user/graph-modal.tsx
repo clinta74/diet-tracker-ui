@@ -7,12 +7,10 @@ import {
     Theme,
     Typography
 } from '@mui/material';
-import {
-    ArgumentAxis,
-    ValueAxis,
-    Chart,
-    LineSeries,
-} from '@devexpress/dx-react-chart-material-ui';
+
+import { LineChart } from 'react-chartkick'
+import 'chartkick/chart.js'
+
 import { useCommonStyles } from '../common-styles';
 import { createStyles, makeStyles } from '@mui/styles';
 
@@ -37,9 +35,12 @@ interface GraphModalProps {
     title?: string;
 }
 
-export const GraphModal: React.FC<GraphModalProps> = ({ open, onClose, values: data, name, title }) => {
+export const GraphModal: React.FC<GraphModalProps> = ({ open, onClose, values, name, title }) => {
     const commonClasses = useCommonStyles();
     const classes = useStyles();
+
+    const data: {[key: string]: number} = {};
+    values && values.forEach(v => data[v.date] = v.value) 
 
     return (
         <Modal open={open} onClose={onClose} aria-labelledby="graph-modal-title">
@@ -49,15 +50,7 @@ export const GraphModal: React.FC<GraphModalProps> = ({ open, onClose, values: d
                 </Box>
 
                 <Box>
-                    <Chart data={data}>
-                        <ArgumentAxis />
-                        <ValueAxis />
-                        <LineSeries
-                            name={name}
-                            valueField="value"
-                            argumentField="date"
-                        />
-                    </Chart>
+                    <LineChart data={data} />
                 </Box>
             </Paper>
         </Modal>
