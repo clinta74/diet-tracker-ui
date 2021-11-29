@@ -186,6 +186,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                 <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
                         <TextField
+                            variant="standard"
                             type="time"
                             autoComplete="false"
                             id={`${name}_when_${occurrence}`}

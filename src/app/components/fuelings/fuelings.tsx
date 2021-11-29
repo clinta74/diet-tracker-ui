@@ -198,6 +198,7 @@ export const Fuelings: React.FC = () => {
                         Please enter your the name of the fueling here.
                     </DialogContentText>
                     <TextField
+                        variant="standard" 
                         autoFocus
                         margin="dense"
                         id="name"
