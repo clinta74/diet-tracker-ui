@@ -56,9 +56,9 @@ import { UserDayProvider, useUserDay } from './user-day-provider';
 import { DayMeals } from './day-meals';
 
 export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
+const backgroundColors = ['plum', 'lightpink', 'khaki', 'aquamarine', 'wheat', 'powderblue', 'seashell'];
 
 const useStyles = makeStyles((theme: Theme) => {
-    const backgroundColors = ['plum', 'lightpink', 'Khaki', 'Aquamarine', 'Wheat', 'PowderBlue', 'Seashell'];
 
     return createStyles({
         weightLoss: {
@@ -71,7 +71,6 @@ const useStyles = makeStyles((theme: Theme) => {
             color: theme.palette.text.disabled,
         },
         paperBackground: {
-            backgroundColor: (data: { dayOfWeek: number }) => backgroundColors[data.dayOfWeek] + ' !important',
             marginBottom: theme.spacing(1),
         },
         waterFill: {
@@ -150,7 +149,7 @@ const UserDay: React.FC = () => {
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
 
-    const classes = useStyles({ dayOfWeek: getDay(day) });
+    const classes = useStyles();
 
     useEffect(() => {
         loadValues();
@@ -345,11 +344,13 @@ const UserDay: React.FC = () => {
     }
 
     const onClickNextDay = async () => {
+        cancel();
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, 1))}`);
     }
 
     const onClickPrevDay = async () => {
+        cancel();
         await onClickSave();
         history.push(`/day/${dateToString(addDays(day, -1))}`);
     }
@@ -372,7 +373,7 @@ const UserDay: React.FC = () => {
     return (
         <React.Fragment>
             <Box>
-                <Paper className={clsx([classes.paperBackground, commonClasses.paper])}>
+                <Paper sx={{ bgcolor: backgroundColors[getDay(day)] }} className={clsx([commonClasses.paper, classes.paperBackground])}>
                     <Box display="flex" alignItems="center">
                         <IconButton onClick={onClickPrevDay}>
                             <ArrowBackIcon />
