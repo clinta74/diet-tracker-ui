@@ -71,7 +71,7 @@ export const UserDayProvider: React.FC = ({ children }) => {
     const dayStr = dateToString(day);
 
     const [cancel] = useDebounce(() => {
-        if (hasChanged && !isPosting) {
+        if (hasChanged.length && !isPosting) {
             console.log('Autosave');
             saveValues();
         }
