@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => {
         },
         control: {
             '&.Mui-checked .MuiSvgIcon-root': {
-                fill: theme.palette.secondary.dark
+                fill: theme.palette.info.main
             }
         },
     });

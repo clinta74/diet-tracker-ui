@@ -35,7 +35,7 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
+                <FormControl variant="standard" fullWidth>
                     <InputLabel id={`tracking-icon-select-type-label-${idx}`}>Icon</InputLabel>
                     <Select
                         labelId={`tracking-icon-select-type-label-${idx}`}
@@ -68,7 +68,8 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
 
             <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                    <TextField
+                    <TextField 
+                        variant="standard"
                         label="Count"
                         autoComplete="false"
                         id={`new-tracking-icon-value-name-${idx}`}
