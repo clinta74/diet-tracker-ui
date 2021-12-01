@@ -255,7 +255,7 @@ const UserDay: React.FC = () => {
                         notes: '',
                     });
                 }
-            });
+            }, false);
         }
         handleClose();
     }
@@ -270,7 +270,7 @@ const UserDay: React.FC = () => {
                 when: dayStr,
                 type: VictoryType.NonScale,
             }
-        ]);
+        ], false);
         handleClose();
     }
 
@@ -284,7 +284,7 @@ const UserDay: React.FC = () => {
                 day: dayStr,
                 when: null
             }
-        ]);
+        ], false);
         handleClose();
     }
 
@@ -299,7 +299,7 @@ const UserDay: React.FC = () => {
                 when: null
 
             }
-        ]);
+        ], false);
         handleClose();
     }
 

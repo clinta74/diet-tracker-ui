@@ -7,23 +7,25 @@ import { useAlertMessage } from '../../../providers/alert-provider';
 
 type HasChangedValues = 'userDay' | 'userFuelings' | 'userMeals' | 'victories' | 'trackingValues';
 
+type DispatchWithHasChanged<T> = (action: SetStateAction<T>, markHasChanged?: boolean) => void;
+
 interface UserDayContextValues {
     day: Date;
     dayStr: string;
     userDay?: CurrentUserDay;
-    setUserDay: Dispatch<SetStateAction<CurrentUserDay | undefined>>;
+    setUserDay: DispatchWithHasChanged<CurrentUserDay | undefined>;
 
     userFuelings: UserFueling[];
-    setUserFuelings: Dispatch<SetStateAction<UserFueling[]>>;
+    setUserFuelings: DispatchWithHasChanged<UserFueling[]>;
 
     userMeals: UserMeal[];
-    setUserMeals: Dispatch<SetStateAction<UserMeal[]>>;
+    setUserMeals: DispatchWithHasChanged<UserMeal[]>;
 
     victories: UserDayVictory[];
-    setVictories: Dispatch<SetStateAction<UserDayVictory[]>>;
+    setVictories: DispatchWithHasChanged<UserDayVictory[]>;
 
     trackingValues: UserDailyTrackingValue[];
-    setTrackingValues: Dispatch<SetStateAction<UserDailyTrackingValue[]>>;
+    setTrackingValues: DispatchWithHasChanged<UserDailyTrackingValue[]>;
 
     isLoading: boolean;
 
@@ -167,9 +169,9 @@ export const UserDayProvider: React.FC = ({ children }) => {
         }
     }
 
-    const withSetHasChanged = <T extends unknown | undefined>(action: Dispatch<SetStateAction<T>>, value: HasChangedValues) => (data: SetStateAction<T>) => {
+    const withSetHasChanged = <T extends unknown | undefined>(action: Dispatch<SetStateAction<T>>, value: HasChangedValues) => (data: SetStateAction<T>, markHasChanged = true) => {
         action(data);
-        setHasChanged(_ => [..._ || [], value]);
+        markHasChanged && setHasChanged(_ => [..._ || [], value]);
     }
 
     const userDayContext: UserDayContextValues = {
