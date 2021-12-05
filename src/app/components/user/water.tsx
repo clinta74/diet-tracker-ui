@@ -76,16 +76,16 @@ export const Water: React.FC = () => {
                 waterSize: water.size,
                 waterTarget: water.target,
             })
-            .then(() => {
-                updateUser();
-            })
-            .catch(error => {
-                alert.addMessage(error.message)
-            })
-            .finally(() => {
-                setPostingUser(false);
-                setIsSubmitted(false);
-            });
+                .then(() => {
+                    updateUser();
+                })
+                .catch(error => {
+                    alert.addMessage(error.message)
+                })
+                .finally(() => {
+                    setPostingUser(false);
+                    setIsSubmitted(false);
+                });
         }
     }
 
@@ -134,35 +134,44 @@ export const Water: React.FC = () => {
                     </Box>
 
                     <form noValidate autoComplete="off">
-                        <FormControl className={commonClasses.formControl}>
-                            <TextField
-                                name="size"
-                                variant="standard"
-                                type="number"
-                                label="Size of each cup"
-                                error={showErrors && hasErrors("size")}
-                                value={water.size || ''}
-                                onChange={onChangeSize}
-                            />
-                            <ErrorMessage isSubmitted={isSubmitted} inputName="size" results={results} />
-                        </FormControl>
-                        <FormControl className={commonClasses.formControl}>
-                            <TextField
-                                name="count"
-                                variant="standard"
-                                type="number"
-                                label="Total number of cups"
-                                error={showErrors && hasErrors("count")}
-                                value={water.count || ''}
-                                onChange={onChangeCount}
-                            />
-                            <ErrorMessage isSubmitted={isSubmitted} inputName="count" results={results} />
-                        </FormControl>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        name="size"
+                                        variant="standard"
+                                        type="number"
+                                        label="Size of each cup"
+                                        error={showErrors && hasErrors("size")}
+                                        value={water.size || ''}
+                                        onChange={onChangeSize}
+                                    />
+                                    <ErrorMessage isSubmitted={isSubmitted} inputName="size" results={results} />
+                                </FormControl>
+                            </Grid>
 
-                        <FormControl className={commonClasses.formControl}>
-                            <InputLabel htmlFor="target">Total Amount</InputLabel>
-                            <Input id="target" readOnly value={water.target} />
-                        </FormControl>
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        name="count"
+                                        variant="standard"
+                                        type="number"
+                                        label="Total number of cups"
+                                        error={showErrors && hasErrors("count")}
+                                        value={water.count || ''}
+                                        onChange={onChangeCount}
+                                    />
+                                    <ErrorMessage isSubmitted={isSubmitted} inputName="count" results={results} />
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth>
+                                    <InputLabel htmlFor="target">Total Amount</InputLabel>
+                                    <Input id="target" readOnly value={water.target} />
+                                </FormControl>
+                            </Grid>
+                        </Grid>
                     </form>
                     <Box display="flex" justifyContent="flex-end" mt={2}>
                         <Box display="flex" alignItems="center">

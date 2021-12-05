@@ -68,7 +68,7 @@ export const DayFuelings: React.FC = () => {
                         const when = fueling.when === null ? '' : fueling.when.split('T')[1];
                         return <Grid container spacing={2} key={`fueling_${idx}`}>
                             <Grid item xs={7} sm={8} lg={9}>
-                                <FormControl fullWidth className={commonClasses.formControl}>
+                                <FormControl fullWidth>
                                     <Autocomplete
                                         freeSolo
                                         options={fuelings.map(fueling => fueling.name)}
@@ -86,7 +86,7 @@ export const DayFuelings: React.FC = () => {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={5} sm={4} lg={3}>
-                                <FormControl fullWidth className={commonClasses.formControl}>
+                                <FormControl fullWidth>
                                     <TextField type="time" name="when" autoComplete="off" variant="standard" value={when} onChange={e => onChangeFuelingWhen(e, idx)} disabled={isPosting} />
                                 </FormControl>
                             </Grid>

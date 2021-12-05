@@ -25,8 +25,11 @@ const useStyles = makeStyles((theme: Theme) => {
             margin: theme.spacing(1, 0, 0),
         },
         control: {
+            '& .MuiSvgIcon-root': {
+                fill: theme.palette.action.selected
+            },
             '&.Mui-checked .MuiSvgIcon-root': {
-                fill: theme.palette.info.main
+                fill: theme.palette.success.dark
             }
         },
     });
@@ -217,7 +220,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                 <Box>{name}</Box>
                 {
                     trackingIcons.map((trackingIcon, idx) =>
-                        <Box key={idx} display="inline">
+                        <Box key={idx} display="inline" fontSize={24}>
                             {
                                 <FormControlLabel
                                     control={

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Diet Tracker",
   "scripts": {
-    "start": "parcel serve src/index.html --port 4000",
+    "start": "parcel serve src/index.html --port 4000 --open",
     "clean": "rm -Rf dist",
     "build-parcel": "parcel build src/index.html",
     "build": "npm run clean && npm run build-parcel"

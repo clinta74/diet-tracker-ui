@@ -51,12 +51,12 @@ export const DayMeals: React.FC = () => {
                         const when = meal.when === null ? '' : meal.when.split('T')[1];
                         return <Grid container spacing={2} key={`meal_${idx}`}>
                             <Grid item xs={7} sm={8} lg={9}>
-                                <FormControl fullWidth className={commonClasses.formControl}>
+                                <FormControl fullWidth >
                                     <TextField value={meal.name} name="name" variant="standard" onChange={e => onChangeMealName(e, idx)} disabled={isPosting} />
                                 </FormControl>
                             </Grid>
                             <Grid item xs={5} sm={4} lg={3}>
-                                <FormControl fullWidth className={commonClasses.formControl}>
+                                <FormControl fullWidth >
                                     <TextField type="time" autoComplete="false" variant="standard" value={when} name="when" onChange={e => onChangeMealWhen(e, idx)} disabled={isPosting} />
                                 </FormControl>
                             </Grid>

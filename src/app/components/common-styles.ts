@@ -29,12 +29,6 @@ export const useCommonStyles = makeStyles((theme: Theme) => createStyles({
         marginTop: -12,
         marginLeft: -12,
     },
-    formControl: {
-        margin: theme.spacing(1, 2),
-        [theme.breakpoints.down('sm')]: {
-            margin: theme.spacing(1, 1)
-        },
-    },
     card: {
         margin: theme.spacing(1, 0, 0),
         position: 'relative',
