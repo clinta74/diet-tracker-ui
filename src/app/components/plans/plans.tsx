@@ -1,11 +1,25 @@
-import { Box, Fab, IconButton, LinearProgress, Menu, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material';
+import {
+    Box,
+    Fab,
+    IconButton,
+    LinearProgress,
+    Menu,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+    useTheme
+} from '@mui/material';
 import { Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useCommonStyles } from '../common-styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { MenuItem } from '@mui/material';
 import { useApi } from '../../../api/api-provider';
 
@@ -14,7 +28,7 @@ export const Plans: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const alert = useAlertMessage();
     const commonClasses = useCommonStyles();
-    const history = useHistory();
+    const navigate = useNavigate();
     const theme = useTheme();
     const { Api } = useApi();
 
@@ -22,12 +36,12 @@ export const Plans: React.FC = () => {
         setLoading(true);
         Api.Plan.getPlans()
             .then(({ data }) => setPlans(data))
-            .catch(error  => alert.addMessage(error))
+            .catch(error => alert.addMessage(error))
             .finally(() => setLoading(false));
     }, []);
 
     const onClickAddPlan: React.MouseEventHandler = () => {
-        history.push('/plans/add')
+        navigate('/plans/add')
     }
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -44,13 +58,12 @@ export const Plans: React.FC = () => {
     const onClickEdit = () => {
         if (anchorEl) {
             const id = anchorEl.dataset.id;
-            if(id) {
-                history.push(`/plans/edit/${id}`);
+            if (id) {
+                navigate(`/plans/edit/${id}`);
             }
         }
         setAnchorEl(null);
     }
-
 
     return (
         <Box position="relative">

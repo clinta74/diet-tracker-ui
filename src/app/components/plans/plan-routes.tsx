@@ -1,15 +1,15 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { AddPlan } from './add-plan';
 import { EditPlan } from './edit-plan';
 import { Plans } from './plans';
 
 export const PlanRoutes: React.FC = () => {
     return (
-        <Switch>
-            <Route exact path="/plans/add" component={AddPlan} />
-            <Route exact path="/plans/edit/:planId" component={EditPlan} />
-            <Route exact path="/plans" component={Plans} />
-        </Switch>
+        <Routes>
+            <Route path="add" element={<AddPlan />} />
+            <Route path="edit/:planId" element={<EditPlan />} />
+            <Route path="/" element={<Plans />} />
+        </Routes>
     );
 }

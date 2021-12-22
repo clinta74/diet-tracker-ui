@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useConfirm } from 'material-ui-confirm';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     Box,
     Divider,
@@ -36,7 +36,7 @@ export const Trackings: React.FC = () => {
     const theme = useTheme();
     const { Api } = useApi();
     const confirm = useConfirm();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const [trackings, setTrackings] = useState<UserTracking[]>();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -53,14 +53,14 @@ export const Trackings: React.FC = () => {
         if (anchorEl) {
             const id = anchorEl.dataset.id;
             if (id) {
-                history.push(`/tracking/${id}`);
+                navigate(`/tracking/${id}`);
             }
             setAnchorEl(null);
         }
     };
 
     const onClickAddTracking = () => {
-        history.push(`/tracking/add`);
+        navigate(`/tracking/add`);
     };
 
     const onClickDeleteTracking = () => {

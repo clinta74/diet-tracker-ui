@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, CircularProgress, Theme, Typography } from '@mui/material';
 import { createStyles, makeStyles } from "@mui/styles";
@@ -43,15 +43,12 @@ export const AppRoutes: React.FunctionComponent = () => {
         return (
             <Box className={classes.root}>
                 <ApiProvider>
-                    <Switch>
-                        <Route path="/new-user" component={NewUserRoutes} />
-                        <Route path="/fuelings" component={FuelingRoutes} />
-                        <Route path="/plans" component={PlanRoutes} />
-                        <UserProvider>
-                            <UserRoutes />
-                        </UserProvider>
-                        <Redirect to={`/day/${dateToString(startOfToday())}`} />
-                    </Switch>
+                    <Routes>
+                        <Route path="/new-user/*" element={<NewUserRoutes />} />
+                        <Route path="/fuelings/*" element={<FuelingRoutes />} />
+                        <Route path="/plans/*" element={<PlanRoutes />} />
+                        <Route path="/*" element={<UserRoutes />} />
+                    </Routes>
                 </ApiProvider>
             </Box>
         );

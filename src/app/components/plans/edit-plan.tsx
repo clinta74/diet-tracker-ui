@@ -1,7 +1,7 @@
 import { Box, Button, CircularProgress, FormControl, Grid, Paper, TextField, Typography } from '@mui/material';
 import { createStyles, makeStyles } from "@mui/styles";
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useApi } from '../../../api/api-provider';
 import { validateAll } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
@@ -30,7 +30,7 @@ export const EditPlan: React.FC = () => {
     const { Api } = useApi();
     const classes = useStyles();
     const alert = useAlertMessage();
-    const history = useHistory();
+    const navigate = useNavigate();
     const params = useParams<Params>();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [postingPlan, setPostingPlan] = useState(false);
@@ -82,7 +82,7 @@ export const EditPlan: React.FC = () => {
             setPostingPlan(true);
             Api.Plan.updatePlan(plan.planId, plan)
                 .then(() => {
-                    history.push(`/plans`);
+                    navigate(`/plans`);
                 })
                 .catch(error => alert.addMessage(error.message))
                 .finally(() => setPostingPlan(false));

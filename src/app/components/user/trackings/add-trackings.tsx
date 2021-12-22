@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useApi } from '../../../../api';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 import { useAlertMessage } from '../../../providers/alert-provider';
@@ -53,14 +53,14 @@ export const AddTracking: React.FC = () => {
     const alert = useAlertMessage();
     const [tracking, setTracking] = useState<UserTracking>(defaultTracking);
     const [postingTracking, setPostingTracking] = useState(false);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const onClickSaveTracking = () => {
         if (tracking) {
             setPostingTracking(true);
 
             Api.UserTracking.addUserTracking(tracking)
-                .then(() => history.push('/trackings'))
+                .then(() => navigate('/trackings'))
                 .catch(error => alert.addMessage(error))
                 .finally(() => setPostingTracking(false));
         }

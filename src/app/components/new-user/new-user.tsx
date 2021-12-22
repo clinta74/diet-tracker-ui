@@ -1,7 +1,7 @@
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useApi } from '../../../api';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
@@ -43,7 +43,7 @@ const validationTests: ValidationTest<NewUser>[] =
 export const NewUser: React.FC = () => {
     const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
-    const history = useHistory();
+    const navigate = useNavigate();
     const { Api } = useApi();
 
     const [newUser, setNewUser] = useState<NewUser>({
@@ -92,7 +92,7 @@ export const NewUser: React.FC = () => {
             setPostingNewUser(true);
             Api.NewUser.addNewUser(newUser)
                 .then(() => {
-                    history.push(`/`);
+                    navigate(`/`);
                 })
                 .catch((error: AxiosError) =>  {
                     alert.addMessage(error.message)

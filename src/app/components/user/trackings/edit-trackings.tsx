@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useApi } from '../../../../api';
 import { useAlertMessage } from '../../../providers/alert-provider';
 import { useCommonStyles } from '../../common-styles';
@@ -34,7 +34,7 @@ export const EditTracking: React.FC = () => {
     const params = useParams<Params>();
     const { Api } = useApi();
     const alert = useAlertMessage();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const [tracking, setTracking] = useState<UserTracking>();
     const [postingTracking, setPostingTracking] = useState(false);
@@ -51,7 +51,7 @@ export const EditTracking: React.FC = () => {
             setPostingTracking(true);
 
             Api.UserTracking.updateUserTracking(tracking.userTrackingId, tracking)
-                .then(() => history.push('/trackings'))
+                .then(() => navigate('/trackings'))
                 .catch(error => alert.addMessage(error))
                 .finally(() => setPostingTracking(false));
         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import {
     Box,
@@ -122,7 +122,7 @@ export const DayView: React.FC = () => {
 const UserDay: React.FC = () => {
     const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
-    const history = useHistory();
+    const navigate = useNavigate();
     const { Api } = useApi();
     const { user } = useUser();
     const {
@@ -346,13 +346,13 @@ const UserDay: React.FC = () => {
     const onClickNextDay = async () => {
         cancel();
         await onClickSave();
-        history.push(`/day/${dateToString(addDays(day, 1))}`);
+        navigate(`/day/${dateToString(addDays(day, 1))}`);
     }
 
     const onClickPrevDay = async () => {
         cancel();
         await onClickSave();
-        history.push(`/day/${dateToString(addDays(day, -1))}`);
+        navigate(`/day/${dateToString(addDays(day, -1))}`);
     }
 
     const dateText = formatDistanceToNowStrict(day, { addSuffix: true, unit: 'day', roundingMethod: 'floor' });

@@ -11,7 +11,7 @@ import {
 import { createStyles, makeStyles } from "@mui/styles";
 import { AxiosError } from 'axios';
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useApi } from '../../../api/api-provider';
 import { validateAll } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() =>
 export const AddPlan: React.FC = () => {
     const classes = useStyles();
     const commonClasses = useCommonStyles();
-    const history = useHistory();
+    const navigate = useNavigate();
     const alert = useAlertMessage();
     const { Api } = useApi();
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -76,7 +76,7 @@ export const AddPlan: React.FC = () => {
             setPostingJob(true);
             Api.Plan.addPlan(plan)
                 .then(() => {
-                    history.push(`/plans`);
+                    navigate(`/plans`);
                 })
                 .catch((error: AxiosError) => alert.addMessage(error.message))
                 .finally(() => setPostingJob(false));
