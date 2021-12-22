@@ -15,6 +15,8 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    Pagination,
+    PaginationItem,
     Paper,
     TextField,
     Typography,
@@ -26,6 +28,7 @@ import { useApi } from '../../../api';
 import { useCommonStyles } from '../common-styles';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useConfirm } from 'material-ui-confirm';
+import { Link, useLocation } from 'react-router-dom';
 
 const defaultFueling: Fueling = {
     fuelingId: 0,
@@ -37,14 +40,19 @@ export const Fuelings: React.FC = () => {
     const theme = useTheme();
     const alert = useAlertMessage();
     const confirm = useConfirm();
+    const location = useLocation();
     const { Api } = useApi();
 
     const [open, setOpen] = React.useState(false);
-    const [fuelings, setFuelings] = useState<Fueling[]>();
+    const [fuelings, setFuelings] = useState<Fueling[]>([]);
     const [newFueling, setNewFueling] = useState<Fueling>(defaultFueling);
+    const [page, setPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(1);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const openMenu = Boolean(anchorEl);
+
+    const itemsPerPage = 10;
 
     useEffect(() => {
         Api.Fueling.getFuelings()
@@ -52,6 +60,14 @@ export const Fuelings: React.FC = () => {
                 setFuelings(data);
             });
     }, []);
+
+    useEffect(() => {
+        const query = new URLSearchParams(location.search);
+        const totalPages = Math.ceil(fuelings.length / itemsPerPage);
+        const page = parseInt(query.get('page') || '1', 10);
+        setPage(page);
+        setTotalPages(totalPages);
+    }, [location.search, fuelings]);
 
     const onClickAddFueling = () => {
         setNewFueling({
@@ -143,7 +159,9 @@ export const Fuelings: React.FC = () => {
         setAnchorEl(null);
     };
 
-    const sortedFuelings = fuelings && fuelings.sort((a, b) => a.name > b.name ? 1 : -1)
+    const sortedFuelings = fuelings
+        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .slice(itemsPerPage * (page - 1), itemsPerPage * (page - 1) + itemsPerPage);
 
     return (
         <React.Fragment>
@@ -159,7 +177,6 @@ export const Fuelings: React.FC = () => {
                     </Box>
                     <List>
                         {
-                            sortedFuelings &&
                             sortedFuelings.map(fueling =>
                                 <React.Fragment key={fueling.fuelingId}>
                                     <ListItem>
@@ -177,6 +194,22 @@ export const Fuelings: React.FC = () => {
                             )
                         }
                     </List>
+
+                    {
+                        fuelings && totalPages > 1 &&
+
+                        <Pagination
+                            page={page}
+                            count={totalPages}
+                            renderItem={(item) => (
+                                <PaginationItem
+                                    component={Link}
+                                    to={`${item.page === 1 ? '' : `?page=${item.page}`}`}
+                                    {...item}
+                                />
+                            )}
+                        />
+                    }
                 </Paper>
             </Box>
 
@@ -198,7 +231,7 @@ export const Fuelings: React.FC = () => {
                         Please enter your the name of the fueling here.
                     </DialogContentText>
                     <TextField
-                        variant="standard" 
+                        variant="standard"
                         autoFocus
                         margin="dense"
                         id="name"
