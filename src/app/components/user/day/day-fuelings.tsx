@@ -87,7 +87,18 @@ export const DayFuelings: React.FC = () => {
                             </Grid>
                             <Grid item xs={5} sm={4} lg={3}>
                                 <FormControl fullWidth>
-                                    <TextField type="time" name="when" autoComplete="off" variant="standard" value={when} onChange={e => onChangeFuelingWhen(e, idx)} disabled={isPosting} />
+                                    <TextField 
+                                        type="time" 
+                                        name="when" 
+                                        autoComplete="off" 
+                                        variant="standard" 
+                                        value={when} 
+                                        onChange={e => onChangeFuelingWhen(e, idx)}
+                                        disabled={isPosting}
+                                        inputProps={{
+                                            step: 300
+                                        }}
+                                    />
                                 </FormControl>
                             </Grid>
                         </Grid>
