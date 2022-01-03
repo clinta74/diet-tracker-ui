@@ -24,9 +24,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-interface Params {
-    userTrackingId: string;
-}
+type Params = Record<'userTrackingId', string>
 
 export const EditTracking: React.FC = () => {
     const classes = useStyles();

@@ -21,9 +21,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-interface Params {
-    planId: string;
-}
+type Params = Record<'planId', string>
 
 export const EditPlan: React.FC = () => {
     const commonClasses = useCommonStyles();

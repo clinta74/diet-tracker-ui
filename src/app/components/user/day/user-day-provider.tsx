@@ -38,9 +38,7 @@ interface UserDayContextValues {
     cancel: () => boolean | null;
 }
 
-interface Params {
-    day: string;
-}
+type Params = Record<'day', string>
 
 export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 export const timeout = 2500;
