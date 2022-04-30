@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, StyledEngineProvider, ThemeProvider } from "@mui/material";
 import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app/app";
@@ -19,9 +19,13 @@ const theme = createTheme({
 
 ReactDOM.render(
     <React.Fragment>
-        <ThemeProvider theme={theme}>
-            <App />
-        </ThemeProvider>
+        <React.StrictMode>
+            <StyledEngineProvider injectFirst>
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
+            </StyledEngineProvider>
+        </React.StrictMode>
     </React.Fragment>,
     document.getElementById("root")
 );

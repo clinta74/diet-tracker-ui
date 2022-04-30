@@ -1,6 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import { config } from 'process';
+import axios, { AxiosInstance } from 'axios';
 import React from 'react';
 import { CONFIG } from '../config';
 import { DayEndpoints, getDayEndpoints } from './endpoints/day';

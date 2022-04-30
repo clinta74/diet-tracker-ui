@@ -10,15 +10,6 @@ import backgroundImage from '../img/wheat-background.jpeg';
 import { Navigation } from './components/navigation/navigation';
 import { UserPermissionProvider } from './providers/user-permission-provider';
 
-import { create } from 'jss';
-import { StylesProvider, jssPreset } from '@mui/styles';
-
-const jss = create({
-  ...jssPreset(),
-  // Define a custom insertion point that JSS will look for when injecting the styles into the DOM.
-  insertionPoint: document.getElementById('jss-insertion-point') || '',
-});
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         background: {
@@ -41,7 +32,6 @@ export const App: React.FC = () => {
 
     return (
         <React.Fragment>
-            <StylesProvider jss={jss}>
             <CssBaseline />
             <ConfirmProvider>
                 <Box position="relative" minHeight="100vh" zIndex={1}>
@@ -63,7 +53,6 @@ export const App: React.FC = () => {
                     </Box>
                 </Box>
             </ConfirmProvider>
-            </StylesProvider>
         </React.Fragment >
     );
 }
