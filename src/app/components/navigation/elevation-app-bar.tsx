@@ -101,14 +101,14 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                         }
                         <Box flexGrow={1}>
                             <Hidden smDown>
-                                <Typography variant="h6">Food Journal</Typography>
+                                <Typography variant="h6">Your Meal Tracker</Typography>
                             </Hidden>
                         </Box>
                         <Box ml={2}>
                             <Authenticated>
                                 <Box display="flex" alignItems="center">
                                     <Box mr={1}>Hello, {name}</Box>
-                                    <Avatar src={picture}>{!!!picture && name[0]}</Avatar>
+                                    <Avatar src={picture}>{!!!picture && (!!name ? name[0] : '')}</Avatar>
                                 </Box>
                             </Authenticated>
                             <Authenticated invert>

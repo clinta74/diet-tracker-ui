@@ -1,17 +1,14 @@
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, CircularProgress, Theme, Typography } from '@mui/material';
 import { createStyles, makeStyles } from "@mui/styles";
-import { startOfToday } from 'date-fns';
 
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
 import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
-import { UserProvider } from './providers/user-provider';
 import { Welcome } from './components/welcome';
 import { ApiProvider } from '../api';
-import { dateToString } from '../utils/date-to-string';
 import { UserRoutes } from './components/user/user-routes';
 
 const useStyles = makeStyles((theme: Theme) =>
