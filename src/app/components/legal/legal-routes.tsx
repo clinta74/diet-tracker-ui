@@ -5,7 +5,7 @@ import { PrivacyPolicy } from './privacy-policy';
 export const LegalRoutes: React.FC = () => {
     return (
         <Routes>
-            <Route path="/" element={< PrivacyPolicy />} />
+            <Route path="privacy" element={< PrivacyPolicy />} />
         </Routes>
     );
 }

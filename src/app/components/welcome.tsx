@@ -14,7 +14,7 @@ export const Welcome: React.FC = () => {
     return (
         <Box display="flex" justifyContent="center" p={4}>
             <Box textAlign="center">
-                <Typography variant="h3">Welcome to Food Journal</Typography>
+                <Typography variant="h3">Welcome to Your Meal Tracker</Typography>
                 <Typography variant="h5">
                     Your digital journal to help you meet you goals.
                 </Typography>

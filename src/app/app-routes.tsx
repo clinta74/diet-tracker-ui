@@ -10,6 +10,7 @@ import { PlanRoutes } from './components/plans/plan-routes';
 import { Welcome } from './components/welcome';
 import { ApiProvider } from '../api';
 import { UserRoutes } from './components/user/user-routes';
+import { LegalRoutes } from './components/legal/legal-routes';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,6 +45,7 @@ export const AppRoutes: React.FunctionComponent = () => {
                         <Route path="/new-user/*" element={<NewUserRoutes />} />
                         <Route path="/fuelings/*" element={<FuelingRoutes />} />
                         <Route path="/plans/*" element={<PlanRoutes />} />
+                        <Route path="/legal/*" element={<LegalRoutes />} />
                         <Route path="/*" element={<UserRoutes />} />
                     </Routes>
                 </ApiProvider>
