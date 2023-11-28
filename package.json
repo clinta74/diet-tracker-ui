@@ -1,6 +1,6 @@
 {
   "name": "diet-tracker-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Diet Tracker",
   "scripts": {
     "start": "parcel serve src/index.html --port 4000 --open",
