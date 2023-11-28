@@ -26,7 +26,6 @@ import {
     format,
     addDays,
     parseISO,
-    getDay,
     formatDistanceToNowStrict,
 } from 'date-fns';
 
@@ -373,7 +372,7 @@ const UserDay: React.FC = () => {
     return (
         <React.Fragment>
             <Box>
-                <Paper sx={{ bgcolor: backgroundColors[getDay(day)] }} className={clsx([commonClasses.paper, classes.paperBackground])}>
+                <Paper sx={{ bgcolor: backgroundColors[day.getDay()] }} className={clsx([commonClasses.paper, classes.paperBackground])}>
                     <Box display="flex" alignItems="center">
                         <IconButton onClick={onClickPrevDay}>
                             <ArrowBackIcon />
