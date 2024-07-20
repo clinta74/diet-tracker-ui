@@ -1,6 +1,6 @@
 {
   "name": "diet-tracker-ui",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Diet Tracker",
   "scripts": {
     "start": "parcel serve src/index.html --port 4000 --open",
@@ -11,17 +11,17 @@
   "author": "Clint Andrews",
   "license": "ISC",
   "dependencies": {
-    "@auth0/auth0-react": "^1.10.1",
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.6.2",
-    "@mui/material": "^5.6.3",
+    "@auth0/auth0-react": "^1.12.1",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.4",
+    "@mui/material": "^5.16.4",
     "@mui/styles": "^5.6.2",
-    "axios": "^0.21.1",
+    "axios": "^1.6.2",
     "chart.js": "^3.6.0",
     "chartkick": "^4.1.1",
-    "clsx": "^1.1.1",
-    "date-fns": "^2.28.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
     "jwt-decode": "^3.1.2",
     "material-ui-confirm": "^3.0.2",
     "react": "^17.0.2",
@@ -31,8 +31,8 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@parcel/packager-raw-url": "^2.0.1",
-    "@parcel/transformer-webmanifest": "^2.0.1",
+    "@parcel/packager-raw-url": "^2.10.3",
+    "@parcel/transformer-webmanifest": "^2.10.3",
     "@types/node": "^16.11.32",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
@@ -43,9 +43,8 @@
     "eslint": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "parcel": "^2.5.0",
+    "parcel": "^2.12.0",
     "process": "^0.11.10",
-    "typescript": "^4.6.4",
-    "typescript-eslint": "^0.0.1-alpha.0"
+    "typescript": "^5.5.3"
   }
 }
