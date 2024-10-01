@@ -18,5 +18,18 @@
     }
   ],
   "theme_color": "#1a1a1a",
-  "background_color": "#1a1a1a"
+  "background_color": "#1a1a1a",
+  "screenshots": [
+    {
+      "src": "screenshots/wide.yourmealtracker.com.jpeg",
+      "form_factor": "wide",
+      "label": "Homescreen of Your Meal Tracker App"
+    },
+    {
+      "src": "screenshots/narrow.yourmealtracker.com.jpeg",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Homescreen of Your Meal Tracker App"
+    }
+  ]
 }
