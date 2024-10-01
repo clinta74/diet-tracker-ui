@@ -23,12 +23,14 @@
     {
       "src": "screenshots/wide.yourmealtracker.com.jpeg",
       "form_factor": "wide",
+      "sizes": "1938x1562",
       "label": "Homescreen of Your Meal Tracker App"
     },
     {
       "src": "screenshots/narrow.yourmealtracker.com.jpeg",
       "type": "image/jpeg",
       "form_factor": "narrow",
+      "sizes": "702x1404",
       "label": "Homescreen of Your Meal Tracker App"
     }
   ]
