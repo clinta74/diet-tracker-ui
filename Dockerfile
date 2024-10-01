@@ -1,5 +1,5 @@
 # Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM node:16-alpine as build
+FROM node:16-alpine AS build
 #RUN apk add g++ make python
 
 ADD . /build
