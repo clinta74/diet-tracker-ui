@@ -1,8 +1,8 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import React, { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../../api';
 import { useAlertMessage } from './alert-provider';
+import { useAuth } from '../../auth/use-auth';
 
 interface UserContext {
     user: CurrentUser,
@@ -15,7 +15,7 @@ export const UserProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<CurrentUser>();
     const alert = useAlertMessage();
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated } = useAuth();
     const { Api } = useApi();
 
     useEffect(() => {

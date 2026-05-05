@@ -1,6 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import jwt_decode from "jwt-decode";
+import React, { createContext } from 'react';
+import { useAuth } from '../../auth/use-auth';
 
 type HasPermissionHandler = (permissions: string | string[]) => boolean;
 
@@ -9,34 +8,11 @@ interface UserPermissionContext {
     hasPermission: HasPermissionHandler;
 }
 
-interface JWT {
-  iss: string;
-  sub: string;
-  aud: string[];
-  iat: number;
-  exp: number;
-  azp: string;
-  scope: string;
-  permissions: string[];
-}
-
 export const UserPermissionContext = createContext<UserPermissionContext | null>(null);
 
 export const UserPermissionProvider: React.FC = ({ children }) => {
-    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
-    const [permissions, setPermissions] = useState<string[]>([]);
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            getAccessTokenSilently()
-                .then(token => {
-                    const jwt = jwt_decode<JWT>(token);
-                    setPermissions(jwt.permissions);
-                })
-                .catch(console.error);
-
-        }
-    }, [isAuthenticated, user]);
+    const { user } = useAuth();
+    const permissions = user?.permissions ?? [];
 
     const hasPermission: HasPermissionHandler = (permissionList) => {
         if (Array.isArray(permissionList)) {
