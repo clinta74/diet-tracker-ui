@@ -25,7 +25,7 @@ import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 import { Authenticated } from '../../../auth/authenticated';
 import { ListItem } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { LogoutOptions, useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from '../../../auth/use-auth';
 import { Authorized } from '../../providers/user-permission-provider';
 import { createStyles, makeStyles } from '@mui/styles';
 import { drawerWidth } from './navigation';
@@ -87,11 +87,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handleClickAway }) => {
     const classes = useStyles();
     const theme = useTheme();
-    const { logout } = useAuth0();
-
-    const logoutOptions: LogoutOptions = {
-        returnTo: window.location.origin,
-    }
+    const { logout } = useAuth();
 
     return (
         <Authenticated>
@@ -168,10 +164,28 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                         </List>
                     </Authorized>
                     
+                    <Authorized permissions={['admin:users']}>
+                        <Divider />
+                        <List>
+                            <NavLink to="/admin/users" className={classes.link}>
+                                <ListItem button>
+                                    <ListItemIcon title="Admin"><SettingsIcon /></ListItemIcon>
+                                    <ListItemText primary="Admin" />
+                                </ListItem>
+                            </NavLink>
+                        </List>
+                    </Authorized>
+
                     <Divider />
 
                     <List>
-                        <ListItem button onClick={() => logout(logoutOptions)}>
+                        <NavLink to="/settings/account" className={classes.link}>
+                            <ListItem button>
+                                <ListItemIcon title="Account"><AssignmentOutlinedIcon /></ListItemIcon>
+                                <ListItemText primary="Account" />
+                            </ListItem>
+                        </NavLink>
+                        <ListItem button onClick={() => logout()}>
                             <ListItemIcon title="Sign Out"><ExitToAppIcon /></ListItemIcon>
                             <ListItemText primary="Sign Out" />
                         </ListItem>

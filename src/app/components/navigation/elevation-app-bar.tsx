@@ -1,5 +1,6 @@
 import React from 'react';
-import { AppState, useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../auth/use-auth';
 import {
     AppBar,
     Avatar,
@@ -67,17 +68,11 @@ interface ElevateAppBarProps {
 }
 
 export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
-    const { loginWithRedirect, isAuthenticated, user } = useAuth0();
+    const { isAuthenticated, user } = useAuth();
+    const navigate = useNavigate();
     const classes = useStyles();
 
-    const login = () => {
-        const appState: AppState = {
-            returnTo: window.location.pathname,
-        }
-        loginWithRedirect({ appState });
-    }
-
-    const { name, picture } = user ?? { name: '' };
+    const { name } = user ?? { name: '' };
     return (
         <React.Fragment>
             <ElevationScroll>
@@ -108,11 +103,11 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                             <Authenticated>
                                 <Box display="flex" alignItems="center">
                                     <Box mr={1}>Hello, {name}</Box>
-                                    <Avatar src={picture}>{!!!picture && (!!name ? name[0] : '')}</Avatar>
+                                    <Avatar>{!!name ? name[0] : ''}</Avatar>
                                 </Box>
                             </Authenticated>
                             <Authenticated invert>
-                                <Button onClick={login} color="inherit">Sign In</Button>
+                                <Button onClick={() => navigate('/login')} color="inherit">Sign In</Button>
                             </Authenticated>
                         </Box>
                     </Toolbar>

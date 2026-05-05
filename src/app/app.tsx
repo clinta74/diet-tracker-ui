@@ -3,7 +3,7 @@ import { Box, Container, CssBaseline, Theme } from '@mui/material';
 import { createStyles, makeStyles } from "@mui/styles";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ConfirmProvider } from 'material-ui-confirm';
-import { Auth0ProviderWithHistory } from '../auth/auth0-provider-with-history';
+import { AuthProvider } from '../auth/auth-context';
 import { AppRoutes } from './app-routes';
 import { AlertMessage, AlertProvider } from './providers/alert-provider';
 import backgroundImage from '../img/wheat-background.jpeg';
@@ -40,14 +40,14 @@ export const App: React.FC = () => {
                         <AlertProvider>
                             <AlertMessage />
                             <Router>
-                                <Auth0ProviderWithHistory>
+                                <AuthProvider>
                                     <UserPermissionProvider>
                                         <Navigation />
                                         <Container className={classes.container} maxWidth="lg">
                                             <AppRoutes />
                                         </Container>
                                     </UserPermissionProvider>
-                                </Auth0ProviderWithHistory>
+                                </AuthProvider>
                             </Router>
                         </AlertProvider>
                     </Box>

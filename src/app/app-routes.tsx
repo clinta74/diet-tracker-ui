@@ -1,16 +1,20 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Box, CircularProgress, Theme, Typography } from '@mui/material';
 import { createStyles, makeStyles } from "@mui/styles";
 
 import { FuelingRoutes } from './components/fuelings/fueling-routes';
 import { NewUserRoutes } from './components/new-user/new-user-routes';
 import { PlanRoutes } from './components/plans/plan-routes';
-import { Welcome } from './components/welcome';
 import { ApiProvider } from '../api';
 import { UserRoutes } from './components/user/user-routes';
 import { LegalRoutes } from './components/legal/legal-routes';
+import { useAuth } from '../auth/use-auth';
+import { LoginPage } from './components/auth/login-page';
+import { MigratePage } from './components/auth/migrate-page';
+import { AccountSettingsPage } from './components/account/account-settings-page';
+import { AdminUsersPage } from './components/admin/admin-users-page';
+import { Authorized } from './providers/user-permission-provider';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,8 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const AppRoutes: React.FunctionComponent = () => {
     const classes = useStyles();
-    const { isAuthenticated, isLoading } = useAuth0();
-
+    const { isAuthenticated, isLoading } = useAuth();
 
     if (isLoading) {
         return (
@@ -37,21 +40,35 @@ export const AppRoutes: React.FunctionComponent = () => {
             </Box>
         );
     }
-    else if (isAuthenticated) {
+
+    if (!isAuthenticated) {
         return (
-            <Box className={classes.root}>
-                <ApiProvider>
-                    <Routes>
-                        <Route path="/new-user/*" element={<NewUserRoutes />} />
-                        <Route path="/fuelings/*" element={<FuelingRoutes />} />
-                        <Route path="/plans/*" element={<PlanRoutes />} />
-                        <Route path="/legal/*" element={<LegalRoutes />} />
-                        <Route path="/*" element={<UserRoutes />} />
-                    </Routes>
-                </ApiProvider>
-            </Box>
+            <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/migrate" element={<MigratePage />} />
+                <Route path="/legal/*" element={<LegalRoutes />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
         );
     }
 
-    return <Welcome />
+    return (
+        <Box className={classes.root}>
+            <ApiProvider>
+                <Routes>
+                    <Route path="/new-user/*" element={<NewUserRoutes />} />
+                    <Route path="/fuelings/*" element={<FuelingRoutes />} />
+                    <Route path="/plans/*" element={<PlanRoutes />} />
+                    <Route path="/legal/*" element={<LegalRoutes />} />
+                    <Route path="/settings/account" element={<AccountSettingsPage />} />
+                    <Route path="/admin/users" element={
+                        <Authorized permissions="admin:users">
+                            <AdminUsersPage />
+                        </Authorized>
+                    } />
+                    <Route path="/*" element={<UserRoutes />} />
+                </Routes>
+            </ApiProvider>
+        </Box>
+    );
 }
