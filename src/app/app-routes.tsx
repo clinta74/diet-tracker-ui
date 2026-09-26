@@ -11,7 +11,6 @@ import { UserRoutes } from './components/user/user-routes';
 import { LegalRoutes } from './components/legal/legal-routes';
 import { useAuth } from '../auth/use-auth';
 import { LoginPage } from './components/auth/login-page';
-import { MigratePage } from './components/auth/migrate-page';
 import { AccountSettingsPage } from './components/account/account-settings-page';
 import { AdminUsersPage } from './components/admin/admin-users-page';
 import { Authorized } from './providers/user-permission-provider';
@@ -45,7 +44,6 @@ export const AppRoutes: React.FunctionComponent = () => {
         return (
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/migrate" element={<MigratePage />} />
                 <Route path="/legal/*" element={<LegalRoutes />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
