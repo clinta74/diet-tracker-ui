@@ -2,9 +2,7 @@ import React, { createContext, useCallback, useEffect, useRef, useState } from '
 import { CONFIG } from '../config';
 
 export interface AuthUser {
-    userId: string;
     name: string;
-    email?: string;
     permissions: string[];
 }
 
@@ -27,7 +25,6 @@ interface AuthContextValue extends AuthState {
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (data: RegisterData) => Promise<void>;
-    migrateAccount: (email: string, newPassword: string) => Promise<void>;
     refreshAccessToken: () => Promise<string | null>;
 }
 
@@ -38,10 +35,9 @@ interface AuthResponse {
 }
 
 interface DecodedJwt {
-    sub: string;
     name?: string;
-    email?: string;
-    permissions?: string[];
+    // A single permission is serialized as a plain string rather than an array.
+    permissions?: string | string[];
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
@@ -53,17 +49,16 @@ function decodeJwt(token: string): DecodedJwt {
         const payload = token.split('.')[1];
         return JSON.parse(atob(payload)) as DecodedJwt;
     } catch {
-        return { sub: '' };
+        return {};
     }
 }
 
 function userFromToken(token: string): AuthUser {
     const decoded = decodeJwt(token);
+    const { permissions = [] } = decoded;
     return {
-        userId: decoded.sub,
-        name: decoded.name || decoded.sub,
-        email: decoded.email,
-        permissions: decoded.permissions || [],
+        name: decoded.name ?? '',
+        permissions: typeof permissions === 'string' ? [permissions] : permissions,
     };
 }
 
@@ -237,29 +232,8 @@ export const AuthProvider: React.FC = ({ children }) => {
         scheduleRefresh(authResponse.expiresIn, authResponse.refreshToken);
     }, [scheduleRefresh]);
 
-    const migrateAccount = useCallback(async (email: string, newPassword: string) => {
-        const response = await fetch(`${CONFIG.API_URL}/api/auth/migrate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, newPassword }),
-        });
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(text || 'Migration failed');
-        }
-        const authResponse: AuthResponse = await response.json();
-        localStorage.setItem(REFRESH_TOKEN_KEY, authResponse.refreshToken);
-        setState({
-            user: userFromToken(authResponse.accessToken),
-            accessToken: authResponse.accessToken,
-            isLoading: false,
-            isAuthenticated: true,
-        });
-        scheduleRefresh(authResponse.expiresIn, authResponse.refreshToken);
-    }, [scheduleRefresh]);
-
     return (
-        <AuthContext.Provider value={{ ...state, login, logout, register, migrateAccount, refreshAccessToken }}>
+        <AuthContext.Provider value={{ ...state, login, logout, register, refreshAccessToken }}>
             {children}
         </AuthContext.Provider>
     );

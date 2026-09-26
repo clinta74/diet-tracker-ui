@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, CircularProgress, TextField, Typography, Alert, Link } from '@mui/material';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Box, Button, CircularProgress, TextField, Typography, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../auth/use-auth';
 
 export const LoginPage: React.FC = () => {
@@ -64,12 +64,6 @@ export const LoginPage: React.FC = () => {
                         </Button>
                     </Box>
                 </form>
-                <Box mt={2} textAlign="center">
-                    <Typography variant="body2">
-                        Previously used social login?{' '}
-                        <Link component={RouterLink} to="/migrate">Set up your password</Link>
-                    </Typography>
-                </Box>
             </Box>
         </Box>
     );

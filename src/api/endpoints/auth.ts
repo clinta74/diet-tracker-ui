@@ -33,7 +33,4 @@ export const getAuthEndpoints = (client: AxiosInstance) => ({
 
     revoke: (refreshToken: string) =>
         client.post<void>('auth/revoke', { refreshToken }),
-
-    migrate: (email: string, newPassword: string) =>
-        client.post<AuthResponse>('auth/migrate', { email, newPassword }),
 });
