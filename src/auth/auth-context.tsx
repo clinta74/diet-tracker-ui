@@ -62,7 +62,7 @@ function userFromToken(token: string): AuthUser {
     };
 }
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const [state, setState] = useState<AuthState>({
         user: null,
         accessToken: null,

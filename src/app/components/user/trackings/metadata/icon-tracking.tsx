@@ -89,7 +89,7 @@ interface IconMenuItemProps {
     name: string;
 }
 
-const IconMenuItem: React.FC<IconMenuItemProps> = ({ name, children }) => {
+const IconMenuItem: React.FC<React.PropsWithChildren<IconMenuItemProps>> = ({ name, children }) => {
     return (
         <Box display="flex" alignItems="center">
             <Box marginY="-4px">{iconLibrary[name]}</Box>

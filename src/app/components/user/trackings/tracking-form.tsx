@@ -315,7 +315,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                     </Grid>
                                                 </Grid>
                                                 <Box my={2}>
-                                                    {metadataComponent[type]({ metadata, userTrackingValueId, onChange: onChangeMetadata, idx })}
+                                                    {React.createElement(metadataComponent[type], { metadata, userTrackingValueId, onChange: onChangeMetadata, idx })}
                                                 </Box>
 
                                             </Box>

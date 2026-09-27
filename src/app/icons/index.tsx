@@ -9,7 +9,7 @@ import CropSquareOutlinedIcon from '@mui/icons-material/CropSquareOutlined';
 
 import PickleIcon from './svg/pickle';
 
-export const iconLibrary: {[key: string ]: JSX.Element} = {
+export const iconLibrary: {[key: string ]: React.JSX.Element} = {
     ['checkmark']: <CheckOutlinedIcon fontSize="inherit"/>,
     ['circle']: <FiberManualRecordOutlinedIcon fontSize="inherit"/>,
     ['coffeeCup']: <FreeBreakfastOutlinedIcon fontSize="inherit"/>,

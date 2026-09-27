@@ -85,7 +85,8 @@ export const AdminUsersPage: React.FC = () => {
     };
 
     const handleRevokeSessions = async (user: AdminUserDto) => {
-        await confirm({ description: `Sign out all sessions for ${user.firstName} ${user.lastName}?` });
+        const { confirmed } = await confirm({ description: `Sign out all sessions for ${user.firstName} ${user.lastName}?` });
+        if (!confirmed) return;
         await Api.Admin.revokeUserSessions(user.userId);
     };
 

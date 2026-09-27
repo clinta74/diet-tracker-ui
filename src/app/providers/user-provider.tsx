@@ -11,7 +11,7 @@ interface UserContext {
 
 export const UserContext = createContext<UserContext | null>(null);
 
-export const UserProvider: React.FC = ({ children }) => {
+export const UserProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const [user, setUser] = useState<CurrentUser>();
     const alert = useAlertMessage();
     const navigate = useNavigate();

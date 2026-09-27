@@ -16,7 +16,7 @@ const defaultAlertHandlers = {
 
 const AlertContext = createContext<AlertHandlers>(defaultAlertHandlers);
 
-export const AlertProvider: React.FunctionComponent = ({ children }) => {
+export const AlertProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const [messages, setMessages] = useState<string[]>();
 
     const alertHandlers = {

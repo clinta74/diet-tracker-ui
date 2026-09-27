@@ -45,7 +45,7 @@ export const timeout = 2500;
 
 const UserDayContext = React.createContext<UserDayContextValues | null>(null);
 
-export const UserDayProvider: React.FC = ({ children }) => {
+export const UserDayProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const params = useParams<Params>();
     const [day, setDay] = useState<Date>(startOfToday());
 
