@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useApi } from '../../../api';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
-import { useCommonStyles } from '../common-styles';
+import { commonSx, plainLinkStyle } from '../common-styles';
 import { ErrorMessage } from '../error-message';
 
 const validationTests: ValidationTest<NewUser>[] =
@@ -41,7 +41,6 @@ const validationTests: ValidationTest<NewUser>[] =
     ];
 
 export const NewUser: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const navigate = useNavigate();
     const { Api } = useApi();
@@ -112,41 +111,56 @@ export const NewUser: React.FC = () => {
         const { value } = event.target;
         setNewUser(newUser => ({
             ...newUser,
-            planId: Number(value as string),
+            planId: Number(value),
         }));
     };
 
     return (
-        <Grid container justifyContent="center">
-            <Grid item xs={12} md={10} xl={8}>
-                <Paper className={commonClasses.paper}>
-                    <Box mb={2}>
+        <Grid container sx={{
+            justifyContent: "center"
+        }}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 10,
+                    xl: 8
+                }}>
+                <Paper sx={commonSx.paper}>
+                    <Box sx={{
+                        mb: 2
+                    }}>
                         <Typography variant="h4">Create User</Typography>
                         <p>To be able to access your daily tracking you must first register.</p>
                     </Box>
                     <form noValidate autoComplete="off">
-                        <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
-                            <Grid item xs={6}>
+                        <Grid
+                            container
+                            spacing={2}
+                            sx={{
+                                justifyContent: "center",
+                                alignItems: "stretch"
+                            }}>
+                            <Grid size={6}>
                                 <FormControl fullWidth>
                                     <TextField error={showErrors && hasErrors('firstName')} label="First Name" id="firstName" name="firstName" value={newUser.firstName} onChange={onChangeStringField} disabled={postingNewUser} required />
                                     <ErrorMessage isSubmitted={isSubmitted} inputName="firstName" results={results} />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid size={6}>
                                 <FormControl fullWidth>
                                     <TextField error={showErrors && hasErrors('lastName')} label="Last Name" id="lastName" name="lastName" value={newUser.lastName} onChange={onChangeStringField} disabled={postingNewUser} required />
                                     <ErrorMessage isSubmitted={isSubmitted} inputName="lastName" results={results} />
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <FormControl fullWidth>
                                     <TextField error={showErrors && hasErrors('emailAddress')} label="Last Name" id="emailAddress" name="emailAddress" value={newUser.emailAddress} disabled={postingNewUser} required />
                                     <ErrorMessage isSubmitted={isSubmitted} inputName="emailAddress" results={results} />
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <FormControl fullWidth error={showErrors && hasErrors('planId')}>
                                     <InputLabel id="plan-label" required>Plan</InputLabel>
                                     <Select
@@ -167,19 +181,30 @@ export const NewUser: React.FC = () => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <em>* Required fields.</em>
                             </Grid>
                         </Grid>
                     </form>
 
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Box display="flex" alignItems="center">
-                            <Box mr={1}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            mt: 2
+                        }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                            <Box sx={{
+                                mr: 1
+                            }}>
                                 <Button color="primary" onClick={createNewUser} disabled={postingNewUser}>Create</Button>
-                                {postingNewUser && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
+                                {postingNewUser && <CircularProgress size={24} sx={commonSx.buttonProgress}></CircularProgress>}
                             </Box>
-                            <Link to="/plans" className={commonClasses.link}>
+                            <Link to="/plans" style={plainLinkStyle}>
                                 <Button color="secondary" disabled={postingNewUser}>Cancel</Button>
                             </Link>
                         </Box>

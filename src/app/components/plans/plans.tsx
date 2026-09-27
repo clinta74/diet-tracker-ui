@@ -16,7 +16,7 @@ import {
 import { Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAlertMessage } from '../../providers/alert-provider';
-import { useCommonStyles } from '../common-styles';
+import { commonSx } from '../common-styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,6 @@ export const Plans: React.FC = () => {
     const [plans, setPlans] = useState<Plan[]>();
     const [loading, setLoading] = useState(false);
     const alert = useAlertMessage();
-    const commonClasses = useCommonStyles();
     const navigate = useNavigate();
     const theme = useTheme();
     const { Api } = useApi();
@@ -66,14 +65,23 @@ export const Plans: React.FC = () => {
     }
 
     return (
-        <Box position="relative">
-            <Box position="absolute" right={theme.spacing(1)} top={theme.spacing(2)}>
+        <Box sx={{
+            position: "relative"
+        }}>
+            <Box
+                sx={{
+                    position: "absolute",
+                    right: theme.spacing(1),
+                    top: theme.spacing(2)
+                }}>
                 <Fab color="primary" title="Create a Plan" aria-label="add" onClick={onClickAddPlan}>
                     <AddIcon />
                 </Fab>
             </Box>
-            <TableContainer component={Paper} className={commonClasses.paper}>
-                <Box mb={2}>
+            <TableContainer component={Paper} sx={commonSx.paper}>
+                <Box sx={{
+                    mb: 2
+                }}>
                     <Typography variant="h4">Plans</Typography>
                 </Box>
                 <Table>

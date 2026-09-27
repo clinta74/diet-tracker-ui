@@ -25,7 +25,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useApi } from '../../../api';
-import { useCommonStyles } from '../common-styles';
+import { commonSx } from '../common-styles';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useConfirm } from 'material-ui-confirm';
 import { Link, useLocation } from 'react-router-dom';
@@ -36,7 +36,6 @@ const defaultFueling: Fueling = {
 };
 
 export const Fuelings: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const theme = useTheme();
     const alert = useAlertMessage();
     const confirm = useConfirm();
@@ -165,14 +164,23 @@ export const Fuelings: React.FC = () => {
 
     return (
         <React.Fragment>
-            <Box position="relative">
-                <Box position="absolute" right={theme.spacing(1)} top={theme.spacing(2)}>
+            <Box sx={{
+                position: "relative"
+            }}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        right: theme.spacing(1),
+                        top: theme.spacing(2)
+                    }}>
                     <Fab color="primary" title="Create a Fueling" aria-label="add" onClick={onClickAddFueling}>
                         <AddIcon />
                     </Fab>
                 </Box>
-                <Paper className={commonClasses.paper}>
-                    <Box mb={2}>
+                <Paper sx={commonSx.paper}>
+                    <Box sx={{
+                        mb: 2
+                    }}>
                         <Typography variant="h4">Fuelings</Typography>
                     </Box>
                     <List>
@@ -180,9 +188,18 @@ export const Fuelings: React.FC = () => {
                             sortedFuelings.map(fueling =>
                                 <React.Fragment key={fueling.fuelingId}>
                                     <ListItem>
-                                        <Box flexGrow={1} display="flex" alignItems="center">
-                                            <Box flexGrow={1}><ListItemText primary={fueling.name} /></Box>
-                                            <Box whiteSpace="nowrap">
+                                        <Box
+                                            sx={{
+                                                flexGrow: 1,
+                                                display: "flex",
+                                                alignItems: "center"
+                                            }}>
+                                            <Box sx={{
+                                                flexGrow: 1
+                                            }}><ListItemText primary={fueling.name} /></Box>
+                                            <Box sx={{
+                                                whiteSpace: "nowrap"
+                                            }}>
                                                 <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={fueling.fuelingId}>
                                                     <MoreVertIcon />
                                                 </IconButton>

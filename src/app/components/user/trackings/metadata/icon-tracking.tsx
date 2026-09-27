@@ -34,7 +34,11 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 6
+                }}>
                 <FormControl variant="standard" fullWidth>
                     <InputLabel id={`tracking-icon-select-type-label-${idx}`}>Icon</InputLabel>
                     <Select
@@ -66,7 +70,11 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
                 </FormControl>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 6
+                }}>
                 <FormControl fullWidth>
                     <TextField 
                         variant="standard"
@@ -81,7 +89,6 @@ export const IconTracking: React.FC<IconTrackingProps> = ({ metadata, userTracki
                 </FormControl>
             </Grid>
         </Grid>
-
     );
 }
 
@@ -91,9 +98,17 @@ interface IconMenuItemProps {
 
 const IconMenuItem: React.FC<React.PropsWithChildren<IconMenuItemProps>> = ({ name, children }) => {
     return (
-        <Box display="flex" alignItems="center">
-            <Box marginY="-4px">{iconLibrary[name]}</Box>
-            <Box ml={1}>{children}</Box>
+        <Box
+            sx={{
+                display: "flex",
+                alignItems: "center"
+            }}>
+            <Box sx={{
+                marginY: "-4px"
+            }}>{iconLibrary[name]}</Box>
+            <Box sx={{
+                ml: 1
+            }}>{children}</Box>
         </Box>
     );
 }

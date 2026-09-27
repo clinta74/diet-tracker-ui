@@ -6,20 +6,7 @@ import {
     TextField,
     Theme
 } from '@mui/material';
-import { createStyles, makeStyles } from "@mui/styles";
 import React from 'react';
-
-const useStyles = makeStyles((theme: Theme) => {
-    return createStyles({
-        card: {
-            margin: theme.spacing(1, 0, 0),
-        },
-        formControl: {
-            marginBottom: theme.spacing(1),
-        }
-    });
-});
-
 
 interface VictoriesProps {
     victories: Victory[];
@@ -28,7 +15,6 @@ interface VictoriesProps {
 }
 
 export const VictoriesCard: React.FC<VictoriesProps> = ({ victories, disable, onChange }) => {
-    const classes = useStyles();
 
     const onChangeName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
         const { value } = event.target;
@@ -45,7 +31,7 @@ export const VictoriesCard: React.FC<VictoriesProps> = ({ victories, disable, on
 
     return (
         <React.Fragment>
-            <Card className={classes.card}>
+            <Card sx={{ mt: 1 }}>
                 <CardHeader title="Victories" subheader="Personal victories for today."></CardHeader>
                 <CardContent>
                     {

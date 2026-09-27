@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import clsx from 'clsx';
 import {
     Box,
     FormControl,
@@ -14,7 +13,6 @@ import {
     Button,
     CircularProgress,
     IconButton,
-    Hidden,
     Card,
     CardContent,
     CardHeader,
@@ -41,7 +39,7 @@ import NoteOutlinedIcon from '@mui/icons-material/NoteOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 
-import { useCommonStyles } from '../../common-styles';
+import { commonSx } from '../../common-styles';
 import { useApi } from '../../../../api';
 import { useAlertMessage } from '../../../providers/alert-provider';
 import { useUser } from '../../../providers/user-provider';
@@ -49,58 +47,12 @@ import { NumberTrackingCard } from '../tracking-card';
 import { VictoriesCard } from '../victories-card';
 import { VictoryType } from '../../../../api/endpoints/victory';
 import { GraphModal } from '../graph-modal';
-import { makeStyles, createStyles } from '@mui/styles';
 import { DayFuelings } from './day-fuelings';
 import { UserDayProvider, useUserDay } from './user-day-provider';
 import { DayMeals } from './day-meals';
 
 export const dateToString = (date: Date) => format(date, 'yyyy-MM-dd');
 const backgroundColors = ['plum', 'lightpink', 'khaki', 'aquamarine', 'wheat', 'powderblue', 'seashell'];
-
-const useStyles = makeStyles((theme: Theme) => {
-
-    return createStyles({
-        weightLoss: {
-            color: 'green',
-        },
-        weightGain: {
-            color: 'red',
-        },
-        inactiveLossGain: {
-            color: theme.palette.text.disabled,
-        },
-        paperBackground: {
-            marginBottom: theme.spacing(1),
-        },
-        waterFill: {
-            fill: 'blue !important'
-        },
-        formControl: {
-            marginBottom: theme.spacing(1),
-        },
-        speedDial: {
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-        },
-        graphButton: {
-            position: 'absolute',
-            top: theme.spacing(1),
-            right: theme.spacing(1),
-        },
-        graphModal: {
-            position: 'absolute',
-            top: theme.spacing(2),
-            left: theme.spacing(2),
-            width: `calc(100% - ${theme.spacing(4)}px)`,
-        },
-        loader: {
-            top: '-10px',
-            width: '100%',
-            position: 'absolute',
-        }
-    });
-});
 
 interface ChartData {
     values?: GraphValue[];
@@ -109,6 +61,12 @@ interface ChartData {
     startDate?: Date;
     endDate?: Date;
 }
+
+const graphButtonSx = (theme: Theme) => ({
+    position: 'absolute',
+    top: theme.spacing(1),
+    right: theme.spacing(1),
+});
 
 export const DayView: React.FC = () => {
     return (
@@ -119,7 +77,6 @@ export const DayView: React.FC = () => {
 }
 
 const UserDay: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const navigate = useNavigate();
     const { Api } = useApi();
@@ -148,7 +105,6 @@ const UserDay: React.FC = () => {
     const [trackings, setTrackings] = useState<UserTracking[]>([]);
     const [chartData, setChartData] = useState<ChartData>();
 
-    const classes = useStyles();
 
     useEffect(() => {
         loadValues();
@@ -372,19 +328,29 @@ const UserDay: React.FC = () => {
     return (
         <React.Fragment>
             <Box>
-                <Paper sx={{ bgcolor: backgroundColors[day.getDay()] }} className={clsx([commonClasses.paper, classes.paperBackground])}>
-                    <Box display="flex" alignItems="center">
+                <Paper sx={{ ...commonSx.paper, bgcolor: backgroundColors[day.getDay()], mb: 1 }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center"
+                        }}>
                         <IconButton onClick={onClickPrevDay}>
                             <ArrowBackIcon />
                         </IconButton>
 
-                        <Box flexGrow={1} textAlign="center">
+                        <Box
+                            sx={{
+                                flexGrow: 1,
+                                textAlign: "center"
+                            }}>
                             <Typography variant="h4">
                                 {format(day, 'EEEE')}
-                                <Hidden smDown>{format(day, ', MMM dd')}</Hidden>
-                                <Hidden mdDown>{format(day, ', yyyy')}</Hidden>
+                                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>{format(day, ', MMM dd')}</Box>
+                                <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>{format(day, ', yyyy')}</Box>
                             </Typography>
-                            <Box textAlign="center">{formatDateText[dateText] || dateText}</Box>
+                            <Box sx={{
+                                textAlign: "center"
+                            }}>{formatDateText[dateText] || dateText}</Box>
                         </Box>
 
                         <IconButton onClick={onClickNextDay}>
@@ -393,7 +359,9 @@ const UserDay: React.FC = () => {
                     </Box>
                 </Paper>
                 {
-                    isLoading && <Box position="relative"><Box className={classes.loader}><LinearProgress /></Box></Box>
+                    isLoading && <Box sx={{
+                        position: "relative"
+                    }}><Box sx={{ top: '-10px', width: '100%', position: 'absolute' }}><LinearProgress /></Box></Box>
                 }
             </Box>
             {
@@ -401,17 +369,29 @@ const UserDay: React.FC = () => {
                 <React.Fragment>
                     <form noValidate autoComplete="off">
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 6
+                                }}>
                                 <DayFuelings />
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 6
+                                }}>
                                 <DayMeals />
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <Card className={commonClasses.card}>
-                                    <Box className={classes.graphButton}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 6
+                                }}>
+                                <Card sx={commonSx.card}>
+                                    <Box sx={graphButtonSx}>
                                         <IconButton size="small" onClick={onClickShowWeightGraph}>
                                             <BarChartOutlinedIcon />
                                         </IconButton>
@@ -419,25 +399,40 @@ const UserDay: React.FC = () => {
                                     <CardHeader title="Weight" subheader="Keep track of your weight when you want." />
                                     <CardContent>
                                         <Grid container spacing={2}>
-                                            <Grid item xs={12} md={6}>
+                                            <Grid
+                                                size={{
+                                                    xs: 12,
+                                                    md: 6
+                                                }}>
                                                 <FormControl fullWidth>
                                                     <TextField variant="standard" type="number" label="Weight" id="weight" name="weight" value={userDay.weight ? userDay.weight : ''} onChange={onChangeWeight} disabled={isPosting} />
                                                 </FormControl>
                                             </Grid>
 
 
-                                            <Grid item xs={6} md={3}>
-                                                <Box display="flex" alignItems="flex-end">
-                                                    <Box mr={1} mt={2} mb={-1}>
-                                                        <Box mb={-2}>
-                                                            <RemoveIcon fontSize="small" className={clsx(classes.weightLoss, {
-                                                                [classes.inactiveLossGain]: userDay.weightChange < 0
-                                                            })} />
+                                            <Grid
+                                                size={{
+                                                    xs: 6,
+                                                    md: 3
+                                                }}>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "flex-end"
+                                                    }}>
+                                                    <Box
+                                                        sx={{
+                                                            mr: 1,
+                                                            mt: 2,
+                                                            mb: -1
+                                                        }}>
+                                                        <Box sx={{
+                                                            mb: -2
+                                                        }}>
+                                                            <RemoveIcon fontSize="small" sx={{ color: userDay.weightChange < 0 ? 'text.disabled' : 'green' }} />
                                                         </Box>
                                                         <Box>
-                                                            <AddIcon fontSize="small" className={clsx(classes.weightGain, {
-                                                                [classes.inactiveLossGain]: userDay.weightChange > 0
-                                                            })} />
+                                                            <AddIcon fontSize="small" sx={{ color: userDay.weightChange > 0 ? 'text.disabled' : 'red' }} />
                                                         </Box>
                                                     </Box>
                                                     <FormControl fullWidth >
@@ -447,7 +442,11 @@ const UserDay: React.FC = () => {
                                                 </Box>
                                             </Grid>
 
-                                            <Grid item xs={6} md={3}>
+                                            <Grid
+                                                size={{
+                                                    xs: 6,
+                                                    md: 3
+                                                }}>
                                                 <FormControl fullWidth>
                                                     <InputLabel>Cumulative</InputLabel>
                                                     <Input readOnly value={userDay.cumulativeWeightChange} />
@@ -458,22 +457,30 @@ const UserDay: React.FC = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
-                                <Card className={commonClasses.card}>
-                                    <Box className={classes.graphButton}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 6
+                                }}>
+                                <Card sx={commonSx.card}>
+                                    <Box sx={graphButtonSx}>
                                         <IconButton size="small" onClick={onClickShowWaterGraph}>
                                             <BarChartOutlinedIcon />
                                         </IconButton>
                                     </Box>
                                     <CardHeader title="Water" subheader="How much water have you been drinking?" />
                                     <CardContent>
-                                        <Box display="flex">
-                                            <Box mr={2}>
+                                        <Box sx={{
+                                            display: "flex"
+                                        }}>
+                                            <Box sx={{
+                                                mr: 2
+                                            }}>
                                                 {
                                                     waterMarks.map((mark, idx) =>
                                                         <React.Fragment key={idx}>
                                                             {
-                                                                mark && <LocalDrinkIcon fontSize="large" onClick={() => onClickWaterMark(idx)} className={classes.waterFill} />
+                                                                mark && <LocalDrinkIcon fontSize="large" onClick={() => onClickWaterMark(idx)} sx={{ fill: 'blue !important' }} />
                                                                 || <LocalDrinkIcon fontSize="large" onClick={() => onClickWaterMark(idx)} />
                                                             }
                                                         </React.Fragment>
@@ -488,15 +495,24 @@ const UserDay: React.FC = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid item xs={12} >
-                                <Grid container spacing={2} justifyContent="center">
+                            <Grid size={12}>
+                                <Grid container spacing={2} sx={{
+                                    justifyContent: "center"
+                                }}>
                                     {
                                         trackings.length > 0 &&
                                         trackings.map(tracking => {
                                             const userTrackingValueIds = tracking.values ? tracking.values.map(v => v.userTrackingValueId) : [];
                                             const values = trackingValues.filter(value => userTrackingValueIds.includes(value.userTrackingValueId))
                                             return (
-                                                <Grid item xs={12} sm={tracking.useTime ? 12 : 6} md={tracking.useTime ? 4 : 3} xl={3} key={`tracking-${tracking.userTrackingId}`}>
+                                                <Grid
+                                                    key={`tracking-${tracking.userTrackingId}`}
+                                                    size={{
+                                                        xs: 12,
+                                                        sm: tracking.useTime ? 12 : 6,
+                                                        md: tracking.useTime ? 4 : 3,
+                                                        xl: 3
+                                                    }}>
                                                     <NumberTrackingCard tracking={tracking} values={values} onChange={onChangeTrackingValues} disable={isPosting} />
                                                 </Grid>
                                             );
@@ -505,19 +521,29 @@ const UserDay: React.FC = () => {
                                 </Grid>
                             </Grid>
 
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} justifyContent="center">
+                            <Grid size={12}>
+                                <Grid container spacing={2} sx={{
+                                    justifyContent: "center"
+                                }}>
                                     {
                                         victories.length > 0 &&
-                                        <Grid item xs={12} md={6}>
+                                        <Grid
+                                            size={{
+                                                xs: 12,
+                                                md: 6
+                                            }}>
                                             <VictoriesCard victories={victories} disable={isPosting} onChange={onChangeVictories} />
                                         </Grid>
                                     }
 
                                     {
                                         userDay.notes !== null &&
-                                        <Grid item xs={12} md={6}>
-                                            <Card className={commonClasses.card}>
+                                        <Grid
+                                            size={{
+                                                xs: 12,
+                                                md: 6
+                                            }}>
+                                            <Card sx={commonSx.card}>
                                                 <CardHeader title="Notes" subheader="What happened today that you would like to remember?" />
                                                 <CardContent>
                                                     <FormControl fullWidth>
@@ -532,16 +558,35 @@ const UserDay: React.FC = () => {
                         </Grid>
 
 
-                        <Box display="flex" justifyContent="flex-end" alignItems="center">
-                            <Box display="flex" alignItems="center" py={4}>
-                                <Box mr={1} position="relative">
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                alignItems: "center"
+                            }}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    py: 4
+                                }}>
+                                <Box
+                                    sx={{
+                                        mr: 1,
+                                        position: "relative"
+                                    }}>
                                     <Button color="primary" onClick={onClickSave} disabled={isPosting}>Save</Button>
-                                    {isPosting && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
+                                    {isPosting && <CircularProgress size={24} sx={commonSx.buttonProgress}></CircularProgress>}
                                 </Box>
                             </Box>
-                            <Box position="relative" height="56px" width="56px">
+                            <Box
+                                sx={{
+                                    position: "relative",
+                                    height: "56px",
+                                    width: "56px"
+                                }}>
                                 <SpeedDial
-                                    className={classes.speedDial}
+                                    sx={{ position: 'absolute', bottom: 0, right: 0 }}
                                     ariaLabel="Day Speed dial"
                                     icon={<SpeedDialIcon />}
                                     onClose={handleClose}
@@ -552,7 +597,7 @@ const UserDay: React.FC = () => {
                                     <SpeedDialAction
                                         key="add-victory"
                                         icon={<CakeOutlinedIcon />}
-                                        tooltipTitle="Add Victory"
+                                        slotProps={{ tooltip: { title: 'Add Victory' } }}
                                         onClick={onClickAddVictory}
                                     />
 
@@ -561,7 +606,7 @@ const UserDay: React.FC = () => {
                                         <SpeedDialAction
                                             key="add-notes"
                                             icon={<NoteOutlinedIcon />}
-                                            tooltipTitle="Add Notes"
+                                            slotProps={{ tooltip: { title: 'Add Notes' } }}
                                             onClick={onClickAddNote}
                                         />
                                     }
@@ -569,14 +614,14 @@ const UserDay: React.FC = () => {
                                     <SpeedDialAction
                                         key="add-fueling"
                                         icon={<ShoppingBasketIcon />}
-                                        tooltipTitle="Add Fueling"
+                                        slotProps={{ tooltip: { title: 'Add Fueling' } }}
                                         onClick={onClickAddFueling}
                                     />
 
                                     <SpeedDialAction
                                         key="add-meals"
                                         icon={<RestaurantOutlinedIcon />}
-                                        tooltipTitle="Add Lean and Green"
+                                        slotProps={{ tooltip: { title: 'Add Lean and Green' } }}
                                         onClick={onClickAddMeal}
                                     />
                                 </SpeedDial>

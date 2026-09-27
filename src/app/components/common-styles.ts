@@ -1,36 +1,33 @@
-import { Theme } from "@mui/material";
-import { createStyles, makeStyles } from "@mui/styles";
+import type { CSSProperties } from "react";
+import type { SxProps, Theme } from "@mui/material/styles";
 
-
-export const useCommonStyles = makeStyles((theme: Theme) => createStyles({
+/**
+ * Shared `sx` styles. Combine with component-specific ones using an array:
+ * `sx={[commonSx.paper, { mb: 1 }]}`.
+ */
+export const commonSx = {
     paper: {
-        padding: theme.spacing(2, 4),
-        [theme.breakpoints.down('sm')]: {
-            padding: theme.spacing(1, 2)
-        },
-        marginBottom: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
-            marginBottom: theme.spacing(1)
-        },
+        px: 4,
+        py: 2,
+        mb: { xs: 1, sm: 2 },
         backgroundImage: 'none',
     },
-    breadcrumb: {
-        margin: theme.spacing(2, 0),
-    },
     divider: {
-        margin: theme.spacing(2, 0),
-    },
-    link: {
-        textDecoration: 'none',
+        my: 2,
     },
     buttonProgress: {
         position: 'absolute',
         left: '-100%',
-        marginTop: -12,
-        marginLeft: -12,
+        mt: '-12px',
+        ml: '-12px',
     },
     card: {
-        margin: theme.spacing(1, 0, 0),
+        mt: 1,
         position: 'relative',
-    }
-}));
+    },
+} satisfies Record<string, SxProps<Theme>>;
+
+/** For react-router links, which don't take `sx`. */
+export const plainLinkStyle: CSSProperties = {
+    textDecoration: 'none',
+};

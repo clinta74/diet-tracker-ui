@@ -11,13 +11,12 @@ import {
 } from '@mui/material';
 
 import { useApi } from '../../../../api';
-import { useCommonStyles } from '../../common-styles';
+import { commonSx } from '../../common-styles';
 
 import { useAlertMessage } from '../../../providers/alert-provider';
 import { useUserDay } from './user-day-provider';
 
 export const DayFuelings: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const alert = useAlertMessage();
     const { Api } = useApi();
 
@@ -60,52 +59,65 @@ export const DayFuelings: React.FC = () => {
     }
 
     return (
-        <Card className={commonClasses.card}>
+        <Card sx={commonSx.card}>
             <CardHeader title="Fuelings" />
             <CardContent>
                 {
                     userFuelings.map((fueling, idx) => {
                         const when = fueling.when === null ? '' : fueling.when.split('T')[1];
-                        return <Grid container spacing={2} key={`fueling_${idx}`}>
-                            <Grid item xs={7} sm={8} lg={9}>
-                                <FormControl fullWidth>
-                                    <Autocomplete
-                                        freeSolo
-                                        options={fuelings.map(fueling => fueling.name)}
-                                        value={fueling.name}
-                                        onInputChange={(e, v) => onChangeFuelingName(v, idx)}
-                                        filterOptions={(options, params) => {
-                                            params.inputValue = fueling.name;
-                                            return filter(options, params);
-                                        }}
-                                        disabled={isPosting}
-                                        renderInput={(params) => (
-                                            <TextField autoComplete="off" variant="standard" {...params} name="name" />
-                                        )}
-                                    />
-                                </FormControl>
+                        return (
+                            <Grid container spacing={2} key={`fueling_${idx}`}>
+                                <Grid
+                                    size={{
+                                        xs: 7,
+                                        sm: 8,
+                                        lg: 9
+                                    }}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            freeSolo
+                                            options={fuelings.map(fueling => fueling.name)}
+                                            value={fueling.name}
+                                            onInputChange={(e, v) => onChangeFuelingName(v, idx)}
+                                            filterOptions={(options, params) => {
+                                                params.inputValue = fueling.name;
+                                                return filter(options, params);
+                                            }}
+                                            disabled={isPosting}
+                                            renderInput={(params) => (
+                                                <TextField autoComplete="off" variant="standard" {...params} name="name" />
+                                            )}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid
+                                    size={{
+                                        xs: 5,
+                                        sm: 4,
+                                        lg: 3
+                                    }}>
+                                    <FormControl fullWidth>
+                                        <TextField 
+                                            type="time" 
+                                            name="when" 
+                                            autoComplete="off" 
+                                            variant="standard" 
+                                            value={when} 
+                                            onChange={e => onChangeFuelingWhen(e, idx)}
+                                            disabled={isPosting}
+                                            slotProps={{
+                                                htmlInput: {
+                                                    step: 300
+                                                }
+                                            }}
+                                        />
+                                    </FormControl>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={5} sm={4} lg={3}>
-                                <FormControl fullWidth>
-                                    <TextField 
-                                        type="time" 
-                                        name="when" 
-                                        autoComplete="off" 
-                                        variant="standard" 
-                                        value={when} 
-                                        onChange={e => onChangeFuelingWhen(e, idx)}
-                                        disabled={isPosting}
-                                        inputProps={{
-                                            step: 300
-                                        }}
-                                    />
-                                </FormControl>
-                            </Grid>
-                        </Grid>
+                        );
                     })
                 }
             </CardContent>
         </Card>
-
     );
 }
