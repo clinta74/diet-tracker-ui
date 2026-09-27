@@ -1,5 +1,6 @@
 import React, { createContext } from 'react';
 import {
+    Box,
     Drawer,
     IconButton,
     Theme,
@@ -7,10 +8,11 @@ import {
     List,
     Divider,
     ClickAwayListener,
+    ListItemButton,
     ListItemIcon,
     ListItemText
 } from '@mui/material';
-import clsx from 'clsx';
+import { styled } from '@mui/material/styles';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -23,11 +25,9 @@ import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 
 import { Authenticated } from '../../../auth/authenticated';
-import { ListItem } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../../auth/use-auth';
 import { Authorized } from '../../providers/user-permission-provider';
-import { createStyles, makeStyles } from '@mui/styles';
 import { drawerWidth } from './navigation';
 
 interface SideNavProps {
@@ -38,54 +38,32 @@ interface SideNavProps {
 
 export const SideNavContext = createContext(false);
 
-const useStyles = makeStyles<Theme, object>((theme: Theme) =>
-    createStyles({
-        menuButton: {
-            marginRight: 36,
-        },
-        drawer: {
-            width: drawerWidth,
-            flexShrink: 0,
-            whiteSpace: 'nowrap',
-        },
-        drawerOpen: {
-            width: drawerWidth,
-            transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        drawerClose: {
-            transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            overflowX: 'hidden',
-            width: 0,
-            [theme.breakpoints.up('sm')]: {
-                width: theme.spacing(7),
-            },
-        },
-        toolbar: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            padding: theme.spacing(0, 1),
-            // necessary for content to be below app bar
-            ...theme.mixins.toolbar,
-        },
-        link: {
-            textDecoration: 'none',
-            color: 'inherit',
-            '&.active > *': {
-                backgroundColor: theme.palette.action.selected,
-            }
-        },
-    }),
-);
+const drawerWidthSx = (theme: Theme, open: boolean) => open
+    ? {
+        width: drawerWidth,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }
+    : {
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        overflowX: 'hidden',
+        width: { xs: 0, sm: theme.spacing(7) },
+    };
+
+const NavItemLink = styled(NavLink)(({ theme }) => ({
+    textDecoration: 'none',
+    color: 'inherit',
+    '&.active > *': {
+        backgroundColor: theme.palette.action.selected,
+    },
+}));
 
 export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handleClickAway }) => {
-    const classes = useStyles();
     const theme = useTheme();
     const { logout } = useAuth();
 
@@ -94,72 +72,75 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
             <ClickAwayListener onClickAway={handleClickAway}>
                 <Drawer
                     variant="permanent"
-                    className={clsx(classes.drawer, {
-                        [classes.drawerOpen]: open,
-                        [classes.drawerClose]: !open,
+                    sx={theme => ({
+                        flexShrink: 0,
+                        whiteSpace: 'nowrap',
+                        ...drawerWidthSx(theme, open),
+                        '& .MuiDrawer-paper': drawerWidthSx(theme, open),
                     })}
-                    classes={{
-                        paper: clsx({
-                            [classes.drawerOpen]: open,
-                            [classes.drawerClose]: !open,
-                        }),
-                    }}
                 >
-                    <div className={classes.toolbar}>
+                    <Box sx={theme => ({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        padding: theme.spacing(0, 1),
+                        // necessary for content to be below app bar
+                        ...theme.mixins.toolbar,
+                    })}>
                         <IconButton onClick={handleDrawerClose}>
                             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                         </IconButton>
-                    </div>
+                    </Box>
                     <Divider />
                     <List>
-                        <NavLink to="/day" className={classes.link}>
-                            <ListItem button>
+                        <NavItemLink to="/day">
+                            <ListItemButton>
                                 <ListItemIcon title="Today"><TodayIcon /></ListItemIcon>
                                 <ListItemText primary="Today" />
-                            </ListItem>
-                        </NavLink>
+                            </ListItemButton>
+                        </NavItemLink>
 
-                        <NavLink to="/goals" className={classes.link}>
-                            <ListItem button>
+                        <NavItemLink to="/goals">
+                            <ListItemButton>
                                 <ListItemIcon title="Your Goals"><FlagOutlinedIcon /></ListItemIcon>
                                 <ListItemText primary="Your Goals" />
-                            </ListItem>
-                        </NavLink>
+                            </ListItemButton>
+                        </NavItemLink>
 
-                        <NavLink to="/settings" className={classes.link}>
-                            <ListItem button>
+                        <NavItemLink to="/settings">
+                            <ListItemButton>
                                 <ListItemIcon title="Settings"><AssignmentOutlinedIcon /></ListItemIcon>
                                 <ListItemText primary="Settings" />
-                            </ListItem>
-                        </NavLink>
+                            </ListItemButton>
+                        </NavItemLink>
                         
-                        <NavLink to="/trackings" className={classes.link}>
-                            <ListItem button>
+                        <NavItemLink to="/trackings">
+                            <ListItemButton>
                                 <ListItemIcon title="Tracking"><ExploreOutlinedIcon /></ListItemIcon>
                                 <ListItemText primary="Tracking" />
-                            </ListItem>
-                        </NavLink>
+                            </ListItemButton>
+                        </NavItemLink>
                     </List>
 
                     <Authorized permissions={['write:fuelings', 'write:plans']}>
                         <Divider />
                         <List>
                             <Authorized permissions={['write:fuelings']}>
-                                <NavLink to="/fuelings" className={classes.link}>
-                                    <ListItem button>
+                                <NavItemLink to="/fuelings">
+                                    <ListItemButton>
                                         <ListItemIcon title="Fuelings"><ShoppingBasketIcon /></ListItemIcon>
                                         <ListItemText primary="Fuelings" />
-                                    </ListItem>
-                                </NavLink>
+                                    </ListItemButton>
+                                </NavItemLink>
                             </Authorized>
 
                             <Authorized permissions={['write:plans']}>
-                                <NavLink to="/plans" className={classes.link}>
-                                    <ListItem button>
+                                <NavItemLink to="/plans">
+                                    <ListItemButton>
                                         <ListItemIcon title="Plans"><SettingsIcon /></ListItemIcon>
                                         <ListItemText primary="Plans" />
-                                    </ListItem>
-                                </NavLink>
+                                    </ListItemButton>
+                                </NavItemLink>
                             </Authorized>
                         </List>
                     </Authorized>
@@ -167,28 +148,28 @@ export const SideNav: React.FC<SideNavProps> = ({ open, handleDrawerClose, handl
                     <Authorized permissions={['admin:users']}>
                         <Divider />
                         <List>
-                            <NavLink to="/admin/users" className={classes.link}>
-                                <ListItem button>
+                            <NavItemLink to="/admin/users">
+                                <ListItemButton>
                                     <ListItemIcon title="Admin"><SettingsIcon /></ListItemIcon>
                                     <ListItemText primary="Admin" />
-                                </ListItem>
-                            </NavLink>
+                                </ListItemButton>
+                            </NavItemLink>
                         </List>
                     </Authorized>
 
                     <Divider />
 
                     <List>
-                        <NavLink to="/settings/account" className={classes.link}>
-                            <ListItem button>
+                        <NavItemLink to="/settings/account">
+                            <ListItemButton>
                                 <ListItemIcon title="Account"><AssignmentOutlinedIcon /></ListItemIcon>
                                 <ListItemText primary="Account" />
-                            </ListItem>
-                        </NavLink>
-                        <ListItem button onClick={() => logout()}>
+                            </ListItemButton>
+                        </NavItemLink>
+                        <ListItemButton onClick={() => logout()}>
                             <ListItemIcon title="Sign Out"><ExitToAppIcon /></ListItemIcon>
                             <ListItemText primary="Sign Out" />
-                        </ListItem>
+                        </ListItemButton>
                     </List>
                 </Drawer>
             </ClickAwayListener>

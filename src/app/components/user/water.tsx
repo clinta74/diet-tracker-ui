@@ -15,7 +15,7 @@ import { useApi } from '../../../api/api-provider';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useUser } from '../../providers/user-provider';
-import { useCommonStyles } from '../common-styles';
+import { commonSx } from '../common-styles';
 import { ErrorMessage } from '../error-message';
 
 interface Water {
@@ -43,7 +43,6 @@ const validationTests: ValidationTest<Water>[] =
     ]
 
 export const Water: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const { user, updateUser } = useUser();
     const alert = useAlertMessage();
     const { Api } = useApi();
@@ -125,17 +124,30 @@ export const Water: React.FC = () => {
     }
 
     return (
-        <Grid container justifyContent="center">
-            <Grid item xs={12} md={10} xl={8}>
-                <Paper className={commonClasses.paper}>
-                    <Box mb={2}>
+        <Grid container sx={{
+            justifyContent: "center"
+        }}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 10,
+                    xl: 8
+                }}>
+                <Paper sx={commonSx.paper}>
+                    <Box sx={{
+                        mb: 2
+                    }}>
                         <Typography variant="h4">Water</Typography>
                         <p>Change how much drinking water you would like to track for a each day.</p>
                     </Box>
 
                     <form noValidate autoComplete="off">
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={4}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 4
+                                }}>
                                 <FormControl fullWidth>
                                     <TextField
                                         name="size"
@@ -150,7 +162,11 @@ export const Water: React.FC = () => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12} md={4}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 4
+                                }}>
                                 <FormControl fullWidth>
                                     <TextField
                                         name="count"
@@ -165,7 +181,11 @@ export const Water: React.FC = () => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12} md={4}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    md: 4
+                                }}>
                                 <FormControl fullWidth>
                                     <InputLabel htmlFor="target">Total Amount</InputLabel>
                                     <Input id="target" readOnly value={water.target} />
@@ -173,11 +193,22 @@ export const Water: React.FC = () => {
                             </Grid>
                         </Grid>
                     </form>
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Box display="flex" alignItems="center">
-                            <Box mr={1}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            mt: 2
+                        }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                            <Box sx={{
+                                mr: 1
+                            }}>
                                 <Button color="primary" onClick={updateWater} disabled={postingUser || !hasChanged}>Update</Button>
-                                {postingUser && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
+                                {postingUser && <CircularProgress size={24} sx={commonSx.buttonProgress}></CircularProgress>}
                             </Box>
                         </Box>
                     </Box>

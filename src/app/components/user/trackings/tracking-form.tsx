@@ -20,7 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { UserTrackingType } from '../../../../api/endpoints/user-tracking';
 
 
-import { useCommonStyles } from '../../common-styles';
+import { commonSx } from '../../common-styles';
 import { IconTracking, NullTracking } from './metadata/icon-tracking';
 interface TrackingFormProps {
     tracking: UserTracking;
@@ -28,7 +28,6 @@ interface TrackingFormProps {
 }
 
 export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTracking }) => {
-    const commonClasses = useCommonStyles();
 
     const onChangeTrackingTextValue = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { value, name } = event.target;
@@ -173,9 +172,15 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
 
 
     return (
-        <Box my={2}>
+        <Box sx={{
+            my: 2
+        }}>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 4
+                    }}>
                     <FormControl fullWidth>
                         <TextField
                             variant="standard"
@@ -191,7 +196,11 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 6
+                    }}>
                     <FormControl fullWidth>
                         <TextField
                             variant="standard"
@@ -206,7 +215,11 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={6} md={2}>
+                <Grid
+                    size={{
+                        xs: 6,
+                        md: 2
+                    }}>
                     <FormControl fullWidth>
                         <TextField
                             variant="standard"
@@ -220,7 +233,11 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                         />
                     </FormControl>
                 </Grid>
-                <Grid item xs={6} md={4}>
+                <Grid
+                    size={{
+                        xs: 6,
+                        md: 4
+                    }}>
                     <FormControl fullWidth>
                         <FormControlLabel
                             control={
@@ -237,7 +254,11 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={6} md={8}>
+                <Grid
+                    size={{
+                        xs: 6,
+                        md: 8
+                    }}>
                     <FormControl fullWidth>
                         <FormControlLabel
                             control={
@@ -254,19 +275,34 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={6} md={12}>
+                <Grid
+                    size={{
+                        xs: 6,
+                        md: 12
+                    }}>
                     <Box>
                         <Typography variant="h6">Values</Typography>
-                        <Divider className={commonClasses.divider} />
+                        <Divider sx={commonSx.divider} />
                         <Grid container spacing={2}>
                             {
                                 tracking.values &&
                                 tracking.values.map(({ name, description, type, metadata, userTrackingValueId }, idx) =>
-                                    <Grid item key={`value_${idx}`} xs={12} sm={6}>
-                                        <Box marginTop={2}>
+                                    <Grid
+                                        key={`value_${idx}`}
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
+                                        <Box sx={{
+                                            marginTop: 2
+                                        }}>
                                             <Box>
                                                 <Grid container spacing={2}>
-                                                    <Grid item xs={12} sm={8}>
+                                                    <Grid
+                                                        size={{
+                                                            xs: 12,
+                                                            sm: 8
+                                                        }}>
                                                         <FormControl fullWidth>
                                                             <TextField
                                                                 variant="standard"
@@ -281,7 +317,11 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                         </FormControl>
                                                     </Grid>
 
-                                                    <Grid item xs={12} sm={4}>
+                                                    <Grid
+                                                        size={{
+                                                            xs: 12,
+                                                            sm: 4
+                                                        }}>
                                                         <FormControl variant="standard" fullWidth>
                                                             <InputLabel id={`tracking-select-type-label-${idx}`}>Type</InputLabel>
                                                             <Select
@@ -299,7 +339,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                         </FormControl>
                                                     </Grid>
 
-                                                    <Grid item xs={12}>
+                                                    <Grid size={12}>
                                                         <FormControl fullWidth>
                                                             <TextField
                                                                 variant="standard"
@@ -314,14 +354,20 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                                                         </FormControl>
                                                     </Grid>
                                                 </Grid>
-                                                <Box my={2}>
+                                                <Box sx={{
+                                                    my: 2
+                                                }}>
                                                     {React.createElement(metadataComponent[type], { metadata, userTrackingValueId, onChange: onChangeMetadata, idx })}
                                                 </Box>
 
                                             </Box>
                                             {
                                                 idx > 0 &&
-                                                <Box my={2} textAlign="right">
+                                                <Box
+                                                    sx={{
+                                                        my: 2,
+                                                        textAlign: "right"
+                                                    }}>
                                                     <Button color="secondary" onClick={(e => onClickRemoveTracking(e, idx))}>Remove Value</Button>
                                                 </Box>
                                             }
@@ -334,7 +380,9 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ tracking, setTrackin
                 </Grid>
             </Grid>
 
-            <Box textAlign="right">
+            <Box sx={{
+                textAlign: "right"
+            }}>
                 <Fab color="primary" title="Add Tracking Value" aria-label="add" onClick={onClickAddTracking}>
                     <AddIcon />
                 </Fab>

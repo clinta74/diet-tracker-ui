@@ -5,30 +5,16 @@ import {
     Paper,
     Typography,
 } from '@mui/material';
-import { createStyles, makeStyles } from '@mui/styles';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useApi } from '../../../../api';
 import { useAlertMessage } from '../../../providers/alert-provider';
-import { useCommonStyles } from '../../common-styles';
+import { commonSx, plainLinkStyle } from '../../common-styles';
 import { TrackingForm } from './tracking-form';
-
-const useStyles = makeStyles(() =>
-    createStyles({
-        buttonProgress: {
-            position: 'absolute',
-            left: '-100%',
-            marginTop: -12,
-            marginLeft: -12,
-        },
-    }),
-);
 
 type Params = Record<'userTrackingId', string>
 
 export const EditTracking: React.FC = () => {
-    const classes = useStyles();
-    const commonClasses = useCommonStyles();
     const params = useParams<Params>();
     const { Api } = useApi();
     const alert = useAlertMessage();
@@ -56,7 +42,7 @@ export const EditTracking: React.FC = () => {
     }
 
     return (
-        <Paper className={commonClasses.paper}>
+        <Paper sx={commonSx.paper}>
             <Box>
                 <Typography variant="h4">Edit Tracking</Typography>
                 Please enter the information about the value you would like to track.
@@ -65,13 +51,24 @@ export const EditTracking: React.FC = () => {
                 tracking &&
                 <React.Fragment>
                     <TrackingForm tracking={tracking} setTracking={setTracking as React.Dispatch<React.SetStateAction<UserTracking>>} />
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Box display="flex" alignItems="center">
-                            <Box mr={1}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            mt: 2
+                        }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                            <Box sx={{
+                                mr: 1
+                            }}>
                                 <Button color="primary" onClick={onClickSaveTracking} disabled={postingTracking}>Save</Button>
-                                {postingTracking && <CircularProgress size={24} className={classes.buttonProgress}></CircularProgress>}
+                                {postingTracking && <CircularProgress size={24} sx={commonSx.buttonProgress}></CircularProgress>}
                             </Box>
-                            <Link to="/trackings" className={commonClasses.link}>
+                            <Link to="/trackings" style={plainLinkStyle}>
                                 <Button color="secondary" disabled={postingTracking}>Cancel</Button>
                             </Link>
                         </Box>

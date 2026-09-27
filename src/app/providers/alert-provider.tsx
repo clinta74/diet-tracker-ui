@@ -1,5 +1,4 @@
-import { Alert, AlertTitle, Box, Button, Divider, Portal, Theme } from '@mui/material';
-import { makeStyles, createStyles } from '@mui/styles';
+import { Alert, AlertTitle, Box, Button, Divider, Portal } from '@mui/material';
 import React, { createContext, useState } from 'react';
 
 
@@ -37,28 +36,26 @@ export const AlertProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     return <AlertContext.Provider value={alertHandlers}>{children}</AlertContext.Provider>
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            position: 'absolute',
-            right: 0,
-            bottom: 0,
-            backgroundColor: theme.palette.background.paper,
-            zIndex: theme.zIndex.appBar + 1,
-        },
-    })
-);
-
 export const AlertMessage: React.FunctionComponent = () => {
-    const classes = useStyles();
 
     return (
         <AlertContext.Consumer>
             {
                 value => value.messages &&
                     <Portal>
-                        <Box className={classes.root} boxShadow={2}>
-                            <Box p={1} textAlign="right">
+                        <Box sx={{
+                            position: 'absolute',
+                            right: 0,
+                            bottom: 0,
+                            bgcolor: 'background.paper',
+                            zIndex: theme => theme.zIndex.appBar + 1,
+                            boxShadow: 2
+                        }}>
+                            <Box
+                                sx={{
+                                    p: 1,
+                                    textAlign: "right"
+                                }}>
                                 <Button onClick={value.clearMessages}>Clear</Button>
                             </Box>
                             {

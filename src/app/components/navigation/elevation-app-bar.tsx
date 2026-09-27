@@ -6,19 +6,15 @@ import {
     Avatar,
     Box,
     Button,
-    Hidden,
     IconButton,
-    Theme,
     Toolbar,
     Typography,
     useScrollTrigger
 } from '@mui/material';
-import clsx from 'clsx';
 import MenuIcon from '@mui/icons-material/Menu';
 
 // Local imports
 import { Authenticated } from '../../../auth/authenticated';
-import { createStyles, makeStyles } from '@mui/styles';
 import { drawerWidth } from './navigation';
 
 const ElevationScroll: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -33,35 +29,6 @@ const ElevationScroll: React.FC<React.PropsWithChildren> = ({ children }) => {
     });
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-            transition: theme.transitions.create(['width', 'margin'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-        },
-        appBarShift: {
-            marginLeft: drawerWidth,
-            width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(['width', 'margin'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        toolbar: {
-            marginBottom: theme.spacing(2),
-        },
-        menuButton: {
-            marginRight: 36,
-        },
-        hide: {
-            display: 'none',
-        },
-    })
-);
-
 interface ElevateAppBarProps {
     open: boolean;
     handleDrawerOpen: React.MouseEventHandler;
@@ -70,14 +37,21 @@ interface ElevateAppBarProps {
 export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawerOpen }) => {
     const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
-    const classes = useStyles();
 
     const { name } = user ?? { name: '' };
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
+                <AppBar sx={theme => ({
+                    zIndex: theme.zIndex.drawer + 1,
+                    transition: theme.transitions.create(['width', 'margin'], {
+                        easing: theme.transitions.easing.sharp,
+                        duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+                    }),
+                    ...(open && {
+                        marginLeft: `${drawerWidth}px`,
+                        width: `calc(100% - ${drawerWidth}px)`,
+                    }),
                 })}>
                     <Toolbar>
                         {
@@ -87,22 +61,28 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                                 aria-label="open drawer"
                                 onClick={handleDrawerOpen}
                                 edge="start"
-                                className={clsx(classes.menuButton, {
-                                    [classes.hide]: open,
-                                })}
+                                sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}
                             >
                                 <MenuIcon />
                             </IconButton>
                         }
-                        <Box flexGrow={1}>
-                            <Hidden smDown>
-                                <Typography variant="h6">Your Meal Tracker</Typography>
-                            </Hidden>
+                        <Box sx={{
+                            flexGrow: 1
+                        }}>
+                            <Typography variant="h6" sx={{ display: { xs: 'none', sm: 'block' } }}>Your Meal Tracker</Typography>
                         </Box>
-                        <Box ml={2}>
+                        <Box sx={{
+                            ml: 2
+                        }}>
                             <Authenticated>
-                                <Box display="flex" alignItems="center">
-                                    <Box mr={1}>Hello, {name}</Box>
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center"
+                                    }}>
+                                    <Box sx={{
+                                        mr: 1
+                                    }}>Hello, {name}</Box>
                                     <Avatar>{!!name ? name[0] : ''}</Avatar>
                                 </Box>
                             </Authenticated>
@@ -113,7 +93,7 @@ export const ElevateAppBar: React.FC<ElevateAppBarProps> = ({ open, handleDrawer
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>
-            <Toolbar className={classes.toolbar} />
+            <Toolbar sx={{ mb: 2 }} />
         </React.Fragment>
     );
 }

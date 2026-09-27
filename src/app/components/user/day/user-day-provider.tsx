@@ -169,7 +169,7 @@ export const UserDayProvider: React.FC<React.PropsWithChildren> = ({ children })
 
     const withSetHasChanged = <T extends unknown | undefined>(action: Dispatch<SetStateAction<T>>, value: HasChangedValues) => (data: SetStateAction<T>, markHasChanged = true) => {
         action(data);
-        markHasChanged && setHasChanged(_ => [..._ || [], value]);
+        markHasChanged && setHasChanged(_ => [...(_ || []), value]);
     }
 
     const userDayContext: UserDayContextValues = {

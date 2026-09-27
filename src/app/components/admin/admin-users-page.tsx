@@ -90,18 +90,33 @@ export const AdminUsersPage: React.FC = () => {
         await Api.Admin.revokeUserSessions(user.userId);
     };
 
-    if (loading) return <Box p={4}><CircularProgress /></Box>;
+    if (loading) return (
+        <Box sx={{
+            p: 4
+        }}><CircularProgress /></Box>
+    );
 
     return (
-        <Box maxWidth={800} mx="auto" p={2}>
+        <Box
+            sx={{
+                maxWidth: 800,
+                mx: "auto",
+                p: 2
+            }}>
             <Typography variant="h4" gutterBottom>User Management</Typography>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
             {users.map(user => (
                 <Accordion key={user.userId}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box display="flex" alignItems="center" gap={1} width="100%">
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                width: "100%"
+                            }}>
                             <Typography>{user.firstName} {user.lastName}</Typography>
-                            {user.email && <Typography variant="body2" color="textSecondary">({user.email})</Typography>}
+                            {user.email && <Typography variant="body2" color="text.secondary">({user.email})</Typography>}
                             {!user.hasCredentials && <Chip label="No credentials" color="warning" size="small" />}
                         </Box>
                     </AccordionSummary>
@@ -121,7 +136,11 @@ export const AdminUsersPage: React.FC = () => {
                                 />
                             ))}
                         </FormGroup>
-                        <Box mt={1} mb={2}>
+                        <Box
+                            sx={{
+                                mt: 1,
+                                mb: 2
+                            }}>
                             <Button
                                 variant="contained"
                                 size="small"
@@ -134,7 +153,9 @@ export const AdminUsersPage: React.FC = () => {
 
                         <Divider />
 
-                        <Box mt={2}>
+                        <Box sx={{
+                            mt: 2
+                        }}>
                             <Typography variant="subtitle2" gutterBottom>
                                 {user.hasCredentials ? 'Update Credentials' : 'Set Credentials'}
                             </Typography>
@@ -144,7 +165,12 @@ export const AdminUsersPage: React.FC = () => {
                             {credentialSuccess[user.userId] && (
                                 <Alert severity="success" sx={{ mb: 1 }}>Credentials set successfully</Alert>
                             )}
-                            <Box display="flex" gap={1} flexWrap="wrap">
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: 1,
+                                    flexWrap: "wrap"
+                                }}>
                                 <TextField
                                     label="Email"
                                     type="email"
@@ -158,7 +184,9 @@ export const AdminUsersPage: React.FC = () => {
                                     size="small"
                                     value={credentialPassword[user.userId] || ''}
                                     onChange={e => setCredentialPassword(prev => ({ ...prev, [user.userId]: e.target.value }))}
-                                    inputProps={{ minLength: 8 }}
+                                    slotProps={{
+                                        htmlInput: { minLength: 8 }
+                                    }}
                                 />
                                 <Button
                                     variant="outlined"
@@ -170,7 +198,9 @@ export const AdminUsersPage: React.FC = () => {
                             </Box>
                         </Box>
 
-                        <Box mt={2}>
+                        <Box sx={{
+                            mt: 2
+                        }}>
                             <Button
                                 variant="outlined"
                                 color="warning"

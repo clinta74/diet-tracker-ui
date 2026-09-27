@@ -26,8 +26,17 @@ export const LoginPage: React.FC = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" p={4}>
-            <Box width="100%" maxWidth={400}>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                p: 4
+            }}>
+            <Box
+                sx={{
+                    width: "100%",
+                    maxWidth: 400
+                }}>
                 <Typography variant="h4" gutterBottom>Sign In</Typography>
                 {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                 <form onSubmit={handleSubmit}>
@@ -51,7 +60,9 @@ export const LoginPage: React.FC = () => {
                         required
                         autoComplete="current-password"
                     />
-                    <Box mt={2}>
+                    <Box sx={{
+                        mt: 2
+                    }}>
                         <Button
                             type="submit"
                             variant="contained"

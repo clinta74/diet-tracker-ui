@@ -17,22 +17,14 @@ import {
 import { UserTrackingType } from '../../../api/endpoints/user-tracking';
 import { getIconMetadata } from './trackings/metadata/icon-tracking-metadata';
 import { iconLibrary } from '../../icons';
-import { createStyles, makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) => {
-    return createStyles({
-        card: {
-            margin: theme.spacing(1, 0, 0),
-        },
-        control: {
-            '& .MuiSvgIcon-root': {
-                fill: theme.palette.action.selected
-            },
-            '&.Mui-checked .MuiSvgIcon-root': {
-                fill: theme.palette.success.dark
-            }
-        },
-    });
+const iconControlSx = (theme: Theme) => ({
+    '& .MuiSvgIcon-root': {
+        fill: theme.palette.action.selected,
+    },
+    '&.Mui-checked .MuiSvgIcon-root': {
+        fill: theme.palette.success.dark,
+    },
 });
 
 const valueCoverter = {
@@ -62,7 +54,6 @@ interface TrackingCardProps {
 }
 
 export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, values, disable, onChange }) => {
-    const classes = useStyles();
 
     const { title, description, useTime } = tracking;
 
@@ -134,7 +125,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
     // components would remount the inputs on every render.
     const NumberComponent = ({ value, occurrence, name, description, userTrackingValueId, type, whenValue, useTime }: ValueControlProps): React.ReactNode =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
-            <Grid item xs={useTime ? 8 : 12}>
+            <Grid size={useTime ? 8 : 12}>
                 <FormControl fullWidth>
                     <TextField
                         variant="standard"
@@ -150,7 +141,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             </Grid>
             {
                 useTime &&
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <FormControl fullWidth>
                         <TextField
                             type="time"
@@ -170,7 +161,11 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     const YesNoComponent = ({ value, occurrence, name, description, userTrackingValueId, whenValue, useTime }: ValueControlProps): React.ReactNode =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
-            <Grid item xs={12} md={useTime ? 8 : 12}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: useTime ? 8 : 12
+                }}>
                 <FormControl fullWidth>
                     <FormControlLabel
                         control={
@@ -188,7 +183,11 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
             </Grid>
             {
                 useTime &&
-                <Grid item xs={12} md={4}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 4
+                    }}>
                     <FormControl fullWidth>
                         <TextField
                             variant="standard"
@@ -222,7 +221,12 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                 <Box>{name}</Box>
                 {
                     trackingIcons.map((trackingIcon, idx) =>
-                        <Box key={idx} display="inline" fontSize={24}>
+                        <Box
+                            key={idx}
+                            sx={{
+                                display: "inline",
+                                fontSize: 24
+                            }}>
                             {
                                 <FormControlLabel
                                     control={
@@ -235,7 +239,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
                                             checkedIcon={iconLibrary[iconName]}
                                             title={description}
                                             onChange={(e, checked) => onClickTrackingIcon(idx, checked)}
-                                            className={classes.control}
+                                            sx={iconControlSx}
                                         />
                                     }
                                     label=" "
@@ -258,7 +262,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
 
     return (
         <React.Fragment>
-            <Card className={classes.card}>
+            <Card sx={{ mt: 1 }}>
                 <CardHeader title={title} subheader={description} />
                 <CardContent>
                     {

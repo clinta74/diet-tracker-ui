@@ -5,7 +5,7 @@ import { useApi } from '../../../api/api-provider';
 import { validateAll, ValidationTest } from '../../../utils/validate';
 import { useAlertMessage } from '../../providers/alert-provider';
 import { useUser } from '../../providers/user-provider';
-import { useCommonStyles } from '../common-styles';
+import { commonSx } from '../common-styles';
 import { ErrorMessage } from '../error-message';
 
 const validationTests: ValidationTest<{ planId: number, plans: Plan[] }>[] =
@@ -20,7 +20,6 @@ const validationTests: ValidationTest<{ planId: number, plans: Plan[] }>[] =
     ]
 
 export const Plan: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const { user, updateUser }= useUser();
     const alert = useAlertMessage();
     const { Api } = useApi();
@@ -75,10 +74,19 @@ export const Plan: React.FC = () => {
     const hasErrors = results.length > 0;
 
     return (
-        <Grid container justifyContent="center">
-            <Grid item xs={12} md={10} xl={8}>
-                <Paper className={commonClasses.paper}>
-                    <Box mb={2}>
+        <Grid container sx={{
+            justifyContent: "center"
+        }}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 10,
+                    xl: 8
+                }}>
+                <Paper sx={commonSx.paper}>
+                    <Box sx={{
+                        mb: 2
+                    }}>
                         <Typography variant="h4">Update Your Plan</Typography>
                         <p>Changing your plan will change the number of fuelings and meals you are shown each day going forward.</p>
                     </Box>
@@ -104,11 +112,22 @@ export const Plan: React.FC = () => {
                             <ErrorMessage isSubmitted={isSubmitted} inputName="planId" results={results} />
                         </FormControl>
                     </form>
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Box display="flex" alignItems="center">
-                            <Box mr={1}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            mt: 2
+                        }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                            <Box sx={{
+                                mr: 1
+                            }}>
                                 <Button color="primary" onClick={updatePlan} disabled={postingPlanId || planId === user.currentPlan.planId}>Update</Button>
-                                {postingPlanId && <CircularProgress size={24} className={commonClasses.buttonProgress}></CircularProgress>}
+                                {postingPlanId && <CircularProgress size={24} sx={commonSx.buttonProgress}></CircularProgress>}
                             </Box>
                         </Box>
                     </Box>

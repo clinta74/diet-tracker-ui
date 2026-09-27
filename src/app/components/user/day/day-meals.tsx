@@ -7,11 +7,10 @@ import {
     Grid,
     TextField,
 } from '@mui/material';
-import { useCommonStyles } from '../../common-styles';
+import { commonSx } from '../../common-styles';
 import { useUserDay } from './user-day-provider';
 
 export const DayMeals: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const { userMeals, setUserMeals, isPosting } = useUserDay();
 
     const onChangeMealName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
@@ -43,41 +42,55 @@ export const DayMeals: React.FC = () => {
     }
 
     return (
-        <Card className={commonClasses.card}>
+        <Card sx={commonSx.card}>
             <CardHeader title="Lean and Green" />
             <CardContent>
                 {
                     userMeals.map((meal, idx) => {
                         const when = meal.when === null ? '' : meal.when.split('T')[1];
-                        return <Grid container spacing={2} key={`meal_${idx}`}>
-                            <Grid item xs={7} sm={8} lg={9}>
-                                <FormControl fullWidth >
-                                    <TextField 
-                                        value={meal.name} 
-                                        name="name" 
-                                        variant="standard" 
-                                        onChange={e => onChangeMealName(e, idx)} 
-                                        disabled={isPosting} 
-                                    />
-                                </FormControl>
+                        return (
+                            <Grid container spacing={2} key={`meal_${idx}`}>
+                                <Grid
+                                    size={{
+                                        xs: 7,
+                                        sm: 8,
+                                        lg: 9
+                                    }}>
+                                    <FormControl fullWidth >
+                                        <TextField 
+                                            value={meal.name} 
+                                            name="name" 
+                                            variant="standard" 
+                                            onChange={e => onChangeMealName(e, idx)} 
+                                            disabled={isPosting} 
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid
+                                    size={{
+                                        xs: 5,
+                                        sm: 4,
+                                        lg: 3
+                                    }}>
+                                    <FormControl fullWidth >
+                                        <TextField 
+                                            type="time" 
+                                            autoComplete="false" 
+                                            variant="standard" 
+                                            value={when} 
+                                            name="when" 
+                                            onChange={e => onChangeMealWhen(e, idx)} 
+                                            disabled={isPosting}
+                                            slotProps={{
+                                                htmlInput: {
+                                                    step: 300
+                                                }
+                                            }}
+                                        />
+                                    </FormControl>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={5} sm={4} lg={3}>
-                                <FormControl fullWidth >
-                                    <TextField 
-                                        type="time" 
-                                        autoComplete="false" 
-                                        variant="standard" 
-                                        value={when} 
-                                        name="when" 
-                                        onChange={e => onChangeMealWhen(e, idx)} 
-                                        disabled={isPosting}
-                                        inputProps={{
-                                            step: 300
-                                        }}
-                                    />
-                                </FormControl>
-                            </Grid>
-                        </Grid>
+                        );
                     }
                     )
                 }

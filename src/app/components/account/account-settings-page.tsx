@@ -96,7 +96,12 @@ export const AccountSettingsPage: React.FC = () => {
     };
 
     return (
-        <Box maxWidth={600} mx="auto" p={2}>
+        <Box
+            sx={{
+                maxWidth: 600,
+                mx: "auto",
+                p: 2
+            }}>
             <Typography variant="h4" gutterBottom>Account Settings</Typography>
 
             <Typography variant="h6" gutterBottom>Change Password</Typography>
@@ -122,7 +127,9 @@ export const AccountSettingsPage: React.FC = () => {
                     onChange={e => setNewPassword(e.target.value)}
                     required
                     autoComplete="new-password"
-                    inputProps={{ minLength: 8 }}
+                    slotProps={{
+                        htmlInput: { minLength: 8 }
+                    }}
                 />
                 <TextField
                     label="Confirm New Password"
@@ -134,7 +141,9 @@ export const AccountSettingsPage: React.FC = () => {
                     required
                     autoComplete="new-password"
                 />
-                <Box mt={1}>
+                <Box sx={{
+                    mt: 1
+                }}>
                     <Button type="submit" variant="contained" disabled={passwordLoading}>
                         {passwordLoading ? <CircularProgress size={20} /> : 'Change Password'}
                     </Button>
@@ -157,7 +166,9 @@ export const AccountSettingsPage: React.FC = () => {
                     required
                     autoComplete="email"
                 />
-                <Box mt={1}>
+                <Box sx={{
+                    mt: 1
+                }}>
                     <Button type="submit" variant="contained" disabled={emailLoading}>
                         {emailLoading ? <CircularProgress size={20} /> : 'Change Email'}
                     </Button>
@@ -166,7 +177,13 @@ export const AccountSettingsPage: React.FC = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 1
+                }}>
                 <Typography variant="h6">Active Sessions</Typography>
                 {sessions.length > 0 && (
                     <Button variant="outlined" color="warning" size="small" onClick={handleRevokeAll}>
@@ -177,7 +194,7 @@ export const AccountSettingsPage: React.FC = () => {
             {sessionsLoading ? (
                 <CircularProgress size={24} />
             ) : sessions.length === 0 ? (
-                <Typography variant="body2" color="textSecondary">No active sessions</Typography>
+                <Typography variant="body2" color="text.secondary">No active sessions</Typography>
             ) : (
                 <List dense>
                     {sessions.map(session => (

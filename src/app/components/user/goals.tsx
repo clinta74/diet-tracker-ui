@@ -27,7 +27,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { format, formatDistanceToNow, formatISO, parseISO } from 'date-fns';
 import { useApi } from '../../../api';
 import { useAlertMessage } from '../../providers/alert-provider';
-import { useCommonStyles } from '../common-styles';
+import { commonSx } from '../common-styles';
 import { VictoryType } from '../../../api/endpoints/victory';
 import { Divider } from '@mui/material';
 
@@ -40,7 +40,6 @@ const defaultGoal: Victory = {
 };
 
 export const Goals: React.FC = () => {
-    const commonClasses = useCommonStyles();
     const theme = useTheme();
     const alert = useAlertMessage();
     const confirm = useConfirm();
@@ -174,14 +173,25 @@ export const Goals: React.FC = () => {
 
     return (
         <React.Fragment>
-            <Box position="relative" mb={4}>
-                <Box position="absolute" right={theme.spacing(1)} top={theme.spacing(2)}>
+            <Box
+                sx={{
+                    position: "relative",
+                    mb: 4
+                }}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        right: theme.spacing(1),
+                        top: theme.spacing(2)
+                    }}>
                     <Fab color="primary" title="Create a Goal" aria-label="add" onClick={onClickAddGoal}>
                         <AddIcon />
                     </Fab>
                 </Box>
-                <Paper className={commonClasses.paper}>
-                    <Box mb={2}>
+                <Paper sx={commonSx.paper}>
+                    <Box sx={{
+                        mb: 2
+                    }}>
                         <Typography variant="h4">Goals</Typography>
                         <p>Setting goals is a great way to make sure that you feel like you are making progress.</p>
                     </Box>
@@ -191,12 +201,23 @@ export const Goals: React.FC = () => {
                             goals.map(({ victoryId, name, when }) =>
                                 <React.Fragment key={victoryId}>
                                     <ListItem>
-                                        <Box flexGrow={1} display="flex" alignItems="center">
-                                            <Box flexGrow={1}><ListItemText primary={name} /></Box>
-                                            <Box mx={2}>
+                                        <Box
+                                            sx={{
+                                                flexGrow: 1,
+                                                display: "flex",
+                                                alignItems: "center"
+                                            }}>
+                                            <Box sx={{
+                                                flexGrow: 1
+                                            }}><ListItemText primary={name} /></Box>
+                                            <Box sx={{
+                                                mx: 2
+                                            }}>
                                                 {when && format(parseISO(when), 'M/d/yyyy')}
                                             </Box>
-                                            <Box whiteSpace="nowrap">
+                                            <Box sx={{
+                                                whiteSpace: "nowrap"
+                                            }}>
                                                 <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={victoryId}>
                                                     <MoreVertIcon />
                                                 </IconButton>
@@ -216,9 +237,13 @@ export const Goals: React.FC = () => {
                 </Paper>
             </Box>
 
-            <Box position="relative">
-                <Paper className={commonClasses.paper}>
-                    <Box mb={2}>
+            <Box sx={{
+                position: "relative"
+            }}>
+                <Paper sx={commonSx.paper}>
+                    <Box sx={{
+                        mb: 2
+                    }}>
                         <Typography variant="h4">Non Scale Victories</Typography>
                         <p>See your victories along you road.</p>
                     </Box>
@@ -228,12 +253,23 @@ export const Goals: React.FC = () => {
                             nonScale.map(({ victoryId, name, when }) =>
                                 <React.Fragment key={victoryId}>
                                     <ListItem>
-                                        <Box flexGrow={1} display="flex" alignItems="center">
-                                            <Box flexGrow={1}><ListItemText primary={name} /></Box>
-                                            <Box mx={2}>
+                                        <Box
+                                            sx={{
+                                                flexGrow: 1,
+                                                display: "flex",
+                                                alignItems: "center"
+                                            }}>
+                                            <Box sx={{
+                                                flexGrow: 1
+                                            }}><ListItemText primary={name} /></Box>
+                                            <Box sx={{
+                                                mx: 2
+                                            }}>
                                                 {when && formatDistanceToNow(parseISO(when), { addSuffix: true })}
                                             </Box>
-                                            <Box whiteSpace="nowrap">
+                                            <Box sx={{
+                                                whiteSpace: "nowrap"
+                                            }}>
                                                 <IconButton aria-haspopup="true" onClick={onClickMenuOpen} data-id={victoryId}>
                                                     <MoreVertIcon />
                                                 </IconButton>
@@ -270,7 +306,11 @@ export const Goals: React.FC = () => {
                         Please enter your goal here.
                     </DialogContentText>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={8}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 8
+                            }}>
                             <FormControl fullWidth>
                                 <TextField
                                     autoComplete="false"
@@ -284,7 +324,11 @@ export const Goals: React.FC = () => {
                             </FormControl>
                         </Grid>
 
-                        <Grid item xs={12} sm={4}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 4
+                            }}>
                             <FormControl fullWidth>
                                 <TextField variant="standard" name="when" type="date" value={newVictory.when || ''} onChange={onChangeNewVictoryWhen} />
                             </FormControl>
