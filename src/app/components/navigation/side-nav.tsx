@@ -38,7 +38,7 @@ interface SideNavProps {
 
 export const SideNavContext = createContext(false);
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles<Theme, object>((theme: Theme) =>
     createStyles({
         menuButton: {
             marginRight: 36,

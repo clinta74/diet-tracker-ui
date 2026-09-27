@@ -70,7 +70,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         const { value } = event.target;
         const numValue = Number(value);
 
-        if (numValue !== NaN && numValue >= 0) {
+        if (!Number.isNaN(numValue) && numValue >= 0) {
             const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
             onChange([
                 ...values.slice(0, idx),
@@ -115,7 +115,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
     }
 
     const onChangeTrackingValue = (numValue: number, occurrence: number, userTrackingValueId: number, type: UserTrackingType) => {
-        if (numValue !== NaN && numValue >= 0) {
+        if (!Number.isNaN(numValue) && numValue >= 0) {
             const idx = values.findIndex(value => value.occurrence === occurrence && value.userTrackingValueId === userTrackingValueId);
             onChange([
                 ...values.slice(0, idx),
@@ -130,7 +130,9 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         }
     }
 
-    const NumberComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, type, whenValue, useTime }) =>
+    // Plain render functions, called directly: defined inside the card, so rendering them as
+    // components would remount the inputs on every render.
+    const NumberComponent = ({ value, occurrence, name, description, userTrackingValueId, type, whenValue, useTime }: ValueControlProps): React.ReactNode =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
             <Grid item xs={useTime ? 8 : 12}>
                 <FormControl fullWidth>
@@ -166,7 +168,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         </Grid>
 
 
-    const YesNoComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, whenValue, useTime }) =>
+    const YesNoComponent = ({ value, occurrence, name, description, userTrackingValueId, whenValue, useTime }: ValueControlProps): React.ReactNode =>
         <Grid container spacing={1} key={`tracking-value-${userTrackingValueId}-${occurrence}`}>
             <Grid item xs={12} md={useTime ? 8 : 12}>
                 <FormControl fullWidth>
@@ -204,7 +206,7 @@ export const NumberTrackingCard: React.FC<TrackingCardProps> = ({ tracking, valu
         </Grid>
 
 
-    const IconComponent: React.FC<ValueControlProps> = ({ value, occurrence, name, description, userTrackingValueId, metadata }) => {
+    const IconComponent = ({ value, occurrence, name, description, userTrackingValueId, metadata }: ValueControlProps): React.ReactNode => {
         const { iconName, count } = getIconMetadata(metadata);
 
         const trackingIcons: boolean[] = new Array(count).fill(false).map((trackingIcon, idx) =>

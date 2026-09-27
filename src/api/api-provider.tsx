@@ -40,7 +40,7 @@ interface IApiContext {
 
 const ApiContext = React.createContext<{ Api: IApiContext } | null>(null);
 
-export const ApiProvider: React.FC = ({ children }) => {
+export const ApiProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const { accessToken, isAuthenticated, refreshAccessToken } = useAuth();
     const [Api, setApi] = React.useState<IApiContext>();
 

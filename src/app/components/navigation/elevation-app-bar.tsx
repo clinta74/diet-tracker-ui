@@ -21,14 +21,14 @@ import { Authenticated } from '../../../auth/authenticated';
 import { createStyles, makeStyles } from '@mui/styles';
 import { drawerWidth } from './navigation';
 
-const ElevationScroll: React.FC = ({ children }) => {
+const ElevationScroll: React.FC<React.PropsWithChildren> = ({ children }) => {
     const trigger = useScrollTrigger({
         disableHysteresis: true,
         threshold: 0,
         target: window,
     });
 
-    return React.cloneElement(children as React.ReactElement, {
+    return React.cloneElement(children as React.ReactElement<{ elevation?: number }>, {
         elevation: trigger ? 4 : 0,
     });
 }

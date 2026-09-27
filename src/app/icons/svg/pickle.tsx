@@ -1,8 +1,8 @@
-import { SvgIcon, SvgIconTypeMap } from "@mui/material";
+import { SvgIcon, SvgIconProps, SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React from "react";
 
-const PickleIcon: OverridableComponent<SvgIconTypeMap> = (props: unknown) => {
+const PickleIcon: OverridableComponent<SvgIconTypeMap> = (props: SvgIconProps) => {
     return (
         <SvgIcon {...props}>
             <path d="M 59.004934 87.190048 C 52.796053 91.49966 42.002467 86.404552 38.507401 74.79195 C 33.59375 58.699898 33.59375 41.397758 38.507401 25.305707 C 42.002467 13.608186 52.796053 8.491848 59.004934 12.907609 C 65.296053 17.089844 66.796875 26.006284 64.699836 33.309273 C 61.389803 44.200068 61.389803 55.897588 64.699836 66.809613 C 66.796875 74.091372 65.296053 82.795516 59.004934 87.190048 Z M 59.004934 87.190048 " transform="matrix(0.19,0,0,0.184,0,0)" />

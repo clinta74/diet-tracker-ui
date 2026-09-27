@@ -82,13 +82,15 @@ export const AccountSettingsPage: React.FC = () => {
     };
 
     const handleRevokeSession = async (id: number) => {
-        await confirm({ description: 'Revoke this session?' });
+        const { confirmed } = await confirm({ description: 'Revoke this session?' });
+        if (!confirmed) return;
         await Api.Account.revokeSession(id);
         setSessions(s => s.filter(x => x.id !== id));
     };
 
     const handleRevokeAll = async () => {
-        await confirm({ description: 'Sign out all other sessions?' });
+        const { confirmed } = await confirm({ description: 'Sign out all other sessions?' });
+        if (!confirmed) return;
         await Api.Account.revokeAllSessions();
         setSessions([]);
     };

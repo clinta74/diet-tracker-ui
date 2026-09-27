@@ -10,7 +10,7 @@ interface UserPermissionContext {
 
 export const UserPermissionContext = createContext<UserPermissionContext | null>(null);
 
-export const UserPermissionProvider: React.FC = ({ children }) => {
+export const UserPermissionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const { user } = useAuth();
     const permissions = user?.permissions ?? [];
 
@@ -42,7 +42,7 @@ interface UserPermissionProps {
     permissions: string | string[];
 }
 
-export const Authorized: React.FC<UserPermissionProps> = ({permissions, children}) => {
+export const Authorized: React.FC<React.PropsWithChildren<UserPermissionProps>> = ({permissions, children}) => {
     const { hasPermission } = useUserPermission();
     return (
         <React.Fragment>

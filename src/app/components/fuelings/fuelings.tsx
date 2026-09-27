@@ -127,7 +127,8 @@ export const Fuelings: React.FC = () => {
             const fuelingId = Number(anchorEl.dataset.id);
             const fueling = fuelings.find(f => f.fuelingId === fuelingId);
             confirm({ description: `Are you sure you want to delete ${fueling?.name}?` })
-                .then(() => {
+                .then(({ confirmed }) => {
+                    if (!confirmed) return;
                     Api.Fueling.deleteFueling(fuelingId)
                         .then(() => {
                             const idx = fuelings.findIndex(f => f.fuelingId === fuelingId);
@@ -137,8 +138,7 @@ export const Fuelings: React.FC = () => {
                         })
                         .catch(error => alert.addMessage(error))
                         .finally(() => setOpen(false));
-                })
-                .catch(() => null);
+                });
         }
     }
 
