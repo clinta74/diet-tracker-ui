@@ -70,6 +70,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         isAuthenticated: false,
     });
     const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // The API rotates refresh tokens, so concurrent refreshes with the same token race each other.
+    const refreshInFlightRef = useRef<Promise<string | null> | null>(null);
 
     const scheduleRefresh = useCallback((expiresIn: number, refreshTokenValue: string) => {
         if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
@@ -102,7 +104,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         }, delayMs);
     }, []);
 
-    const refreshAccessToken = useCallback(async (): Promise<string | null> => {
+    const doRefresh = useCallback(async (): Promise<string | null> => {
         const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
         if (!storedRefreshToken) return null;
         try {
@@ -132,42 +134,26 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         }
     }, [scheduleRefresh]);
 
+    // Single-flight: callers that arrive while a refresh is running (StrictMode's double-run mount
+    // effect, several requests hitting 401 at once) share that refresh instead of starting another.
+    const refreshAccessToken = useCallback((): Promise<string | null> => {
+        refreshInFlightRef.current ??= doRefresh().finally(() => {
+            refreshInFlightRef.current = null;
+        });
+        return refreshInFlightRef.current;
+    }, [doRefresh]);
+
     // On mount: try to restore session from stored refresh token
     useEffect(() => {
-        const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-        if (!storedRefreshToken) {
-            setState(s => ({ ...s, isLoading: false }));
-            return;
-        }
-        fetch(`${CONFIG.API_URL}/api/auth/refresh`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ refreshToken: storedRefreshToken }),
-        })
-            .then(async response => {
-                if (response.ok) {
-                    const data: AuthResponse = await response.json();
-                    localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
-                    setState({
-                        user: userFromToken(data.accessToken),
-                        accessToken: data.accessToken,
-                        isLoading: false,
-                        isAuthenticated: true,
-                    });
-                    scheduleRefresh(data.expiresIn, data.refreshToken);
-                } else {
-                    localStorage.removeItem(REFRESH_TOKEN_KEY);
-                    setState({ user: null, accessToken: null, isLoading: false, isAuthenticated: false });
-                }
-            })
-            .catch(() => {
-                localStorage.removeItem(REFRESH_TOKEN_KEY);
-                setState({ user: null, accessToken: null, isLoading: false, isAuthenticated: false });
-            });
+        refreshAccessToken().then(token => {
+            if (!token) {
+                setState(s => ({ ...s, isLoading: false }));
+            }
+        });
         return () => {
             if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
         };
-    }, [scheduleRefresh]);
+    }, [refreshAccessToken]);
 
     const login = useCallback(async (email: string, password: string) => {
         const response = await fetch(`${CONFIG.API_URL}/api/auth/login`, {
